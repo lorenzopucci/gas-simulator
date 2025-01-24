@@ -4,13 +4,23 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
+anyhow = "1.0.95"
+reqwest = "0.12.12"
 rocket = "0.5.1"
 serde = "1.0.217"
 
+[dependencies.diesel]
+version = "2.1.6"
+features = ["chrono"]
+
 [dependencies.rocket_db_pools]
 version = "0.2.0"
-features = ["sqlx_postgres"]
+features = ["diesel_postgres"]
 
 [dependencies.rocket_dyn_templates]
 version = "0.2.0"
 features = ["tera"]
+
+[dependencies.chrono]
+version = "0.4.39"
+features = ["serde"]

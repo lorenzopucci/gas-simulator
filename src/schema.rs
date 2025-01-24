@@ -1,0 +1,57 @@
+// @generated automatically by Diesel CLI.
+
+diesel::table! {
+    contests (id) {
+        id -> Int4,
+        phiquadro_id -> Int4,
+        phiquadro_sess -> Int4,
+        #[max_length = 255]
+        contest_name -> Varchar,
+        duration -> Interval,
+        start_time -> Timestamp,
+        drift -> Int4,
+    }
+}
+
+diesel::table! {
+    jollies (id) {
+        id -> Int4,
+        sub_time -> Interval,
+        question_id -> Int4,
+    }
+}
+
+diesel::table! {
+    questions (id) {
+        id -> Int4,
+        answer -> Int4,
+        position -> Int4,
+        contest_id -> Int4,
+    }
+}
+
+diesel::table! {
+    submissions (id) {
+        id -> Int4,
+        answer -> Int4,
+        sub_time -> Interval,
+        question_id -> Int4,
+    }
+}
+
+diesel::table! {
+    teams (id) {
+        id -> Int4,
+        #[max_length = 255]
+        team_name -> Varchar,
+        is_fake -> Bool,
+        contest_id -> Int4,
+    }
+}
+
+diesel::joinable!(jollies -> questions (question_id));
+diesel::joinable!(questions -> contests (contest_id));
+diesel::joinable!(submissions -> questions (question_id));
+diesel::joinable!(teams -> contests (contest_id));
+
+diesel::allow_tables_to_appear_in_same_query!(contests, jollies, questions, submissions, teams,);
