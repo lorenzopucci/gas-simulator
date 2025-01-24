@@ -1,0 +1,2 @@
+[default.databases.gas_simulator]
+url = "postgres://localhost:5432/gas_simulator"

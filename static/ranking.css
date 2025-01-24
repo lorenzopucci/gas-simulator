@@ -1,0 +1,98 @@
+* {
+    padding: 0;
+    margin: 0;
+    border: 0;
+}
+
+body {
+    background-color: #eeeeee;
+}
+
+#ranking {
+    width: fit-content;
+    margin-left: auto;
+    margin-right: auto;
+    border-collapse:separate;
+    border-spacing: 3px 3px;
+}
+
+#ranking tr:nth-child(odd) td.question-not-attempted,
+#ranking tr:nth-child(odd) td.team-header,
+#ranking tr:nth-child(odd) th {
+    background-color: #cccccc;
+}
+
+#ranking tr:nth-child(even) td.question-not-attempted,
+#ranking tr:nth-child(even) td.team-header,
+#ranking tr:nth-child(even) th {
+    background-color: #aaaaaa;
+}
+
+#ranking tr:hover:nth-child(odd) td.question-not-attempted,
+#ranking tr:hover:nth-child(odd) td.team-header {
+    background-color: #dddddd;
+}
+
+#ranking tr:hover:nth-child(even) td.question-not-attempted,
+#ranking tr:hover:nth-child(even) td.team-header {
+    background-color: #cccccc;
+}
+
+#ranking td, th {
+    border-radius: 5px 5px 5px 5px;
+}
+
+.question-header {
+    padding: 5px 10px;
+}
+
+.team-header {
+    display: flex;
+    justify-content: space-between;
+}
+
+.team-header div {
+    padding: 5px 10px;
+}
+
+.question {
+    text-align: center;
+}
+
+.question-solved {
+    background-color: rgb(80, 222, 80);
+}
+
+#ranking tr:hover td.question-solved {
+    background-color: rgb(105, 249, 105);
+}
+
+.question-just-solved {
+    background-color: rgb(80, 222, 80);
+    animation: just-solved 2s infinite;
+}
+
+#ranking tr:hover td.question-just-solved {
+    background-color: rgb(105, 249, 105);
+    animation: just-solved-hover 2s infinite;
+}
+
+.question-attempted {
+    background-color: rgb(235, 109, 109);
+}
+
+#ranking tr:hover td.question-attempted {
+    background-color: rgb(252, 131, 131);
+}
+
+@keyframes just-solved {
+    0%   { background: rgb(80, 222, 80); }
+    50%  { background-color: rgb(216, 220, 22);}
+    100% { background: rgb(80, 222, 80); }
+}
+
+@keyframes just-solved-hover {
+    0%   { background: rgb(105, 249, 105); }
+    50%  { background-color: rgb(249, 252, 47);}
+    100% { background: rgb(105, 249, 105); }
+}
