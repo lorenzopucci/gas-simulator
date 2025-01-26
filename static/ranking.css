@@ -8,6 +8,36 @@ body {
     background-color: #eeeeee;
 }
 
+a:link, a:hover, a:active, a:visited {
+    color: black;
+    text-decoration: none;
+}
+
+#page-intro {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+}
+
+#contest-title {
+    font-size: 14pt;
+    font-weight: bold;
+    color: blue;
+    text-decoration: underline;
+    width: fit-content;
+}
+
+#toggle-visibility {
+    margin: 5px;
+    padding: 5px;
+    background-color: #aaaaaa;
+    border-radius: 5px;
+}
+
+#toggle-visibility:hover {
+    background-color: #bbbbbb;
+}
+
 #ranking {
     width: fit-content;
     margin-left: auto;
@@ -39,7 +69,7 @@ body {
 }
 
 #ranking td, th {
-    border-radius: 5px 5px 5px 5px;
+    border-radius: 5px;
 }
 
 .question-header {

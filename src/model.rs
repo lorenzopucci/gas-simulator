@@ -6,7 +6,6 @@ use diesel::{Insertable, Queryable, Selectable};
 #[diesel(table_name = crate::schema::contests)]
 #[diesel(check_for_backend(diesel::pg::Pg))]
 pub struct Contest {
-    pub id: i32,
     pub phiquadro_id: i32,
     pub phiquadro_sess: i32,
     pub contest_name: String,
@@ -20,7 +19,6 @@ pub struct Contest {
 #[diesel(table_name = crate::schema::questions)]
 #[diesel(check_for_backend(diesel::pg::Pg))]
 pub struct Question {
-    pub id: i32,
     pub answer: i32,
     pub position: i32,
     pub contest_id: i32,
@@ -30,7 +28,6 @@ pub struct Question {
 #[diesel(table_name = crate::schema::teams)]
 #[diesel(check_for_backend(diesel::pg::Pg))]
 pub struct Team {
-    pub id: i32,
     pub team_name: String,
     pub is_fake: bool,
     pub position: i32,
@@ -41,7 +38,6 @@ pub struct Team {
 #[diesel(table_name = crate::schema::submissions)]
 #[diesel(check_for_backend(diesel::pg::Pg))]
 pub struct Submission {
-    pub id: i32,
     pub answer: i32,
     pub sub_time: PgInterval,
     pub team_id: i32,
@@ -52,7 +48,6 @@ pub struct Submission {
 #[diesel(table_name = crate::schema::jollies)]
 #[diesel(check_for_backend(diesel::pg::Pg))]
 pub struct Jolly {
-    pub id: i32,
     pub sub_time: PgInterval,
     pub team_id: i32,
     pub question_id: i32,

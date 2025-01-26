@@ -36,7 +36,7 @@ async fn index(mut db: Connection<DB>, phi: &State<PhiQuadroLogin>) -> Result<&'
     let contest_creation = contest::import::create_contest(
         &mut db,
         phi.inner(),
-        "Suscontest",
+        "IX GARA A SQUADRE FEMMINILE",
         16463,
         1,
         7200,

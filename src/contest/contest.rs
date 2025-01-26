@@ -3,8 +3,7 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Copy, Serialize, Deserialize)]
 pub struct Question {
-    pub position: i32,
-    pub score: i32,
+    pub score: i64,
     pub locked: bool,
 }
 
@@ -19,7 +18,7 @@ pub enum QuestionStatus {
 
 #[derive(Clone, Copy, Default, Serialize, Deserialize)]
 pub struct TeamQuestion {
-    pub score: i32,
+    pub score: i64,
     pub jolly: bool,
     pub status: QuestionStatus,
 }
@@ -28,7 +27,7 @@ pub struct TeamQuestion {
 pub struct Team {
     pub name: String,
     pub is_fake: bool,
-    pub score: i32,
+    pub score: i64,
     pub questions: Vec<TeamQuestion>,
 }
 

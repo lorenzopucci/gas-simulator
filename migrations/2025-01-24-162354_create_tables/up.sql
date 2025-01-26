@@ -1,5 +1,5 @@
 CREATE TABLE contests (
-    id              INTEGER PRIMARY KEY NOT NULL,
+    id              INTEGER PRIMARY KEY NOT NULL GENERATED ALWAYS AS IDENTITY,
     phiquadro_id    INTEGER NOT NULL,
     phiquadro_sess  INTEGER NOT NULL,
     contest_name    VARCHAR(255) NOT NULL,
@@ -16,7 +16,7 @@ CREATE TABLE contests (
 CREATE INDEX on contests (id);
 
 CREATE TABLE questions(
-    id              INTEGER PRIMARY KEY NOT NULL,
+    id              INTEGER PRIMARY KEY NOT NULL GENERATED ALWAYS AS IDENTITY,
     answer          INTEGER NOT NULL,
     position        INTEGER NOT NULL,
     contest_id      INTEGER NOT NULL REFERENCES contests(id),
@@ -29,20 +29,21 @@ CREATE TABLE questions(
 CREATE INDEX ON questions (contest_id);
 
 CREATE TABLE teams(
-    id              INTEGER PRIMARY KEY NOT NULL,
+    id              INTEGER PRIMARY KEY NOT NULL GENERATED ALWAYS AS IDENTITY,
     team_name       VARCHAR(255) NOT NULL,
     is_fake         BOOLEAN NOT NULL,
     position        INTEGER NOT NULL,
     contest_id      INTEGER NOT NULL REFERENCES contests(id),
 
     UNIQUE (contest_id, position),
-    CONSTRAINT positive_id CHECK (id >= 0)
+    CONSTRAINT positive_id CHECK (id >= 0),
+    CONSTRAINT positive_position CHECK (position >= 0)
 );
 
 CREATE INDEX ON teams (contest_id);
 
 CREATE TABLE submissions(
-    id              INTEGER PRIMARY KEY NOT NULL,
+    id              INTEGER PRIMARY KEY NOT NULL GENERATED ALWAYS AS IDENTITY,
     answer          INTEGER NOT NULL,
     sub_time        INTERVAL NOT NULL,
     team_id         INTEGER NOT NULL REFERENCES teams(id),
@@ -55,7 +56,7 @@ CREATE TABLE submissions(
 CREATE INDEX ON submissions (team_id);
 
 CREATE TABLE jollies (
-    id              INTEGER PRIMARY KEY NOT NULL,
+    id              INTEGER PRIMARY KEY NOT NULL GENERATED ALWAYS AS IDENTITY,
     sub_time        INTERVAL NOT NULL,
     team_id         INTEGER NOT NULL REFERENCES teams(id),
     question_id     INTEGER NOT NULL REFERENCES questions(id),

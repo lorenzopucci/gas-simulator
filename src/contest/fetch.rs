@@ -14,12 +14,24 @@ use crate::model::{self, ContestJollies, ContestSubmissions};
 use crate::model::get_duration;
 use crate::DB;
 
+const QUESTION_BONUS: [i64; 10] = [20, 15, 10, 8, 6, 5, 4, 3, 2, 1];
+const CONTEST_BONUS: [i64; 6] = [100, 60, 40, 30, 20, 10];
+
 pub async fn fetch_contest(db: &mut Connection<DB>, id: i32) -> anyhow::Result<Option<Contest>> {
     use crate::schema::{contests, jollies, submissions, questions, teams};
 
     info!("Loading contest {}", id);
 
     let contest = contests::dsl::contests
+        .select((
+            contests::phiquadro_id,
+            contests::phiquadro_sess,
+            contests::contest_name,
+            contests::duration,
+            contests::start_time,
+            contests::drift,
+            contests::drift_time,
+        ))
         .filter(contests::dsl::id.eq(id))
         .load::<model::Contest>(db)
         .await?;
@@ -29,6 +41,12 @@ pub async fn fetch_contest(db: &mut Connection<DB>, id: i32) -> anyhow::Result<O
     };
 
     let teams = teams::dsl::teams
+        .select((
+            teams::team_name,
+            teams::is_fake,
+            teams::position,
+            teams::contest_id,
+        ))
         .filter(teams::contest_id.eq(id))
         .load::<model::Team>(db)
         .await?;
@@ -72,48 +90,64 @@ pub async fn fetch_contest(db: &mut Connection<DB>, id: i32) -> anyhow::Result<O
     let mut teams: Vec<Team> = teams.iter().map(|team| Team {
         name: team.team_name.clone(),
         is_fake: team.is_fake,
-        score: 0,
+        score: questions_no as i64 * 10,
         questions: vec![TeamQuestion::default(); questions_no],
     }).collect();
 
-    let mut questions: Vec<Question> = (0..questions_no).map(|idx| Question {
-        position: idx as i32,
+    let mut questions: Vec<Question> = vec![Question {
         score: 20,
         locked: false,
-    }).collect();
+    }; questions_no];
 
     let mut drift_left = vec![contest.drift; questions_no];
     let mut drift = vec![get_duration(contest.drift_time); questions_no];
 
     for submission in &submissions {
+        let q_pos = submission.question_pos as usize;
+
         if submission.given_answer == submission.correct_answer {
-            drift_left[submission.question_pos as usize] -= 1;
-            if drift_left[submission.question_pos as usize] <= 0 {
-                drift[submission.question_pos as usize] = cmp::min(drift[submission.question_pos as usize], get_duration(submission.sub_time));
-                questions[submission.question_pos as usize].locked = true;
+            drift_left[q_pos] -= 1;
+            if drift_left[q_pos] <= 0 {
+                drift[q_pos] = cmp::min(drift[q_pos], get_duration(submission.sub_time));
+                questions[q_pos].locked = true;
             }
         } else {
-            if get_duration(submission.sub_time) < drift[submission.question_pos as usize] {
-                questions[submission.question_pos as usize].score += 2;
+            if get_duration(submission.sub_time) < drift[q_pos] {
+                questions[q_pos].score += 2;
             }
         }
     }
 
     for i in 0..questions_no {
-        questions[i].score += drift[i].num_minutes() as i32;
+        questions[i].score += drift[i].num_minutes();
     }
 
+    let mut question_solves = vec![0; questions_no];
+    let mut team_solves = vec![0; teams.len()];
+    let mut solves = 0;
+
     for submission in &submissions {
+        let q_pos = submission.question_pos as usize;
+        let t_pos = submission.team_pos as usize;
+
         if submission.given_answer == submission.correct_answer {
-            if teams[submission.team_pos as usize].questions[submission.question_pos as usize].status != QuestionStatus::Solved {
-                teams[submission.team_pos as usize].questions[submission.question_pos as usize].score += questions[submission.question_pos as usize].score;
+            if teams[t_pos].questions[q_pos].status != QuestionStatus::Solved {
+                teams[t_pos].questions[q_pos].score += questions[q_pos].score + QUESTION_BONUS.get(question_solves[q_pos]).unwrap_or(&0);
+
+                question_solves[q_pos] += 1;
+                team_solves[t_pos] += 1;
+
+                if team_solves[t_pos] == questions_no {
+                    teams[t_pos].score += CONTEST_BONUS.get(solves).unwrap_or(&0);
+                    solves += 1;
+                }
             }
-            teams[submission.team_pos as usize].questions[submission.question_pos as usize].status = QuestionStatus::Solved;
+            teams[t_pos].questions[q_pos].status = QuestionStatus::Solved;
         } else {
-            if teams[submission.team_pos as usize].questions[submission.question_pos as usize].status == QuestionStatus::NotAttempted {
-                teams[submission.team_pos as usize].questions[submission.question_pos as usize].status = QuestionStatus::Attempted;
+            if teams[t_pos].questions[q_pos].status == QuestionStatus::NotAttempted {
+                teams[t_pos].questions[q_pos].status = QuestionStatus::Attempted;
             }
-            teams[submission.team_pos as usize].questions[submission.question_pos as usize].score -= 10;
+            teams[t_pos].questions[q_pos].score -= 10;
         }
     }
 
@@ -123,7 +157,7 @@ pub async fn fetch_contest(db: &mut Connection<DB>, id: i32) -> anyhow::Result<O
     }
 
     for team in &mut teams {
-        team.score = questions_no as i32 * 10 + team.questions.iter().map(|q| q.score).sum::<i32>();
+        team.score += team.questions.iter().map(|q| q.score).sum::<i64>();
     }
 
     teams.sort_unstable_by_key(|team| -team.score);
