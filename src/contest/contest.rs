@@ -4,12 +4,11 @@ use serde::{Deserialize, Serialize};
 #[derive(Clone, Copy, Serialize, Deserialize)]
 pub struct Question {
     pub position: i32,
-    pub answer: i32,
     pub score: i32,
     pub locked: bool,
 }
 
-#[derive(Clone, Copy, Default, Serialize, Deserialize)]
+#[derive(Clone, PartialEq, Eq, Copy, Default, Serialize, Deserialize)]
 pub enum QuestionStatus {
     #[default]
     NotAttempted,

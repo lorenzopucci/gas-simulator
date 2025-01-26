@@ -57,6 +57,7 @@ body {
 
 .question {
     text-align: center;
+    width: 60px;
 }
 
 .question-solved {

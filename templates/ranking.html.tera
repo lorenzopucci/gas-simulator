@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <link rel="stylesheet" href="static/ranking.css">
+    <link rel="stylesheet" href="/static/ranking.css">
     <title>title</title>
   </head>
   <body>
@@ -11,7 +11,7 @@
         <th style="visibility: hidden"></th>
         {% for question in questions %}
           <th class="question-header">
-            <div>Q. {{question.id}}</div>
+            <div>Q. {{question.position}}</div>
             <div>{{question.score}}</div>
           </th>
         {% endfor %}

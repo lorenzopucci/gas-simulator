@@ -10,6 +10,7 @@ diesel::table! {
         duration -> Interval,
         start_time -> Timestamp,
         drift -> Int4,
+        drift_time -> Interval,
     }
 }
 
@@ -17,6 +18,7 @@ diesel::table! {
     jollies (id) {
         id -> Int4,
         sub_time -> Interval,
+        team_id -> Int4,
         question_id -> Int4,
     }
 }
@@ -35,6 +37,7 @@ diesel::table! {
         id -> Int4,
         answer -> Int4,
         sub_time -> Interval,
+        team_id -> Int4,
         question_id -> Int4,
     }
 }
@@ -45,13 +48,16 @@ diesel::table! {
         #[max_length = 255]
         team_name -> Varchar,
         is_fake -> Bool,
+        position -> Int4,
         contest_id -> Int4,
     }
 }
 
 diesel::joinable!(jollies -> questions (question_id));
+diesel::joinable!(jollies -> teams (team_id));
 diesel::joinable!(questions -> contests (contest_id));
 diesel::joinable!(submissions -> questions (question_id));
+diesel::joinable!(submissions -> teams (team_id));
 diesel::joinable!(teams -> contests (contest_id));
 
 diesel::allow_tables_to_appear_in_same_query!(
