@@ -11,6 +11,7 @@ use regex::bytes::Regex;
 use reqwest::cookie::Jar;
 use reqwest::Client;
 
+use rocket::http::hyper::body::Bytes;
 use rocket::http::Status;
 use rocket_db_pools::diesel::prelude::RunQueryDsl;
 use rocket_db_pools::Connection;
@@ -24,7 +25,8 @@ use crate::{PhiQuadroLogin, DB};
 use crate::error::{IntoStatusResult, Result};
 
 const LOGIN_URL: &str = "https://www.phiquadro.it/gara_a_squadre/login.php";
-const STATS_URL: &str = "https://www.phiquadro.it/gara_a_squadre/stampe/statistiche_squadra.php";
+const CONTEST_STATS_URL: &str = "https://www.phiquadro.it/gara_a_squadre/stampe/statistiche_gara.php";
+const TEAM_STATS_URL: &str = "https://www.phiquadro.it/gara_a_squadre/stampe/statistiche_squadra.php";
 const CONTESTS_URL: &str = "https://www.phiquadro.it/gara_a_squadre/insegnanti_gestione_statistiche.php";
 
 #[derive(Clone, Debug)]
@@ -63,7 +65,8 @@ pub async fn create_contest(
         .returning(contests::id)
         .get_result(db)
         .await
-        .attach_status(Status::InternalServerError)?;
+        .attach_status(Status::InternalServerError)
+        .attach_status(Status::InsufficientStorage)?;
 
     // Setting up a phiquadro client
     let mut client = get_phiquadro_client(phi)
@@ -96,22 +99,26 @@ pub async fn create_contest(
         .await
         .attach_status(Status::InternalServerError)?;
 
-    let mut questions = vec![];
+    // Fetching the questions from phiquadro
+    let answers = get_questions(&mut client, id, sess).await?;
+    warn!("Answers are {:?}", answers);
 
-    for i in 0..21 {
-        let question_id = diesel::insert_into(questions::table)
-            .values(&Question {
-                contest_id,
-                answer: [199, 8679, 9216, 784, 25, 1125, 4131, 6656, 53, 35, 22, 2000, 2400, 119, 36, 578, 340, 450, 3, 404, 1037][i as usize],
-                position: i,
-            })
-            .returning(questions::id)
-            .get_result(db)
-            .await
-            .attach_status(Status::InternalServerError)?;
-
-        questions.push(question_id);
-    }
+    let questions = diesel::insert_into(questions::table)
+        .values(
+            answers
+                .iter()
+                .enumerate()
+                .map(|(i, &answer)| Question {
+                    contest_id,
+                    position: i as i32,
+                    answer,
+                })
+                .collect::<Vec<_>>()
+        )
+        .returning(questions::id)
+        .get_results(db)
+        .await
+        .attach_status(Status::InternalServerError)?;
 
     for (i, (team_id, team_name)) in teams.iter().enumerate() {
         info!("Inserting {team_id} {team_name}");
@@ -166,6 +173,7 @@ async fn get_phiquadro_client(phi: &PhiQuadroLogin) -> anyhow::Result<Client> {
     Ok(client)
 }
 
+/// Parses phiquadro html to find the teams taking part in a contest
 async fn get_teams(client: &mut Client, id_gara: i32, id_sess: i32) -> anyhow::Result<Vec<(i32, String)>> {
     // Right now forms only link to stats pages but this might change
     lazy_static! {
@@ -200,9 +208,29 @@ async fn get_teams(client: &mut Client, id_gara: i32, id_sess: i32) -> anyhow::R
         .collect()
 }
 
+/// Fetched the general pdf related to a contest
+async fn get_questions(client: &mut Client, id_gara: i32, id_sess: i32) -> Result<Vec<i32>> {
+    let log_pdf = client
+        .post(CONTEST_STATS_URL)
+        .form(&[("id_gara", id_gara), ("id_sess", id_sess)])
+        .send()
+        .await
+        .attach_status(Status::ServiceUnavailable)?
+        .error_for_status()
+        .attach_status(Status::ServiceUnavailable)?
+        .bytes()
+        .await
+        .attach_status(Status::ServiceUnavailable)?;
+
+    let output = parse_pdf(log_pdf).attach_status(Status::InternalServerError)?;
+
+    parse_contest_pdf(&output).attach_status(Status::InternalServerError)
+}
+
+/// Fetched the submission pdf related to a team
 async fn get_submissions(client: &mut Client, id_gara: i32, id_sess: i32, id_squadra: i32) -> Result<TeamActivity> {
     let log_pdf = client
-        .post(STATS_URL)
+        .post(TEAM_STATS_URL)
         .form(&[("id_gara", id_gara), ("id_sess", id_sess), ("id_squadra", id_squadra)])
         .send()
         .await
@@ -213,32 +241,46 @@ async fn get_submissions(client: &mut Client, id_gara: i32, id_sess: i32, id_squ
         .await
         .attach_status(Status::ServiceUnavailable)?;
 
-    let mut parse_pdf = Command::new("pdftotext")
-        .arg("-layout")
-        .arg("-nopgbrk")
-        .arg("-")
-        .arg("-")
-        .stdin(Stdio::piped())
-        .stdout(Stdio::piped())
-        .spawn()
-        .attach_status(Status::InternalServerError)?;
-
-    let mut stdin = parse_pdf
-        .stdin
-        .take()
-        .ok_or_else(|| anyhow!("failed to get stdin"))
-        .attach_status(Status::InternalServerError)?;
-
-    thread::spawn(move || stdin.write_all(&log_pdf).expect("failed to write to stdin"));
-
-    let output = parse_pdf
-        .wait_with_output()
-        .attach_status(Status::InternalServerError)?
-        .stdout;
+    let output = parse_pdf(log_pdf).attach_status(Status::InternalServerError)?;
 
     parse_team_text(&output).attach_status(Status::InternalServerError)
 }
 
+/// Parses a pdf into plain text
+fn parse_pdf(pdf: Bytes) -> anyhow::Result<Vec<u8>> {
+    let mut parse_pdf = Command::new("pdftotext")
+    .arg("-layout")
+    .arg("-nopgbrk")
+    .arg("-")
+    .arg("-")
+    .stdin(Stdio::piped())
+    .stdout(Stdio::piped())
+    .spawn()?;
+
+    let mut stdin = parse_pdf
+        .stdin
+        .take()
+        .ok_or_else(|| anyhow!("failed to get stdin"))?;
+
+    thread::spawn(move || stdin.write_all(&pdf).expect("failed to write to stdin"));
+
+    Ok(parse_pdf.wait_with_output()?.stdout)
+}
+
+/// Parses the pdf of a contest
+fn parse_contest_pdf(text: &[u8]) -> anyhow::Result<Vec<i32>> {
+    lazy_static! {
+        static ref parse_re: Regex = Regex::new(r" +\d+ +(\d+)(?: +\d+){4,5}")
+            .expect("not a valid regex");
+    }
+
+    parse_re.captures_iter(text).map(|caps| Ok(
+        from_utf8(caps.extract::<1>().1[0])?.parse()?
+    ))
+    .collect()
+}
+
+/// Parses the pdf of a team
 fn parse_team_text(text: &[u8]) -> anyhow::Result<TeamActivity> {
     lazy_static! {
         static ref parse_re: Regex = Regex::new(r"(DOMANDA)|(\(jolly\))|(?:dopo: (\d+) minuti +(?:[-+]\d+)?) +(\d+)")
