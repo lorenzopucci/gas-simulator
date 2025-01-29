@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="it">
   <head>
     <meta charset="utf-8">
     <link rel="stylesheet" href="/static/ranking.css">
@@ -32,15 +32,15 @@
           <tr class="real-team">
         {% endif %}
           <td class="team-header">
-            <span style="display: flex">
-              <div>
+            <div style="display: flex">
+              <div class="team-rank">
                 {{loop.index}}
               </div>
-              <div>
+              <div class="team-name">
                 {{team.name}}
               </div>
-            </span>
-            <div>
+            </div>
+            <div class="team-score">
               {{team.score}}
             </div>
           </td>

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="it">
+  <head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="/static/create.css">
+    <title>Create a new contest</title>
+  </head>
+  <body>
+    <form id="create" action="create" method="post">
+      <label for="phi_id">
+        ID della gara su PhiQuadro
+      </label>
+      <input name="phi_id" id="phi_id" type="number" required>
+
+      <label for="phi_sess">
+        Sessione della gara su PhiQuadro
+      </label>
+      <input name="phi_sess" id="phi_sess" type="number" value="1" required>
+
+      <label for="name">
+        Nome della simulazione
+      </label>
+      <input name="name" id="name" type="text" placeholder="se bianco, è il nome della gara">
+
+      <label for="start_time">
+        Orario di partenza
+      </label>
+      <input name="start_time" id="start_time" type="datetime-local"  type="number" required>
+
+      <label for="duration">
+        Durata (minuti)
+      </label>
+      <input name="duration" id="duration" type="duration" required>
+
+      <label for="drift">
+        Deriva
+      </label>
+      <input name="drift" id="drift" type="number" value="3" required>
+
+      <label for="drift_duration">
+        Durata deriva (minuti)
+      </label>
+      <input name="drift_duration" id="drift_duration"  type="number" type="drift_duration" required>
+
+      <label id="submit-label" for="submit" style="visibility:hidden;">
+        Crea!
+      </label>
+      <input id="submit" type="submit" value="Crea!">
+    </form>
+ </body>
+</html>

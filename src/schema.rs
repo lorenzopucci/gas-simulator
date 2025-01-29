@@ -7,17 +7,20 @@ diesel::table! {
         phiquadro_sess -> Int4,
         #[max_length = 255]
         contest_name -> Varchar,
-        duration -> Interval,
+        duration -> Int4,
         start_time -> Timestamp,
         drift -> Int4,
-        drift_time -> Interval,
+        drift_time -> Int4,
+        teams_no -> Int4,
+        questions_no -> Int4,
+        active -> Bool,
     }
 }
 
 diesel::table! {
     jollies (id) {
         id -> Int4,
-        sub_time -> Interval,
+        sub_time -> Int4,
         team_id -> Int4,
         question_id -> Int4,
     }
@@ -36,7 +39,7 @@ diesel::table! {
     submissions (id) {
         id -> Int4,
         answer -> Int4,
-        sub_time -> Interval,
+        sub_time -> Int4,
         team_id -> Int4,
         question_id -> Int4,
     }

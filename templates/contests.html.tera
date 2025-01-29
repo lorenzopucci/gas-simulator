@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="it">
+  <head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="/static/contests.css">
+    <script src="/static/contests.js"></script>
+    <title>Gare</title>
+  </head>
+  <body>
+    <ul id="contest-list">
+      {% for contest in contests %}
+        <li onclick="redirect_to_contest({{contest.id}})">
+          <div>
+            {{contest.contest_name}}
+          </div>
+          <div class="contest-info">
+            <img
+              class="icon"
+              src="icons/question.svg"
+              height="20"
+            >
+            {{contest.questions_no}}
+
+            <img
+              class="icon"
+              src="icons/team.svg"
+              height="20"
+            >
+            {{contest.teams_no}}
+
+            <img
+              class="icon"
+              src="icons/clock.svg"
+              height="20"
+            >
+            {% set hours = (contest.duration) / 3600 %}
+            {% set mins = (contest.duration / 60) % 60 %}
+            {% if mins < 10 %}
+              {{hours}}:0{{mins}}
+            {% else %}
+              {{hours}}:{{mins}}
+            {% endif %}
+          </div>
+          <div class="contest-actions">
+            <div onclick="copy_contest_link({{contest.id}}); event.stopPropagation();">
+              <img
+                class="icon"
+                src="icons/copy.svg"
+                height="20"
+              >
+            </div>
+            <div onclick="delete_contest({{contest.id}}); event.stopPropagation();">
+              <img
+                class="icon"
+                src="icons/bin.svg"
+                height="20"
+              >
+            </div>
+          </div>
+        </li>
+      {% endfor %}
+    </ul>
+  </body>
+</html>

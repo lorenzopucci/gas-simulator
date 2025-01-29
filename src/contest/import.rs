@@ -6,6 +6,7 @@ use std::thread;
 
 use anyhow::{anyhow, bail, Context};
 use chrono::NaiveDateTime;
+use diesel::{update, ExpressionMethods, QueryDsl};
 use lazy_static::lazy_static;
 use regex::bytes::Regex;
 use reqwest::cookie::Jar;
@@ -16,7 +17,6 @@ use rocket::http::Status;
 use rocket_db_pools::diesel::prelude::RunQueryDsl;
 use rocket_db_pools::Connection;
 
-use ::diesel::data_types::PgInterval;
 use scraper::{Html, Selector};
 
 use crate::model::{Contest, Jolly, Question, Submission, Team};
@@ -31,8 +31,14 @@ const CONTESTS_URL: &str = "https://www.phiquadro.it/gara_a_squadre/insegnanti_g
 
 #[derive(Clone, Debug)]
 struct TeamActivity {
-    submissions: Vec<(i64, i32, usize)>,
+    submissions: Vec<(i32, i32, usize)>,
     jolly: Option<usize>,
+}
+
+#[derive(Clone, Debug)]
+struct ContestInfo {
+    name: String,
+    teams: Vec<(i32, String)>,
 }
 
 /// Fetches the data of a contest from phiquadro.it and inserts is into the database
@@ -40,33 +46,38 @@ pub async fn create_contest(
     db: &mut Connection<DB>,
     phi: &PhiQuadroLogin,
     name: &str,
-    id: i32,
-    sess: i32,
+    id: u32,
+    sess: u32,
     duration: u32,
     start_time: NaiveDateTime,
-    drift: i32,
+    drift: u32,
     drift_time: u32,
 ) -> Result<i32> {
     use crate::schema::{contests, jollies, questions, submissions, teams};
 
     info!("Adding contest {}/{}", id, sess);
 
-    // Inserting the new contest
-    let contest_id = diesel::insert_into(contests::table)
-        .values(&Contest {
-            contest_name: name.to_string(),
-            phiquadro_id: id,
-            phiquadro_sess: sess,
-            duration: PgInterval::from_microseconds((duration as i64) * 1_000_000),
-            start_time,
-            drift,
-            drift_time: PgInterval::from_microseconds((drift_time as i64) * 1_000_000),
-        })
-        .returning(contests::id)
-        .get_result(db)
-        .await
-        .attach_status(Status::InternalServerError)
-        .attach_status(Status::InsufficientStorage)?;
+    // Sanity checks of the values to insert
+
+    let id = id.try_into()
+        .map_err(|_| anyhow!("PhiQuadro ID should be a reasonable value ({} given)", id))
+        .attach_status(Status::UnprocessableEntity)?;
+
+    let sess = sess.try_into()
+        .map_err(|_| anyhow!("PhiQuadro session should be a reasonable value ({} given)", sess))
+        .attach_status(Status::UnprocessableEntity)?;
+
+    let drift = drift.try_into()
+        .map_err(|_| anyhow!("Drift should be a reasonable value ({} given)", drift))
+        .attach_status(Status::UnprocessableEntity)?;
+
+    let duration = duration.try_into()
+        .map_err(|_| anyhow!("Duration should be a reasonable value ({} given)", duration))
+        .attach_status(Status::UnprocessableEntity)?;
+
+    let drift_time = drift_time.try_into()
+        .map_err(|_| anyhow!("Drift time should be a reasonable value ({} given)", drift_time))
+        .attach_status(Status::UnprocessableEntity)?;
 
     // Setting up a phiquadro client
     let mut client = get_phiquadro_client(phi)
@@ -75,10 +86,40 @@ pub async fn create_contest(
         .attach_status(Status::ServiceUnavailable)?;
 
     // Fetching the teams from phiquadro
-    let teams = get_teams(&mut client, id, sess)
+    let contest_info = get_contest_info(&mut client, id, sess)
         .await
         .context("While fetching teams for given contest")
         .attach_status(Status::ServiceUnavailable)?;
+
+    let teams = contest_info.teams;
+    let name = if name.is_empty() {
+        &contest_info.name
+    } else {
+        name
+    };
+
+    // Fetching the questions from phiquadro
+    let answers = get_questions(&mut client, id, sess).await?;
+    info!("Answers are {:?}", answers);
+
+    // Inserting the new contest
+    let contest_id = diesel::insert_into(contests::table)
+        .values(&Contest {
+            contest_name: name.to_string(),
+            phiquadro_id: id,
+            phiquadro_sess: sess,
+            duration,
+            start_time,
+            drift,
+            drift_time,
+            teams_no: teams.len() as i32,
+            questions_no: answers.len() as i32,
+            active: false,
+        })
+        .returning(contests::id)
+        .get_result(db)
+        .await
+        .attach_status(Status::InternalServerError)?;
 
     // Inserting the teams into the database
     let teams_id = diesel::insert_into(teams::table)
@@ -98,10 +139,6 @@ pub async fn create_contest(
         .get_results(db)
         .await
         .attach_status(Status::InternalServerError)?;
-
-    // Fetching the questions from phiquadro
-    let answers = get_questions(&mut client, id, sess).await?;
-    warn!("Answers are {:?}", answers);
 
     let questions = diesel::insert_into(questions::table)
         .values(
@@ -132,7 +169,7 @@ pub async fn create_contest(
                     .map(|&(sub_time, answer, question)| Submission {
                         question_id: questions[question],
                         team_id: teams_id[i],
-                        sub_time: PgInterval::from_microseconds(sub_time * 60_000_000),
+                        sub_time: sub_time * 60,
                         answer,
                     })
                     .collect::<Vec<_>>(),
@@ -145,7 +182,7 @@ pub async fn create_contest(
             diesel::insert_into(jollies::table)
                 .values(&Jolly {
                     question_id: questions[jolly],
-                    sub_time: PgInterval::from_microseconds(600_000_000),
+                    sub_time: 600,
                     team_id: teams_id[i],
                 })
                 .execute(db)
@@ -153,6 +190,12 @@ pub async fn create_contest(
                 .attach_status(Status::InternalServerError)?;
         }
     }
+
+    update(contests::dsl::contests.filter(contests::id.eq(contest_id)))
+        .set(contests::active.eq(true))
+        .execute(db)
+        .await
+        .attach_status(Status::InternalServerError)?;
 
     Ok(contest_id)
 }
@@ -173,14 +216,16 @@ async fn get_phiquadro_client(phi: &PhiQuadroLogin) -> anyhow::Result<Client> {
     Ok(client)
 }
 
-/// Parses phiquadro html to find the teams taking part in a contest
-async fn get_teams(client: &mut Client, id_gara: i32, id_sess: i32) -> anyhow::Result<Vec<(i32, String)>> {
+/// Parses phiquadro html to find the teams taking part in a contest and the name of the contest
+async fn get_contest_info(client: &mut Client, id_gara: i32, id_sess: i32) -> anyhow::Result<ContestInfo> {
     // Right now forms only link to stats pages but this might change
     lazy_static! {
         static ref id_selector: Selector =
             Selector::parse("form > input:nth-child(3)").expect("not a valid CSS selector");
         static ref name_selector: Selector =
             Selector::parse("tr > td.cornice:nth-child(4)").expect("not a valid CSS selector");
+        static ref title_selector: Selector =
+            Selector::parse("tr > td.titolo2:nth-child(3)").expect("not a valid CSS selector");
     }
 
     let contest_html = client
@@ -193,10 +238,18 @@ async fn get_teams(client: &mut Client, id_gara: i32, id_sess: i32) -> anyhow::R
         .await?;
 
     let dom = Html::parse_document(&contest_html);
+
+    let title = dom
+        .select(&title_selector)
+        .next()
+        .ok_or_else(|| anyhow!("PhiQuadro produced a contest page with no contest title"))?
+        .text()
+        .collect();
+
     let ids = dom.select(&id_selector);
     let names = dom.select(&name_selector);
 
-    ids.zip(names)
+    let teams = ids.zip(names)
         .map(|(id_form, name_td)| {
             let id = match id_form.attr("value") {
                 Some(value) => value.parse()?,
@@ -205,7 +258,12 @@ async fn get_teams(client: &mut Client, id_gara: i32, id_sess: i32) -> anyhow::R
 
             Ok((id, name_td.text().collect()))
         })
-        .collect()
+        .collect::<anyhow::Result<_>>()?;
+
+    Ok(ContestInfo {
+        name: title,
+        teams,
+    })
 }
 
 /// Fetched the general pdf related to a contest
@@ -270,7 +328,7 @@ fn parse_pdf(pdf: Bytes) -> anyhow::Result<Vec<u8>> {
 /// Parses the pdf of a contest
 fn parse_contest_pdf(text: &[u8]) -> anyhow::Result<Vec<i32>> {
     lazy_static! {
-        static ref parse_re: Regex = Regex::new(r" +\d+ +(\d+)(?: +\d+){4,5}")
+        static ref parse_re: Regex = Regex::new(r" *\d+ +(\d+)(?: +\d+){4,5}")
             .expect("not a valid regex");
     }
 

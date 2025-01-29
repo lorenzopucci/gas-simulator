@@ -81,8 +81,12 @@ a:link, a:hover, a:active, a:visited {
     justify-content: space-between;
 }
 
-.team-header div {
+.team-rank, .team-name, .team-score {
     padding: 5px 10px;
+}
+
+.team-rank {
+    width: 18px;
 }
 
 .question {

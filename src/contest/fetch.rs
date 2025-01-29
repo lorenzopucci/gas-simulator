@@ -2,7 +2,7 @@
 
 use std::cmp;
 
-use diesel::dsl::count_star;
+use chrono::TimeDelta;
 use diesel::{ExpressionMethods, QueryDsl};
 use rocket_db_pools::diesel::prelude::RunQueryDsl;
 use rocket_db_pools::Connection;
@@ -11,7 +11,7 @@ use tracing::info;
 use super::contest::{Contest, Question, Team};
 use crate::contest::contest::{QuestionStatus, TeamQuestion};
 use crate::model::{self, ContestJollies, ContestSubmissions};
-use crate::model::get_duration;
+
 use crate::DB;
 
 const QUESTION_BONUS: [i64; 10] = [20, 15, 10, 8, 6, 5, 4, 3, 2, 1];
@@ -31,14 +31,20 @@ pub async fn fetch_contest(db: &mut Connection<DB>, id: i32) -> anyhow::Result<O
             contests::start_time,
             contests::drift,
             contests::drift_time,
+            contests::teams_no,
+            contests::questions_no,
+            contests::active,
         ))
         .filter(contests::dsl::id.eq(id))
+        .filter(contests::active.eq(true))
         .load::<model::Contest>(db)
         .await?;
 
     let Some(contest) = contest.get(0) else {
         return Ok(None);
     };
+
+    let questions_no = contest.questions_no as usize;
 
     let teams = teams::dsl::teams
         .select((
@@ -50,12 +56,6 @@ pub async fn fetch_contest(db: &mut Connection<DB>, id: i32) -> anyhow::Result<O
         .filter(teams::contest_id.eq(id))
         .load::<model::Team>(db)
         .await?;
-
-    let questions_no = questions::dsl::questions
-        .select(count_star())
-        .filter(questions::contest_id.eq(id))
-        .load::<i64>(db)
-        .await?[0] as usize;
 
     let submissions = submissions::dsl::submissions
         .inner_join(questions::table)
@@ -100,21 +100,25 @@ pub async fn fetch_contest(db: &mut Connection<DB>, id: i32) -> anyhow::Result<O
     }; questions_no];
 
     let mut drift_left = vec![contest.drift; questions_no];
-    let mut drift = vec![get_duration(contest.drift_time); questions_no];
+    let mut wrong = vec![vec![false; questions_no]; teams.len()];
+    let mut drift = vec![TimeDelta::seconds(contest.drift_time as i64); questions_no];
 
     for submission in &submissions {
         let q_pos = submission.question_pos as usize;
+        let t_pos = submission.team_pos as usize;
+        let sub_time = TimeDelta::seconds(submission.sub_time as i64);
 
         if submission.given_answer == submission.correct_answer {
             drift_left[q_pos] -= 1;
             if drift_left[q_pos] <= 0 {
-                drift[q_pos] = cmp::min(drift[q_pos], get_duration(submission.sub_time));
+                drift[q_pos] = cmp::min(drift[q_pos], sub_time);
                 questions[q_pos].locked = true;
             }
         } else {
-            if get_duration(submission.sub_time) < drift[q_pos] {
+            if sub_time < drift[q_pos] && !wrong[t_pos][q_pos] {
                 questions[q_pos].score += 2;
             }
+            wrong[t_pos][q_pos] = true;
         }
     }
 
@@ -166,7 +170,7 @@ pub async fn fetch_contest(db: &mut Connection<DB>, id: i32) -> anyhow::Result<O
         name: contest.contest_name.clone(),
         phi_id: contest.phiquadro_id,
         phi_sess: contest.phiquadro_sess,
-        duration: get_duration(contest.duration),
+        duration: TimeDelta::seconds(contest.duration as i64),
         drift: contest.drift,
         start_time: contest.start_time.and_utc(),
         questions,
