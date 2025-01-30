@@ -1,5 +1,5 @@
 use chrono::NaiveDateTime;
-use diesel::{Insertable, Queryable, Selectable};
+use diesel::{prelude::AsChangeset, Insertable, Queryable, Selectable};
 use serde::Serialize;
 
 #[derive(Debug, Clone, Queryable, Selectable, Insertable)]
@@ -73,6 +73,15 @@ pub struct ContestJollies {
     pub question_pos: i32,
     pub team_pos: i32,
     pub contest_id: i32,
+}
+
+#[derive(AsChangeset)]
+#[diesel(table_name = crate::schema::contests)]
+pub struct ContestUpdateForm {
+    pub start_time: Option<NaiveDateTime>,
+    pub duration: Option<i32>,
+    pub drift: Option<i32>,
+    pub drift_time: Option<i32>,
 }
 
 #[derive(Queryable, Serialize, Clone)]

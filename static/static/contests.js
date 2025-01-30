@@ -1,10 +1,18 @@
 async function delete_contest(id) {
-    confirm("Stai per cancellare questa gara! Sei sicuro?");
+    if (!confirm("Stai per cancellare questa gara! Sei sicuro?")) {
+        return;
+    }
 
-    fetch(`contest/${id}`, {
+    fetch(`api/contests/${id}`, {
         method: "DELETE",
     }).then(response => {
-        window.location.reload();
+        if (response.status == 204) {
+            window.location.reload();
+        } else {
+            response.json().then(body => {
+                alert(body.error)
+            });
+        }
     })
 }
 

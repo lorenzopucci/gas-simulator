@@ -40,5 +40,5 @@ fn rocket() -> _ {
         })
         .mount("/", FileServer::new(relative!("/static"), rocket::fs::Options::None))
         .mount("/", contest::pages::routes())
-        .mount("/", api::routes())
+        .mount("/api", api::routes())
 }

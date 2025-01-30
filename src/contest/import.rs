@@ -3,6 +3,7 @@ use std::process::{Command, Stdio};
 use std::str::from_utf8;
 use std::sync::Arc;
 use std::thread;
+use std::time::Duration;
 
 use anyhow::{anyhow, bail, Context};
 use chrono::NaiveDateTime;
@@ -62,39 +63,39 @@ pub async fn create_contest(
     let id = id
         .try_into()
         .map_err(|_| anyhow!("PhiQuadro ID should be a reasonable value ({} given)", id))
-        .attach_status(Status::UnprocessableEntity)?;
+        .attach_info(Status::UnprocessableEntity, "ID PhiQuadro non valido")?;
 
     let sess = sess
         .try_into()
         .map_err(|_| anyhow!("PhiQuadro session should be a reasonable value ({} given)", sess))
-        .attach_status(Status::UnprocessableEntity)?;
+        .attach_info(Status::UnprocessableEntity, "Sessione PhiQuadro non valida")?;
 
     let drift = drift
         .try_into()
         .map_err(|_| anyhow!("Drift should be a reasonable value ({} given)", drift))
-        .attach_status(Status::UnprocessableEntity)?;
+        .attach_info(Status::UnprocessableEntity, "Deriva non valida")?;
 
     let duration = duration
         .try_into()
         .map_err(|_| anyhow!("Duration should be a reasonable value ({} given)", duration))
-        .attach_status(Status::UnprocessableEntity)?;
+        .attach_info(Status::UnprocessableEntity, "Durata non valida")?;
 
     let drift_time = drift_time
         .try_into()
         .map_err(|_| anyhow!("Drift time should be a reasonable value ({} given)", drift_time))
-        .attach_status(Status::UnprocessableEntity)?;
+        .attach_info(Status::UnprocessableEntity, "Durata deriva non valida")?;
 
     // Setting up a phiquadro client
     let mut client = get_phiquadro_client(phi)
         .await
         .context("While initializing PhiQuadro HTTP client")
-        .attach_status(Status::ServiceUnavailable)?;
+        .attach_info(Status::ServiceUnavailable, "Non riesco a contattare PhiQuadro")?;
 
     // Fetching the teams from phiquadro
     let contest_info = get_contest_info(&mut client, id, sess)
         .await
         .context("While fetching teams for given contest")
-        .attach_status(Status::ServiceUnavailable)?;
+        .attach_info(Status::ServiceUnavailable, "Non riesco a importare la gara")?;
 
     let teams = contest_info.teams;
     let name = if name.is_empty() { &contest_info.name } else { name };
@@ -120,7 +121,7 @@ pub async fn create_contest(
         .returning(contests::id)
         .get_result(db)
         .await
-        .attach_status(Status::InternalServerError)?;
+        .attach_info(Status::InternalServerError, "Errore incontrato durante l'importazione della gara")?;
 
     // Inserting the teams into the database
     let teams_id = diesel::insert_into(teams::table)
@@ -139,7 +140,7 @@ pub async fn create_contest(
         .returning(teams::id)
         .get_results(db)
         .await
-        .attach_status(Status::InternalServerError)?;
+        .attach_info(Status::InternalServerError, "Errore incontrato durante l'importazione della gara")?;
 
     let questions = diesel::insert_into(questions::table)
         .values(
@@ -156,7 +157,7 @@ pub async fn create_contest(
         .returning(questions::id)
         .get_results(db)
         .await
-        .attach_status(Status::InternalServerError)?;
+        .attach_info(Status::InternalServerError, "Errore incontrato durante l'importazione della gara")?;
 
     for (i, (team_id, team_name)) in teams.iter().enumerate() {
         info!("Inserting {team_id} {team_name}");
@@ -177,7 +178,7 @@ pub async fn create_contest(
             )
             .execute(db)
             .await
-            .attach_status(Status::InternalServerError)?;
+            .attach_info(Status::InternalServerError, "Errore incontrato durante l'importazione della gara")?;
 
         if let Some(jolly) = submissions.jolly {
             diesel::insert_into(jollies::table)
@@ -188,7 +189,7 @@ pub async fn create_contest(
                 })
                 .execute(db)
                 .await
-                .attach_status(Status::InternalServerError)?;
+                .attach_info(Status::InternalServerError, "Errore incontrato durante l'importazione della gara")?;
         }
     }
 
@@ -196,14 +197,17 @@ pub async fn create_contest(
         .set(contests::active.eq(true))
         .execute(db)
         .await
-        .attach_status(Status::InternalServerError)?;
+        .attach_info(Status::InternalServerError, "Errore incontrato durante l'importazione della gara")?;
 
     Ok(contest_id)
 }
 
 /// Creates a reqwest client already logged on PhiQuadro
 async fn get_phiquadro_client(phi: &PhiQuadroLogin) -> anyhow::Result<Client> {
-    let client = Client::builder().cookie_provider(Arc::new(Jar::default())).build()?;
+    let client = Client::builder()
+        .timeout(Duration::from_secs(10))
+        .cookie_provider(Arc::new(Jar::default()))
+        .build()?;
 
     client.get(LOGIN_URL).send().await?.error_for_status()?;
 
@@ -272,16 +276,18 @@ async fn get_questions(client: &mut Client, id_gara: i32, id_sess: i32) -> Resul
         .form(&[("id_gara", id_gara), ("id_sess", id_sess)])
         .send()
         .await
-        .attach_status(Status::ServiceUnavailable)?
+        .attach_info(Status::ServiceUnavailable, "Non riesco a contattare PhiQuadro")?
         .error_for_status()
-        .attach_status(Status::ServiceUnavailable)?
+        .attach_info(Status::ServiceUnavailable, "Non riesco a contattare PhiQuadro")?
         .bytes()
         .await
-        .attach_status(Status::ServiceUnavailable)?;
+        .attach_info(Status::ServiceUnavailable, "Non riesco a contattare PhiQuadro")?;
 
-    let output = parse_pdf(log_pdf).attach_status(Status::InternalServerError)?;
+    let output = parse_pdf(log_pdf)
+        .attach_info(Status::InternalServerError, "Errore incontrato durante l'importazione della gara")?;
 
-    parse_contest_pdf(&output).attach_status(Status::InternalServerError)
+    parse_contest_pdf(&output)
+        .attach_info(Status::InternalServerError, "Errore incontrato durante l'importazione della gara")
 }
 
 /// Fetched the submission pdf related to a team
@@ -291,16 +297,18 @@ async fn get_submissions(client: &mut Client, id_gara: i32, id_sess: i32, id_squ
         .form(&[("id_gara", id_gara), ("id_sess", id_sess), ("id_squadra", id_squadra)])
         .send()
         .await
-        .attach_status(Status::ServiceUnavailable)?
+        .attach_info(Status::ServiceUnavailable, "Non riesco a contattare PhiQuadro")?
         .error_for_status()
-        .attach_status(Status::ServiceUnavailable)?
+        .attach_info(Status::ServiceUnavailable, "Non riesco a contattare PhiQuadro")?
         .bytes()
         .await
-        .attach_status(Status::ServiceUnavailable)?;
+        .attach_info(Status::ServiceUnavailable, "Non riesco a contattare PhiQuadro")?;
 
-    let output = parse_pdf(log_pdf).attach_status(Status::InternalServerError)?;
+    let output = parse_pdf(log_pdf).
+        attach_info(Status::InternalServerError, "Errore incontrato durante l'importazione della gara")?;
 
-    parse_team_text(&output).attach_status(Status::InternalServerError)
+    parse_team_text(&output)
+        .attach_info(Status::InternalServerError, "Errore incontrato durante l'importazione della gara")
 }
 
 /// Parses a pdf into plain text

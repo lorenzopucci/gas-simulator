@@ -8,7 +8,7 @@
     <title>Impostazioni: {{name}}</title>
   </head>
   <body>
-    <form id="update" class="settings-group" method="post" action="/contest/{{id}}">
+    <form id="update" class="settings-group" method="PATCH" action="/api/contests/{{id}}">
       <h1>
         Generale
       </h1>
@@ -70,7 +70,7 @@
           <div class="team-name">
             {{team.name}}
           </div>
-          <div class="action-icon" onclick="delete_team({{team.id}});">
+          <div class="action-icon" onclick="delete_team({{id}}, {{team.id}});">
             <img
               class="icon"
               src="/icons/bin.svg"
@@ -80,7 +80,7 @@
         {% endif %}
       {% endfor %}
 
-      <form id="add-team" class="team-name" method="post" action="/teams/{{id}}">
+      <form id="add-team" class="team-name" method="post" action="/api/contests/{{id}}/teams">
         <label for="team_name" hidden>
           Nome della squadra
         </label>

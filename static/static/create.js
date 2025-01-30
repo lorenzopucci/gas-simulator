@@ -13,8 +13,15 @@ window.onload = () => {
             };
         },
         (response) => {
-            if (response.redirected) {
-                window.location.replace(response.url);
+            if (response.status == 201) {
+                response.json().then((body) => {
+                    history.pushState({}, "");
+                    window.location.replace(`contest/${body.contest_id}`);
+                });
+            } else {
+                response.json().then(body => {
+                    alert(body.error)
+                });
             }
         },
     );
