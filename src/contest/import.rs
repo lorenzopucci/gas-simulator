@@ -59,23 +59,28 @@ pub async fn create_contest(
 
     // Sanity checks of the values to insert
 
-    let id = id.try_into()
+    let id = id
+        .try_into()
         .map_err(|_| anyhow!("PhiQuadro ID should be a reasonable value ({} given)", id))
         .attach_status(Status::UnprocessableEntity)?;
 
-    let sess = sess.try_into()
+    let sess = sess
+        .try_into()
         .map_err(|_| anyhow!("PhiQuadro session should be a reasonable value ({} given)", sess))
         .attach_status(Status::UnprocessableEntity)?;
 
-    let drift = drift.try_into()
+    let drift = drift
+        .try_into()
         .map_err(|_| anyhow!("Drift should be a reasonable value ({} given)", drift))
         .attach_status(Status::UnprocessableEntity)?;
 
-    let duration = duration.try_into()
+    let duration = duration
+        .try_into()
         .map_err(|_| anyhow!("Duration should be a reasonable value ({} given)", duration))
         .attach_status(Status::UnprocessableEntity)?;
 
-    let drift_time = drift_time.try_into()
+    let drift_time = drift_time
+        .try_into()
         .map_err(|_| anyhow!("Drift time should be a reasonable value ({} given)", drift_time))
         .attach_status(Status::UnprocessableEntity)?;
 
@@ -92,11 +97,7 @@ pub async fn create_contest(
         .attach_status(Status::ServiceUnavailable)?;
 
     let teams = contest_info.teams;
-    let name = if name.is_empty() {
-        &contest_info.name
-    } else {
-        name
-    };
+    let name = if name.is_empty() { &contest_info.name } else { name };
 
     // Fetching the questions from phiquadro
     let answers = get_questions(&mut client, id, sess).await?;
@@ -150,7 +151,7 @@ pub async fn create_contest(
                     position: i as i32,
                     answer,
                 })
-                .collect::<Vec<_>>()
+                .collect::<Vec<_>>(),
         )
         .returning(questions::id)
         .get_results(db)
@@ -249,7 +250,8 @@ async fn get_contest_info(client: &mut Client, id_gara: i32, id_sess: i32) -> an
     let ids = dom.select(&id_selector);
     let names = dom.select(&name_selector);
 
-    let teams = ids.zip(names)
+    let teams = ids
+        .zip(names)
         .map(|(id_form, name_td)| {
             let id = match id_form.attr("value") {
                 Some(value) => value.parse()?,
@@ -260,10 +262,7 @@ async fn get_contest_info(client: &mut Client, id_gara: i32, id_sess: i32) -> an
         })
         .collect::<anyhow::Result<_>>()?;
 
-    Ok(ContestInfo {
-        name: title,
-        teams,
-    })
+    Ok(ContestInfo { name: title, teams })
 }
 
 /// Fetched the general pdf related to a contest
@@ -307,18 +306,15 @@ async fn get_submissions(client: &mut Client, id_gara: i32, id_sess: i32, id_squ
 /// Parses a pdf into plain text
 fn parse_pdf(pdf: Bytes) -> anyhow::Result<Vec<u8>> {
     let mut parse_pdf = Command::new("pdftotext")
-    .arg("-layout")
-    .arg("-nopgbrk")
-    .arg("-")
-    .arg("-")
-    .stdin(Stdio::piped())
-    .stdout(Stdio::piped())
-    .spawn()?;
+        .arg("-layout")
+        .arg("-nopgbrk")
+        .arg("-")
+        .arg("-")
+        .stdin(Stdio::piped())
+        .stdout(Stdio::piped())
+        .spawn()?;
 
-    let mut stdin = parse_pdf
-        .stdin
-        .take()
-        .ok_or_else(|| anyhow!("failed to get stdin"))?;
+    let mut stdin = parse_pdf.stdin.take().ok_or_else(|| anyhow!("failed to get stdin"))?;
 
     thread::spawn(move || stdin.write_all(&pdf).expect("failed to write to stdin"));
 
@@ -328,14 +324,13 @@ fn parse_pdf(pdf: Bytes) -> anyhow::Result<Vec<u8>> {
 /// Parses the pdf of a contest
 fn parse_contest_pdf(text: &[u8]) -> anyhow::Result<Vec<i32>> {
     lazy_static! {
-        static ref parse_re: Regex = Regex::new(r" *\d+ +(\d+)(?: +\d+){4,5}")
-            .expect("not a valid regex");
+        static ref parse_re: Regex = Regex::new(r" *\d+ +(\d+)(?: +\d+){4,5}").expect("not a valid regex");
     }
 
-    parse_re.captures_iter(text).map(|caps| Ok(
-        from_utf8(caps.extract::<1>().1[0])?.parse()?
-    ))
-    .collect()
+    parse_re
+        .captures_iter(text)
+        .map(|caps| Ok(from_utf8(caps.extract::<1>().1[0])?.parse()?))
+        .collect()
 }
 
 /// Parses the pdf of a team

@@ -63,10 +63,4 @@ diesel::joinable!(submissions -> questions (question_id));
 diesel::joinable!(submissions -> teams (team_id));
 diesel::joinable!(teams -> contests (contest_id));
 
-diesel::allow_tables_to_appear_in_same_query!(
-    contests,
-    jollies,
-    questions,
-    submissions,
-    teams,
-);
+diesel::allow_tables_to_appear_in_same_query!(contests, jollies, questions, submissions, teams,);

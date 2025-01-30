@@ -4,7 +4,6 @@
     border: 0;
 }
 
-
 html {
     height: 100%;
 }
@@ -15,9 +14,10 @@ body {
     justify-content: center;
     align-items: center;
     background-color: #eeeeee;
+    flex-direction: column;
 }
 
-#create {
+.settings-group {
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
@@ -27,22 +27,30 @@ body {
 
     background-color: #cccccc;
     padding: 10px;
+    margin: 10px 0px;
     border-radius: 5px;
     border: 2px solid #555555;
 
     font-size: large;
 }
 
-#create > * {
+.settings-group > h1 {
+    flex: 100%;
+    font-size: x-large;
+    text-align: center;
+}
+
+#update > :not(:first-child, :last-child) {
     flex: 45%;
 }
 
-#create > label {
+#update > label,
+#update > .fake-label {
     text-align: right;
     padding: 2px 10px;
 }
 
-input {
+#update > input, #update > .fake-input {
     border-radius: 3px;
     margin: 2px 0px;
     padding: 0px 4px;
@@ -58,4 +66,38 @@ input {
     height: 30px;
     font-size: large;
     font-weight: bold;
+}
+
+#add-team > input {
+    margin: 0px;
+    height: 100%;
+    width: 100%;
+    border-radius: 3px;
+    padding: 0px 2px;
+}
+
+#teams {
+    justify-content: space-around;
+}
+
+.team-name {
+    width: 93%;
+}
+
+.action-icon {
+    width: fit-content;
+    margin: 0px 0px;
+}
+
+.action-icon {
+    border-radius: 3px;
+}
+
+.action-icon:hover {
+    background-color: #999999;
+}
+
+.action-icon img {
+    transform: translateY(2.5px);
+    width: 20px;
 }

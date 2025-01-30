@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="it">
+  <head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="/static/settings.css">
+    <script src="/static/jsonform.js"></script>
+    <script src="/static/settings.js"></script>
+    <title>Impostazioni: {{name}}</title>
+  </head>
+  <body>
+    <form id="update" class="settings-group" method="post" action="/contest/{{id}}">
+      <h1>
+        Generale
+      </h1>
+
+      <div class="fake-label">
+        ID della gara su PhiQuadro
+      </div>
+      <div class="fake-input">
+        {{phi_id}}
+      </div>
+
+      <div class="fake-label">
+        Sessione della gara su PhiQuadro
+      </div>
+      <div class="fake-input">
+        {{phi_sess}}
+      </div>
+
+      <div class="fake-label">
+        Nome della simulazione
+      </div>
+      <div class="fake-input">
+        {{name}}
+      </div>
+
+      <label for="start_time">
+        Orario di partenza
+      </label>
+      <input name="start_time" id="start_time" type="datetime-local" value="{{start_time}}" type="number" required>
+
+      <label for="duration">
+        Durata (minuti)
+      </label>
+      <input name="duration" id="duration" value="{{(duration[0] - duration[0] % 60) / 60}}" type="duration"  required>
+
+      <label for="drift">
+        Deriva
+      </label>
+      <input name="drift" id="drift" type="number" value="{{drift}}" required>
+
+      <label for="drift_time">
+        Durata deriva (minuti)
+      </label>
+      <input name="drift_time" id="drift_time" value="{{(drift_time[0] - drift_time[0] % 60) / 60}}" type="number" required>
+
+      <label id="submit-label" for="submit" style="visibility:hidden;">
+        Aggiorna!
+      </label>
+      <input id="submit" type="submit" value="Aggiorna!">
+    </form>
+    <div id="teams" class="settings-group">
+      <h1>
+        Squadre
+      </h1>
+
+      {% for team in teams %}
+        {% if team.is_fake %}
+        {% else %}
+          <div class="team-name">
+            {{team.name}}
+          </div>
+          <div class="action-icon" onclick="delete_team({{team.id}});">
+            <img
+              class="icon"
+              src="/icons/bin.svg"
+              height="20"
+            >
+          </div>
+        {% endif %}
+      {% endfor %}
+
+      <form id="add-team" class="team-name" method="post" action="/teams/{{id}}">
+        <label for="team_name" hidden>
+          Nome della squadra
+        </label>
+        <input name="team_name" id="team_name" placeholder="Nome della squadra" required>
+      </form>
+      <div id="add-team-button" class="action-icon" onclick="send_form(document.getElementById('add-team'), conv_add_team, reload_callback)">
+        <img
+          class="icon"
+          src="/icons/add.svg"
+          height="20"
+        >
+      </div>
+    </div>
+  </body>
+</html>

@@ -3,6 +3,8 @@
   <head>
     <meta charset="utf-8">
     <link rel="stylesheet" href="/static/create.css">
+    <script src="/static/jsonform.js"></script>
+    <script src="/static/create.js"></script>
     <title>Create a new contest</title>
   </head>
   <body>
@@ -37,12 +39,12 @@
       </label>
       <input name="drift" id="drift" type="number" value="3" required>
 
-      <label for="drift_duration">
+      <label for="drift_time">
         Durata deriva (minuti)
       </label>
-      <input name="drift_duration" id="drift_duration"  type="number" type="drift_duration" required>
+      <input name="drift_time" id="drift_time"  type="number" required>
 
-      <label id="submit-label" for="submit" style="visibility:hidden;">
+      <label id="submit-label" for="submit" hidden>
         Crea!
       </label>
       <input id="submit" type="submit" value="Crea!">

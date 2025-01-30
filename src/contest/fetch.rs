@@ -18,7 +18,7 @@ const QUESTION_BONUS: [i64; 10] = [20, 15, 10, 8, 6, 5, 4, 3, 2, 1];
 const CONTEST_BONUS: [i64; 6] = [100, 60, 40, 30, 20, 10];
 
 pub async fn fetch_contest(db: &mut Connection<DB>, id: i32) -> anyhow::Result<Option<Contest>> {
-    use crate::schema::{contests, jollies, submissions, questions, teams};
+    use crate::schema::{contests, questions, teams};
 
     info!("Loading contest {}", id);
 
@@ -44,18 +44,67 @@ pub async fn fetch_contest(db: &mut Connection<DB>, id: i32) -> anyhow::Result<O
         return Ok(None);
     };
 
-    let questions_no = contest.questions_no as usize;
+    let questions = questions::dsl::questions
+        .select(questions::answer)
+        .filter(questions::contest_id.eq(id))
+        .order(questions::position.asc())
+        .load::<i32>(db)
+        .await?;
 
     let teams = teams::dsl::teams
-        .select((
-            teams::team_name,
-            teams::is_fake,
-            teams::position,
-            teams::contest_id,
-        ))
+        .select(teams::all_columns)
         .filter(teams::contest_id.eq(id))
-        .load::<model::Team>(db)
+        .load::<model::TeamWithId>(db)
         .await?;
+
+    let questions: Vec<Question> = questions
+        .iter()
+        .map(|&answer| Question {
+            answer,
+            score: 20,
+            locked: false,
+        })
+        .collect();
+
+    let teams: Vec<Team> = teams
+        .iter()
+        .map(|team| Team {
+            id: team.id,
+            name: team.team_name.clone(),
+            is_fake: team.is_fake,
+            score: questions.len() as i64 * 10,
+            questions: vec![TeamQuestion::default(); questions.len()],
+        })
+        .collect();
+
+    Ok(Some(Contest {
+        id,
+        name: contest.contest_name.clone(),
+        phi_id: contest.phiquadro_id,
+        phi_sess: contest.phiquadro_sess,
+        duration: TimeDelta::seconds(contest.duration as i64),
+        drift: contest.drift,
+        start_time: contest.start_time,
+        questions,
+        teams,
+        drift_time: TimeDelta::seconds(contest.drift_time as i64),
+    }))
+}
+
+pub async fn fetch_contest_with_ranking(db: &mut Connection<DB>, id: i32) -> anyhow::Result<Option<Contest>> {
+    use crate::schema::{jollies, questions, submissions, teams};
+
+    let Some(mut contest) = fetch_contest(db, id).await? else {
+        return Ok(None);
+    };
+
+    let Contest {
+        questions,
+        teams,
+        drift,
+        drift_time,
+        ..
+    } = &mut contest;
 
     let submissions = submissions::dsl::submissions
         .inner_join(questions::table)
@@ -67,7 +116,7 @@ pub async fn fetch_contest(db: &mut Connection<DB>, id: i32) -> anyhow::Result<O
             questions::position,
             teams::position,
             teams::is_fake,
-            teams::contest_id
+            teams::contest_id,
         ))
         .filter(teams::contest_id.eq(id))
         .order(submissions::sub_time.asc())
@@ -87,21 +136,9 @@ pub async fn fetch_contest(db: &mut Connection<DB>, id: i32) -> anyhow::Result<O
         .load::<ContestJollies>(db)
         .await?;
 
-    let mut teams: Vec<Team> = teams.iter().map(|team| Team {
-        name: team.team_name.clone(),
-        is_fake: team.is_fake,
-        score: questions_no as i64 * 10,
-        questions: vec![TeamQuestion::default(); questions_no],
-    }).collect();
-
-    let mut questions: Vec<Question> = vec![Question {
-        score: 20,
-        locked: false,
-    }; questions_no];
-
-    let mut drift_left = vec![contest.drift; questions_no];
-    let mut wrong = vec![vec![false; questions_no]; teams.len()];
-    let mut drift = vec![TimeDelta::seconds(contest.drift_time as i64); questions_no];
+    let mut drift_left = vec![*drift; questions.len()];
+    let mut wrong = vec![vec![false; questions.len()]; teams.len()];
+    let mut drift = vec![*drift_time; questions.len()];
 
     for submission in &submissions {
         let q_pos = submission.question_pos as usize;
@@ -122,11 +159,11 @@ pub async fn fetch_contest(db: &mut Connection<DB>, id: i32) -> anyhow::Result<O
         }
     }
 
-    for i in 0..questions_no {
+    for i in 0..questions.len() {
         questions[i].score += drift[i].num_minutes();
     }
 
-    let mut question_solves = vec![0; questions_no];
+    let mut question_solves = vec![0; questions.len()];
     let mut team_solves = vec![0; teams.len()];
     let mut solves = 0;
 
@@ -136,12 +173,13 @@ pub async fn fetch_contest(db: &mut Connection<DB>, id: i32) -> anyhow::Result<O
 
         if submission.given_answer == submission.correct_answer {
             if teams[t_pos].questions[q_pos].status != QuestionStatus::Solved {
-                teams[t_pos].questions[q_pos].score += questions[q_pos].score + QUESTION_BONUS.get(question_solves[q_pos]).unwrap_or(&0);
+                teams[t_pos].questions[q_pos].score +=
+                    questions[q_pos].score + QUESTION_BONUS.get(question_solves[q_pos]).unwrap_or(&0);
 
                 question_solves[q_pos] += 1;
                 team_solves[t_pos] += 1;
 
-                if team_solves[t_pos] == questions_no {
+                if team_solves[t_pos] == questions.len() {
                     teams[t_pos].score += CONTEST_BONUS.get(solves).unwrap_or(&0);
                     solves += 1;
                 }
@@ -160,20 +198,11 @@ pub async fn fetch_contest(db: &mut Connection<DB>, id: i32) -> anyhow::Result<O
         teams[jolly.team_pos as usize].questions[jolly.question_pos as usize].jolly = true;
     }
 
-    for team in &mut teams {
+    for team in teams.iter_mut() {
         team.score += team.questions.iter().map(|q| q.score).sum::<i64>();
     }
 
     teams.sort_unstable_by_key(|team| -team.score);
 
-    Ok(Some(Contest {
-        name: contest.contest_name.clone(),
-        phi_id: contest.phiquadro_id,
-        phi_sess: contest.phiquadro_sess,
-        duration: TimeDelta::seconds(contest.duration as i64),
-        drift: contest.drift,
-        start_time: contest.start_time.and_utc(),
-        questions,
-        teams,
-    }))
+    Ok(Some(contest))
 }

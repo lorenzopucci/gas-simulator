@@ -56,7 +56,7 @@ pub struct Jolly {
     pub question_id: i32,
 }
 
-#[derive(Queryable)]
+#[derive(Queryable, Clone, Copy)]
 pub struct ContestSubmissions {
     pub given_answer: i32,
     pub sub_time: i32,
@@ -67,7 +67,7 @@ pub struct ContestSubmissions {
     pub contest_id: i32,
 }
 
-#[derive(Queryable)]
+#[derive(Queryable, Clone, Copy)]
 pub struct ContestJollies {
     pub sub_time: i32,
     pub question_pos: i32,
@@ -75,7 +75,7 @@ pub struct ContestJollies {
     pub contest_id: i32,
 }
 
-#[derive(Queryable, Serialize)]
+#[derive(Queryable, Serialize, Clone)]
 pub struct ContestWithId {
     pub id: i32,
     pub phiquadro_id: i32,
@@ -90,3 +90,11 @@ pub struct ContestWithId {
     pub bool: bool,
 }
 
+#[derive(Queryable)]
+pub struct TeamWithId {
+    pub id: i32,
+    pub team_name: String,
+    pub is_fake: bool,
+    pub position: i32,
+    pub contest_id: i32,
+}

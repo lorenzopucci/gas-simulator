@@ -47,7 +47,17 @@ a {
 }
 
 .contest-info {
+    justify-content: center;
     text-align: center;
+    display: flex;
+}
+
+.contest-info > div {
+    width: 50px;
+}
+
+.contest-info > div:last-child {
+    width: 65px;
 }
 
 .contest-actions {

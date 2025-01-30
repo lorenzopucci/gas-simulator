@@ -4,9 +4,7 @@ async function delete_contest(id) {
     fetch(`contest/${id}`, {
         method: "DELETE",
     }).then(response => {
-        if (response.redirected) {
-            window.location.replace(response.url);
-        }
+        window.location.reload();
     })
 }
 
@@ -16,4 +14,8 @@ function copy_contest_link(id) {
 
 function redirect_to_contest(id) {
     window.location.href = `contest/${id}`;
+}
+
+function redirect_to_settings(id) {
+    window.location.href = `settings/${id}`;
 }

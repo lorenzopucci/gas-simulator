@@ -14,38 +14,51 @@
             {{contest.contest_name}}
           </div>
           <div class="contest-info">
-            <img
-              class="icon"
-              src="icons/question.svg"
-              height="20"
-            >
-            {{contest.questions_no}}
+            <div>
+              <img
+                class="icon"
+                src="icons/question.svg"
+                height="20"
+              >
+              {{contest.questions_no}}
+            </div>
 
-            <img
-              class="icon"
-              src="icons/team.svg"
-              height="20"
-            >
-            {{contest.teams_no}}
+            <div>
+              <img
+                class="icon"
+                src="icons/team.svg"
+                height="20"
+              >
+              {{contest.teams_no}}
+            </div>
 
-            <img
-              class="icon"
-              src="icons/clock.svg"
-              height="20"
-            >
-            {% set hours = (contest.duration) / 3600 %}
-            {% set mins = (contest.duration / 60) % 60 %}
-            {% if mins < 10 %}
-              {{hours}}:0{{mins}}
-            {% else %}
-              {{hours}}:{{mins}}
-            {% endif %}
+            <div>
+              <img
+                class="icon"
+                src="icons/clock.svg"
+                height="20"
+              >
+              {% set hours = (contest.duration - contest.duration % 3600) / 3600 %}
+              {% set mins = ((contest.duration - contest.duration % 60) / 60) % 60 %}
+              {% if mins < 10 %}
+                {{hours}}:0{{mins}}
+              {% else %}
+                {{hours}}:{{mins}}
+              {% endif %}
+            </div>
           </div>
           <div class="contest-actions">
             <div onclick="copy_contest_link({{contest.id}}); event.stopPropagation();">
               <img
                 class="icon"
                 src="icons/copy.svg"
+                height="20"
+              >
+            </div>
+            <div onclick="redirect_to_settings({{contest.id}}); event.stopPropagation();">
+              <img
+                class="icon"
+                src="icons/settings.svg"
                 height="20"
               >
             </div>

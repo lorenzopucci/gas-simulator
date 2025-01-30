@@ -11,6 +11,7 @@ use rocket_db_pools::diesel;
 use rocket_db_pools::Database;
 use rocket_dyn_templates::Template;
 
+mod api;
 mod contest;
 mod error;
 mod model;
@@ -37,9 +38,7 @@ fn rocket() -> _ {
             username: env::var("USERNAME").expect("please set a username in .env"),
             password: env::var("PASSWORD").expect("please set a password in .env"),
         })
-        .mount(
-            "/",
-            FileServer::new(relative!("/static"), rocket::fs::Options::None),
-        )
+        .mount("/", FileServer::new(relative!("/static"), rocket::fs::Options::None))
         .mount("/", contest::pages::routes())
+        .mount("/", api::routes())
 }
