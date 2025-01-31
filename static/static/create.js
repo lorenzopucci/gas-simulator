@@ -3,8 +3,8 @@ window.onload = () => {
         "create",
         (data) => {
             return {
-                "phi_id": parseInt(data.get("phi_id")),
-                "phi_sess": parseInt(data.get("phi_sess")),
+                "phiquadro_id": parseInt(data.get("phiquadro_id")),
+                "phiquadro_sess": parseInt(data.get("phiquadro_sess")),
                 "name": data.get("name"),
                 "start_time": data.get("start_time"),
                 "duration": parseInt(data.get("duration")),

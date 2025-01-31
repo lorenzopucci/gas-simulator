@@ -17,14 +17,14 @@
         ID della gara su PhiQuadro
       </div>
       <div class="fake-input">
-        {{phi_id}}
+        {{phiquadro_id}}
       </div>
 
       <div class="fake-label">
         Sessione della gara su PhiQuadro
       </div>
       <div class="fake-input">
-        {{phi_sess}}
+        {{phiquadro_sess}}
       </div>
 
       <div class="fake-label">

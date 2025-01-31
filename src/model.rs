@@ -75,15 +75,6 @@ pub struct ContestJollies {
     pub contest_id: i32,
 }
 
-#[derive(AsChangeset)]
-#[diesel(table_name = crate::schema::contests)]
-pub struct ContestUpdateForm {
-    pub start_time: Option<NaiveDateTime>,
-    pub duration: Option<i32>,
-    pub drift: Option<i32>,
-    pub drift_time: Option<i32>,
-}
-
 #[derive(Queryable, Serialize, Clone)]
 pub struct ContestWithId {
     pub id: i32,

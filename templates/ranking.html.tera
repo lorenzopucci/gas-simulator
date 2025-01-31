@@ -8,7 +8,7 @@
   </head>
   <body>
     <div id ="page-intro">
-      <a id="contest-title" href="https://www.phiquadro.it/gara_a_squadre/classifica_new.php?id_gara={{phi_id}}&id_sess={{phi_sess}}">
+      <a id="contest-title" href="https://www.phiquadro.it/gara_a_squadre/classifica_new.php?id_gara={{phiquadro_id}}&id_sess={{phiquadro_sess}}">
         {{name}}
       </a>
       <button id="toggle-visibility" type="button" onclick="hide_fake_teams()">

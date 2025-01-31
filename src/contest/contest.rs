@@ -37,17 +37,12 @@ pub struct Team {
 pub struct Contest {
     pub id: i32,
     pub name: String,
-    pub phi_id: i32,
-    pub phi_sess: i32,
+    pub phiquadro_id: i32,
+    pub phiquadro_sess: i32,
     pub questions: Vec<Question>,
     pub teams: Vec<Team>,
     pub duration: Duration,
     pub start_time: NaiveDateTime,
-    #[serde(default = "default_drift")]
     pub drift: i32,
     pub drift_time: Duration,
-}
-
-const fn default_drift() -> i32 {
-    3
 }

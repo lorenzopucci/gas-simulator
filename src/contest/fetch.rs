@@ -80,8 +80,8 @@ pub async fn fetch_contest(db: &mut Connection<DB>, id: i32) -> anyhow::Result<O
     Ok(Some(Contest {
         id,
         name: contest.contest_name.clone(),
-        phi_id: contest.phiquadro_id,
-        phi_sess: contest.phiquadro_sess,
+        phiquadro_id: contest.phiquadro_id,
+        phiquadro_sess: contest.phiquadro_sess,
         duration: TimeDelta::seconds(contest.duration as i64),
         drift: contest.drift,
         start_time: contest.start_time,
