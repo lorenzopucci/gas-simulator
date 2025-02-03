@@ -60,9 +60,9 @@ pub async fn get_questions<'r>(
 }
 
 #[post("/contests/<id>/questions", format = "application/json", data = "<question>")]
-pub async fn post_question<'r>(
+pub async fn post_question(
     id: i32,
-    question: ApiInputResult<'r, QuestionPostData>,
+    question: ApiInputResult<'_, QuestionPostData>,
     mut db: Connection<DB>
 ) -> Status {
     Status::NotImplemented
@@ -100,7 +100,7 @@ pub async fn get_question<'r>(
 }
 
 #[delete("/contests/<id>/questions/<question_id>")]
-pub async fn delete_question<'r>(
+pub async fn delete_question(
     id: i32,
     question_id: i32,
     mut db: Connection<DB>

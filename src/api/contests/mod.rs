@@ -11,7 +11,7 @@ use serde::{Deserialize, Serialize};
 use crate::{PhiQuadroLogin, DB};
 use crate::contest::import::create_contest;
 use crate::error::IntoStatusResult;
-use super::{ApiError, ApiInputResult, ApiResponse};
+use super::{ApiError, ApiInputResult, ApiResponse, ApiUser};
 
 pub mod jollies;
 pub mod teams;
@@ -67,6 +67,7 @@ pub async fn post_contest<'r>(
     contest: ApiInputResult<'r, ContestPostData<'r>>,
     mut db: Connection<DB>,
     phi: &State<PhiQuadroLogin>,
+    user: ApiUser,
 ) -> Result<ApiResponse<'r, ContestPostResponse>, ApiResponse<'r, ApiError>> {
     let Ok(contest) = contest else {
         return Err(ApiResponse {
@@ -83,6 +84,7 @@ pub async fn post_contest<'r>(
     let contest_id = create_contest(
         &mut db,
         phi.inner(),
+        user.user_id,
         contest.name,
         contest.phiquadro_id,
         contest.phiquadro_sess,

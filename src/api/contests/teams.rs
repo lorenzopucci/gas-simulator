@@ -6,6 +6,7 @@ use rocket::http::{Header, HeaderMap, Status};
 use rocket_db_pools::{diesel::prelude::RunQueryDsl, Connection};
 use serde::{Deserialize, Serialize};
 
+use crate::api::ApiUser;
 use crate::model::Team;
 use crate::DB;
 use crate::error::IntoStatusResult;
@@ -70,7 +71,8 @@ pub async fn get_teams<'r>(
 pub async fn post_team<'r>(
     id: i32,
     team: ApiInputResult<'r, TeamPostData<'r>>,
-    mut db: Connection<DB>
+    mut db: Connection<DB>,
+    user: ApiUser,
 ) -> Result<ApiResponse<'r, TeamPostResponse>, ApiResponse<'r, ApiError>> {
     use crate::schema::teams;
 
@@ -95,6 +97,7 @@ pub async fn post_team<'r>(
             contest_id: id,
             is_fake: false,
             position: team_no as i32,
+            owner_id: Some(user.user_id),
         })
         .returning(teams::id)
         .get_result(&mut **db)

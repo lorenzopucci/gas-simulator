@@ -1,0 +1,222 @@
+openapi: 3.1.0
+info:
+  title: API for math team competition
+  version: 0.0.1
+tags:
+  - name: login
+    description: Authentication
+  - name: contests
+    description: Operations related to contests
+components:
+paths:
+  /api/signup:
+    post:
+      tags:
+        - login
+      summary: Create a new account
+      description: Creates a new account with given username, password and email
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                  description: The username you want to register
+                  example: username
+                password:
+                  type: string
+                  minLength: 8
+                  description: The password you want to set
+                  example: password
+                email:
+                  type: string,
+                  description: The email you want to set
+                  example: username@example.com
+      responses:
+        "204":
+          description: The account was created, login is now possible
+        "400":
+          description: The request was malformed
+        "409":
+          description: A user already exists with the given username
+        "422":
+          description: The request had semantic errors
+  /api/login:
+    post:
+      tags:
+        - login
+      summary: Login
+      description: Returns a valid API token for the user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                  description: The username you want to register
+                  example: username
+                password:
+                  type: string
+                  description: The password you want to set
+                  example: password
+                duration:
+                  type: number
+                  minumum: 1
+                  maximum: 65535
+                  default: 60
+                  description: The duration in minutes of the token
+      responses:
+        "200":
+          description: Login was successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                    description: The API token
+        "400":
+          description: The request was malformed
+        "401":
+          description: The login credentials were not valid
+        "422":
+          description: The request had semantic errors
+  /api/contests:
+    get:
+      tags:
+        - contests
+      summary: Get a list of contests
+      description: Retrieves the list of contests
+      responses:
+        "200":
+          description: ok
+    post:
+      tags:
+        - contests
+      summary: Create a new contest
+      description: Creates a new contest
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                phiquadro_id:
+                  type: number
+                  minimum: 1
+                  description: The ID of the contest on PhiQuadro
+                phiquadro_sess:
+                  type: number
+                  minimum: 1
+                  description: The session of the contest on PhiQuadro
+                name:
+                  type: string
+                  description: The name of the new contest
+                start_time:
+                  type: string
+                  description: The start time of the new contest
+                  example: 2025-01-30T10:10
+                duration:
+                  type: integer
+                  minimum: 1
+                  description: The duration of the new contest, in minutes
+                drift:
+                  type: integer
+                  minumum: 0
+                  description: The drift of the new contest
+                drift_time:
+                  type: integer
+                  minimum: 0
+                  description: The duration of the drift, in minutes
+      responses:
+        "201":
+          description: The contest was created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  contest_id:
+                    type: number
+                    minimum: 1
+                    description: The ID of the contest
+        "400":
+          description: The request was malformed
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: The error encountered
+        "422":
+          description: The request had semantic errors
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: The error encountered
+  /api/contests/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        description: The ID of the contest
+    patch:
+      tags:
+        - contests
+      summary: Applies changes to the contest, only modifying present fields
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                start_time:
+                  type: string
+                  description: The start time of the contest
+                  example: 2025-01-30T10:10
+                duration:
+                  type: integer
+                  minimum: 1
+                  description: The duration of the new contest, in minutes
+                drift:
+                  type: integer
+                  minumum: 0
+                  description: The drift of the new contest
+                drift_time:
+                  type: integer
+                  minimum: 0
+                  description: The duration of the drift, in minutes
+      responses:
+        "204":
+          description: The update was successful
+        "400":
+          description: The request was malformed
+        "404":
+          description: The requested contest was not found
+        "422":
+          description: The request has semantic errors
+    delete:
+      tags:
+        - contests
+      summary: Deletes the contest
+      responses:
+        "204":
+          descrition: The deletion was successful
+        "404":
+          description: The requested contest as not found
+

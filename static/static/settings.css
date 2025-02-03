@@ -2,6 +2,7 @@
     padding: 0;
     margin: 0;
     border: 0;
+    font-family: Arial, Helvetica, sans-serif;
 }
 
 html {
@@ -77,11 +78,11 @@ body {
 }
 
 #teams {
-    justify-content: space-around;
+    justify-content: space-between;
 }
 
 .team-name {
-    width: 93%;
+    width: 95%;
 }
 
 .action-icon {

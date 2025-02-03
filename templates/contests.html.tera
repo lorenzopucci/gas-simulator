@@ -3,10 +3,13 @@
   <head>
     <meta charset="utf-8">
     <link rel="stylesheet" href="/static/contests.css">
+    <link rel="stylesheet" href="/static/headerfooter.css">
     <script src="/static/contests.js"></script>
     <title>Gare</title>
   </head>
   <body>
+    {% include "header" %}
+
     <ul id="contest-list">
       {% for contest in contests %}
         <li onclick="redirect_to_contest({{contest.id}})">

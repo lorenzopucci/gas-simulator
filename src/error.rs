@@ -45,6 +45,7 @@ impl From<Error> for Status {
 
 impl From<Error> for ApiResponse<'_, ApiError> {
     fn from(value: Error) -> Self {
+        error!("{}", value.error);
         Self {
             status: value.status,
             body: ApiError { error: value.message, },

@@ -30,7 +30,7 @@ pub struct SubmissionPatchData {
 }
 
 #[get("/contests/<id>/submissions")]
-pub async fn get_submissions<'r>(
+pub async fn get_submissions(
     id: i32,
     mut db: Connection<DB>
 ) -> Status {
@@ -38,16 +38,16 @@ pub async fn get_submissions<'r>(
 }
 
 #[post("/contests/<id>/submissions", format = "application/json", data = "<submission>")]
-pub async fn post_submission<'r>(
+pub async fn post_submission(
     id: i32,
-    submission: ApiInputResult<'r, SubmissionPostData>,
+    submission: ApiInputResult<'_, SubmissionPostData>,
     mut db: Connection<DB>
 ) -> Status {
     Status::NotImplemented
 }
 
 #[get("/contests/<id>/submissions/<submission_id>")]
-pub async fn get_submission<'r>(
+pub async fn get_submission(
     id: i32,
     submission_id: i32,
     mut db: Connection<DB>
@@ -56,7 +56,7 @@ pub async fn get_submission<'r>(
 }
 
 #[patch("/contests/<id>/submissions/<submission_id>", format = "application/json", data = "<data>")]
-pub async fn patch_submission<'r>(
+pub async fn patch_submission(
     id: i32,
     submission_id: i32,
     data: Json<SubmissionPatchData>,
@@ -66,7 +66,7 @@ pub async fn patch_submission<'r>(
 }
 
 #[delete("/contests/<id>/submissions/<submission_id>")]
-pub async fn delete_submission<'r>(
+pub async fn delete_submission(
     id: i32,
     submission_id: i32,
     mut db: Connection<DB>

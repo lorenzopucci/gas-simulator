@@ -1,5 +1,5 @@
 use chrono::NaiveDateTime;
-use diesel::{prelude::AsChangeset, Insertable, Queryable, Selectable};
+use diesel::{Insertable, Queryable, Selectable};
 use serde::Serialize;
 
 #[derive(Debug, Clone, Queryable, Selectable, Insertable)]
@@ -16,6 +16,7 @@ pub struct Contest {
     pub teams_no: i32,
     pub questions_no: i32,
     pub active: bool,
+    pub owner_id: Option<i32>,
 }
 
 #[derive(Debug, Clone, Copy, Queryable, Selectable, Insertable)]
@@ -35,6 +36,7 @@ pub struct Team {
     pub is_fake: bool,
     pub position: i32,
     pub contest_id: i32,
+    pub owner_id: Option<i32>,
 }
 
 #[derive(Debug, Clone, Queryable, Selectable, Insertable)]
@@ -42,7 +44,7 @@ pub struct Team {
 #[diesel(check_for_backend(diesel::pg::Pg))]
 pub struct Submission {
     pub answer: i32,
-    pub sub_time: i32,
+    pub sub_time: NaiveDateTime,
     pub team_id: i32,
     pub question_id: i32,
 }
@@ -51,15 +53,34 @@ pub struct Submission {
 #[diesel(table_name = crate::schema::jollies)]
 #[diesel(check_for_backend(diesel::pg::Pg))]
 pub struct Jolly {
-    pub sub_time: i32,
+    pub sub_time: NaiveDateTime,
     pub team_id: i32,
     pub question_id: i32,
+}
+
+#[derive(Debug, Clone, Queryable, Selectable, Insertable)]
+#[diesel(table_name = crate::schema::users)]
+#[diesel(check_for_backend(diesel::pg::Pg))]
+pub struct User {
+    pub username: String,
+    pub email: String,
+    pub password_hash: Vec<u8>,
+    pub salt: Vec<u8>,
+}
+
+#[derive(Debug, Clone, Queryable, Selectable, Insertable)]
+#[diesel(table_name = crate::schema::tokens)]
+#[diesel(check_for_backend(diesel::pg::Pg))]
+pub struct Token {
+    pub user_id: i32,
+    pub token: String,
+    pub expires: NaiveDateTime,
 }
 
 #[derive(Queryable, Clone, Copy)]
 pub struct ContestSubmissions {
     pub given_answer: i32,
-    pub sub_time: i32,
+    pub sub_time: NaiveDateTime,
     pub correct_answer: i32,
     pub question_pos: i32,
     pub team_pos: i32,
@@ -69,7 +90,7 @@ pub struct ContestSubmissions {
 
 #[derive(Queryable, Clone, Copy)]
 pub struct ContestJollies {
-    pub sub_time: i32,
+    pub sub_time: NaiveDateTime,
     pub question_pos: i32,
     pub team_pos: i32,
     pub contest_id: i32,

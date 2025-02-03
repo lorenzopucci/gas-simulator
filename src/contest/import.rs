@@ -6,7 +6,7 @@ use std::thread;
 use std::time::Duration;
 
 use anyhow::{anyhow, bail, Context};
-use chrono::NaiveDateTime;
+use chrono::{NaiveDateTime, TimeDelta};
 use diesel::{update, ExpressionMethods, QueryDsl};
 use lazy_static::lazy_static;
 use regex::bytes::Regex;
@@ -32,7 +32,7 @@ const CONTESTS_URL: &str = "https://www.phiquadro.it/gara_a_squadre/insegnanti_g
 
 #[derive(Clone, Debug)]
 struct TeamActivity {
-    submissions: Vec<(i32, i32, usize)>,
+    submissions: Vec<(i64, i32, usize)>,
     jolly: Option<usize>,
 }
 
@@ -46,6 +46,7 @@ struct ContestInfo {
 pub async fn create_contest(
     db: &mut Connection<DB>,
     phi: &PhiQuadroLogin,
+    owner_id: i32,
     name: &str,
     id: u32,
     sess: u32,
@@ -117,6 +118,7 @@ pub async fn create_contest(
             teams_no: teams.len() as i32,
             questions_no: answers.len() as i32,
             active: false,
+            owner_id: Some(owner_id),
         })
         .returning(contests::id)
         .get_result(db)
@@ -134,6 +136,7 @@ pub async fn create_contest(
                     is_fake: true,
                     position: i as i32,
                     contest_id,
+                    owner_id: None,
                 })
                 .collect::<Vec<_>>(),
         )
@@ -171,7 +174,7 @@ pub async fn create_contest(
                     .map(|&(sub_time, answer, question)| Submission {
                         question_id: questions[question],
                         team_id: teams_id[i],
-                        sub_time: sub_time * 60,
+                        sub_time: start_time + TimeDelta::minutes(sub_time),
                         answer,
                     })
                     .collect::<Vec<_>>(),
@@ -184,7 +187,7 @@ pub async fn create_contest(
             diesel::insert_into(jollies::table)
                 .values(&Jolly {
                     question_id: questions[jolly],
-                    sub_time: 600,
+                    sub_time: start_time + TimeDelta::minutes(10),
                     team_id: teams_id[i],
                 })
                 .execute(db)

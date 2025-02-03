@@ -1,3 +1,25 @@
+CREATE TABLE users (
+    id              INTEGER PRIMARY KEY NOT NULL GENERATED ALWAYS AS IDENTITY,
+    username        VARCHAR(255) NOT NULL,
+    email           VARCHAR(255) NOT NULL,
+    password_hash   BYTEA NOT NULL,
+    salt            BYTEA NOT NULL,
+
+    UNIQUE (username),
+    UNIQUE (email)
+);
+
+CREATE INDEX ON users(username);
+
+CREATE TABLE tokens (
+    id              INTEGER PRIMARY KEY NOT NULL GENERATED ALWAYS AS IDENTITY,
+    user_id         INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    token           CHAR(344) NOT NULL,
+    expires         TIMESTAMP NOT NULL
+);
+
+CREATE INDEX on tokens(token);
+
 CREATE TABLE contests (
     id              INTEGER PRIMARY KEY NOT NULL GENERATED ALWAYS AS IDENTITY,
     phiquadro_id    INTEGER NOT NULL,
@@ -10,8 +32,8 @@ CREATE TABLE contests (
     teams_no        INTEGER NOT NULL,
     questions_no    INTEGER NOT NULL,
     active          BOOLEAN NOT NULL,
+    owner_id        INTEGER REFERENCES users(id) ON DELETE SET NULL,
 
-    CONSTRAINT positive_id CHECK (id >= 0),
     CONSTRAINT positive_duration CHECK (duration >= 0),
     CONSTRAINT positive_drift CHECK (drift >= 0),
     CONSTRAINT positive_drift_time CHECK (drift_time >= 0),
@@ -19,8 +41,6 @@ CREATE TABLE contests (
     CONSTRAINT positive_questions CHECK (questions_no >= 0),
     CONSTRAINT reasonable_drift_time CHECK (drift_time <= duration)
 );
-
-CREATE INDEX on contests (id);
 
 CREATE TABLE questions(
     id              INTEGER PRIMARY KEY NOT NULL GENERATED ALWAYS AS IDENTITY,
@@ -41,6 +61,7 @@ CREATE TABLE teams(
     is_fake         BOOLEAN NOT NULL,
     position        INTEGER NOT NULL,
     contest_id      INTEGER NOT NULL REFERENCES contests(id),
+    owner_id        INTEGER REFERENCES users(id) ON DELETE SET NULL,
 
     UNIQUE (contest_id, position),
     CONSTRAINT positive_id CHECK (id >= 0),
@@ -52,25 +73,20 @@ CREATE INDEX ON teams (contest_id);
 CREATE TABLE submissions(
     id              INTEGER PRIMARY KEY NOT NULL GENERATED ALWAYS AS IDENTITY,
     answer          INTEGER NOT NULL,
-    sub_time        INTEGER NOT NULL,
+    sub_time        TIMESTAMP NOT NULL DEFAULT NOW(0),
     team_id         INTEGER NOT NULL REFERENCES teams(id),
-    question_id     INTEGER NOT NULL REFERENCES questions(id),
-
-    CONSTRAINT positive_id CHECK (id >= 0),
-    CONSTRAINT positive_sub_time CHECK (sub_time >= 0)
+    question_id     INTEGER NOT NULL REFERENCES questions(id)
 );
 
 CREATE INDEX ON submissions (team_id);
 
 CREATE TABLE jollies (
     id              INTEGER PRIMARY KEY NOT NULL GENERATED ALWAYS AS IDENTITY,
-    sub_time        INTEGER NOT NULL,
+    sub_time        TIMESTAMP NOT NULL DEFAULT NOW(0),
     team_id         INTEGER NOT NULL REFERENCES teams(id),
     question_id     INTEGER NOT NULL REFERENCES questions(id),
 
-    UNIQUE (team_id),
-    CONSTRAINT positive_id CHECK (id >= 0),
-    CONSTRAINT positive_sub_time CHECK (sub_time >= 0)
+    UNIQUE (team_id)
 );
 
 CREATE INDEX ON jollies (team_id);

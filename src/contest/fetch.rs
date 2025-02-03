@@ -1,5 +1,3 @@
-#![allow(clippy::get_first)]
-
 use std::cmp;
 
 use chrono::TimeDelta;
@@ -34,6 +32,7 @@ pub async fn fetch_contest(db: &mut Connection<DB>, id: i32) -> anyhow::Result<O
             contests::teams_no,
             contests::questions_no,
             contests::active,
+            contests::owner_id,
         ))
         .filter(contests::dsl::id.eq(id))
         .filter(contests::active.eq(true))
@@ -52,7 +51,13 @@ pub async fn fetch_contest(db: &mut Connection<DB>, id: i32) -> anyhow::Result<O
         .await?;
 
     let teams = teams::dsl::teams
-        .select(teams::all_columns)
+        .select((
+            teams::id,
+            teams::team_name,
+            teams::is_fake,
+            teams::position,
+            teams::contest_id,
+        ))
         .filter(teams::contest_id.eq(id))
         .load::<model::TeamWithId>(db)
         .await?;
@@ -103,6 +108,7 @@ pub async fn fetch_contest_with_ranking(db: &mut Connection<DB>, id: i32) -> any
         teams,
         drift,
         drift_time,
+        start_time,
         ..
     } = &mut contest;
 
@@ -136,26 +142,29 @@ pub async fn fetch_contest_with_ranking(db: &mut Connection<DB>, id: i32) -> any
         .load::<ContestJollies>(db)
         .await?;
 
-    let mut drift_left = vec![*drift; questions.len()];
+    let drift_no = *drift;
+    let mut correct = vec![0; questions.len()];
     let mut wrong = vec![vec![false; questions.len()]; teams.len()];
     let mut drift = vec![*drift_time; questions.len()];
 
     for submission in &submissions {
         let q_pos = submission.question_pos as usize;
         let t_pos = submission.team_pos as usize;
-        let sub_time = TimeDelta::seconds(submission.sub_time as i64);
+        let sub_time = submission.sub_time - *start_time;
 
         if submission.given_answer == submission.correct_answer {
-            drift_left[q_pos] -= 1;
-            if drift_left[q_pos] <= 0 {
+            correct[q_pos] += 1;
+            if correct[q_pos] >= drift_no {
                 drift[q_pos] = cmp::min(drift[q_pos], sub_time);
                 questions[q_pos].locked = true;
             }
         } else {
-            if sub_time < drift[q_pos] && !wrong[t_pos][q_pos] {
-                questions[q_pos].score += 2;
+            if sub_time < *drift_time && submission.given_answer != submission.correct_answer {
+                if correct[q_pos] == 0 && !wrong[t_pos][q_pos] {
+                    questions[q_pos].score += 2;
+                }
+                wrong[t_pos][q_pos] = true;
             }
-            wrong[t_pos][q_pos] = true;
         }
     }
 

@@ -28,7 +28,7 @@ pub struct JollyPatchData {
 }
 
 #[get("/contests/<id>/jollies")]
-pub async fn get_jollies<'r>(
+pub async fn get_jollies(
     id: i32,
     mut db: Connection<DB>
 ) -> Status {
@@ -36,16 +36,16 @@ pub async fn get_jollies<'r>(
 }
 
 #[post("/contests/<id>/jollies", format = "application/json", data = "<jolly>")]
-pub async fn post_jolly<'r>(
+pub async fn post_jolly(
     id: i32,
-    jolly: ApiInputResult<'r, JollyPostData>,
+    jolly: ApiInputResult<'_, JollyPostData>,
     mut db: Connection<DB>
 ) -> Status {
     Status::NotImplemented
 }
 
 #[get("/contests/<id>/jollies/<jolly_id>")]
-pub async fn get_jolly<'r>(
+pub async fn get_jolly(
     id: i32,
     jolly_id: i32,
     mut db: Connection<DB>
@@ -54,7 +54,7 @@ pub async fn get_jolly<'r>(
 }
 
 #[patch("/contests/<id>/jollies/<jolly_id>", format = "application/json", data = "<data>")]
-pub async fn patch_submission<'r>(
+pub async fn patch_submission(
     id: i32,
     jolly_id: i32,
     data: Json<JollyPatchData>,
@@ -64,7 +64,7 @@ pub async fn patch_submission<'r>(
 }
 
 #[delete("/contests/<id>/jollies/<jolly_id>")]
-pub async fn delete_jolly<'r>(
+pub async fn delete_jolly(
     id: i32,
     jolly_id: i32,
     mut db: Connection<DB>

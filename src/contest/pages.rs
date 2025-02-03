@@ -9,6 +9,7 @@ use rocket_dyn_templates::context;
 use rocket_dyn_templates::Template;
 
 use super::fetch::{fetch_contest, fetch_contest_with_ranking};
+use crate::api::ApiUser;
 use crate::error::IntoStatusResult;
 use crate::{model, DB};
 
@@ -40,10 +41,23 @@ async fn contest_settings(id: i32, mut db: Connection<DB>) -> Result<Template, S
 }
 
 #[get("/")]
-async fn show_contest_list(mut db: Connection<DB>) -> Result<Template, Status> {
+async fn show_contest_list(mut db: Connection<DB>, user: Option<ApiUser>) -> Result<Template, Status> {
     use crate::schema::contests;
 
     let contests = contests::dsl::contests
+        .select((
+            contests::id,
+            contests::phiquadro_id,
+            contests::phiquadro_sess,
+            contests::contest_name,
+            contests::duration,
+            contests::start_time,
+            contests::drift,
+            contests::drift_time,
+            contests::teams_no,
+            contests::questions_no,
+            contests::active,
+        ))
         .filter(contests::active.eq(true))
         .order(contests::id.desc())
         .limit(10)
@@ -52,7 +66,7 @@ async fn show_contest_list(mut db: Connection<DB>) -> Result<Template, Status> {
         .map_err(|error| anyhow!("Failed to fetch contests: {}", error))
         .attach_info(Status::InternalServerError, "")?;
 
-    Ok(Template::render("contests", context! { contests }))
+    Ok(Template::render("contests", context! { contests, user }))
 }
 
 pub fn routes() -> Vec<Route> {
