@@ -37,12 +37,12 @@
       <label for="start_time">
         Orario di partenza
       </label>
-      <input name="start_time" id="start_time" type="datetime-local" value="{{start_time}}" type="number" required>
+      <input name="start_time" id="start_time" type="datetime-local" value="{{start_time | date(format="%Y-%m-%d %H:%M", timezone="Europe/Rome")}}" required>
 
       <label for="duration">
         Durata (minuti)
       </label>
-      <input name="duration" id="duration" value="{{(duration[0] - duration[0] % 60) / 60}}" type="duration"  required>
+      <input name="duration" id="duration" value="{{(duration[0] - duration[0] % 60) / 60}}" required>
 
       <label for="drift">
         Deriva

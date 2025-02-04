@@ -15,7 +15,7 @@ CREATE TABLE tokens (
     id              INTEGER PRIMARY KEY NOT NULL GENERATED ALWAYS AS IDENTITY,
     user_id         INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     token           CHAR(344) NOT NULL,
-    expires         TIMESTAMP NOT NULL
+    expires         TIMESTAMP WITH TIME ZONE NOT NULL
 );
 
 CREATE INDEX on tokens(token);
@@ -26,7 +26,7 @@ CREATE TABLE contests (
     phiquadro_sess  INTEGER NOT NULL,
     contest_name    VARCHAR(255) NOT NULL,
     duration        INTEGER NOT NULL,
-    start_time      TIMESTAMP NOT NULL,
+    start_time      TIMESTAMP WITH TIME ZONE NOT NULL,
     drift           INTEGER NOT NULL,
     drift_time      INTEGER NOT NULL,
     teams_no        INTEGER NOT NULL,
@@ -73,7 +73,7 @@ CREATE INDEX ON teams (contest_id);
 CREATE TABLE submissions(
     id              INTEGER PRIMARY KEY NOT NULL GENERATED ALWAYS AS IDENTITY,
     answer          INTEGER NOT NULL,
-    sub_time        TIMESTAMP NOT NULL DEFAULT NOW(0),
+    sub_time        TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
     team_id         INTEGER NOT NULL REFERENCES teams(id),
     question_id     INTEGER NOT NULL REFERENCES questions(id)
 );
@@ -82,7 +82,7 @@ CREATE INDEX ON submissions (team_id);
 
 CREATE TABLE jollies (
     id              INTEGER PRIMARY KEY NOT NULL GENERATED ALWAYS AS IDENTITY,
-    sub_time        TIMESTAMP NOT NULL DEFAULT NOW(0),
+    sub_time        TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
     team_id         INTEGER NOT NULL REFERENCES teams(id),
     question_id     INTEGER NOT NULL REFERENCES questions(id),
 

@@ -1,5 +1,6 @@
 use anyhow::anyhow;
-use chrono::NaiveDateTime;
+use chrono::{DateTime, NaiveDateTime, TimeZone, Utc};
+use chrono_tz::Europe::Rome;
 use diesel::{update, ExpressionMethods, QueryDsl};
 use diesel::prelude::{AsChangeset, Queryable};
 use reqwest::header;
@@ -56,7 +57,7 @@ pub struct ContestPatchData<'r> {
 #[derive(AsChangeset)]
 #[diesel(table_name = crate::schema::contests)]
 pub struct ContestUpdateForm {
-    pub start_time: Option<NaiveDateTime>,
+    pub start_time: Option<DateTime<Utc>>,
     pub duration: Option<i32>,
     pub drift: Option<i32>,
     pub drift_time: Option<i32>,
@@ -77,9 +78,21 @@ pub async fn post_contest<'r>(
         });
     };
 
-    let start_time = NaiveDateTime::parse_from_str(contest.start_time, "%Y-%m-%dT%H:%M")
-        .map_err(|err| anyhow!("Failed to get start datetime: {}", err))
-        .attach_info(Status::BadRequest, "Ora di inizio non valida")?;
+    let start_time = Rome.from_local_datetime(
+        &NaiveDateTime::parse_from_str(contest.start_time, "%Y-%m-%dT%H:%M")
+            .map_err(|err| anyhow!("Failed to get start datetime: {}", err))
+            .attach_info(Status::BadRequest, "Ora di inizio non valida")?
+    )
+    .unwrap()
+    .with_timezone(&Utc);
+
+    if start_time <= chrono::offset::Utc::now() {
+        return Err(ApiResponse {
+            status: Status::UnprocessableEntity,
+            body: ApiError { error: "La gara non può iniziare nel passato".to_string() },
+            headers: HeaderMap::new(),
+        });
+    }
 
     let contest_id = create_contest(
         &mut db,
@@ -158,11 +171,23 @@ pub async fn patch_contest<'r>(
         });
     };
 
-    let start_time = data.start_time.map(|start_time|
-        NaiveDateTime::parse_from_str(start_time, "%Y-%m-%dT%H:%M")
-            .map_err(|err| anyhow!("Failed to get start datetime: {}", err))
-            .attach_info(Status::BadRequest, "Ora di inizio non valida")
-    )
+    let start_time = data.start_time.map(|start_time| {
+        let input_datetime = Rome.from_local_datetime(
+            &NaiveDateTime::parse_from_str(start_time, "%Y-%m-%dT%H:%M")
+                .map_err(|err| anyhow!("Failed to get start datetime: {}", err))
+                .attach_info(Status::BadRequest, "Ora di inizio non valida")?
+        )
+        .unwrap()
+        .with_timezone(&Utc);
+
+        let out = if input_datetime <= chrono::offset::Utc::now() {
+            Err(anyhow!("Contest can't start in the past"))
+        } else {
+            Ok(input_datetime)
+        };
+
+        out.attach_info(Status::UnprocessableEntity, "La gara non può iniziare nel passato")
+    })
     .transpose()?;
 
     let drift = data.drift.map(|drift| drift
@@ -174,6 +199,29 @@ pub async fn patch_contest<'r>(
 
     let duration = data.duration.map(|duration| duration as i32 * 60);
     let drift_time = data.drift_time.map(|drift_time| drift_time as i32 * 60);
+
+    let contest_start_time = contests::dsl::contests
+        .select(contests::start_time)
+        .filter(contests::id.eq(id))
+        .load::<DateTime<Utc>>(&mut **db)
+        .await
+        .attach_info(Status::InternalServerError, "Errore incontrato durante l'aggiornamento delle impostazioni")?;
+
+    let Some(&contest_start_time) = contest_start_time.get(0) else {
+        return Err(ApiResponse {
+            status: Status::NotFound,
+            body: ApiError { error: "".to_string() },
+            headers: HeaderMap::new(),
+        });
+    };
+
+    if contest_start_time <= chrono::offset::Utc::now() {
+        return Err(ApiResponse {
+            status: Status::Forbidden,
+            body: ApiError { error: "La gara è già iniziata".to_string() },
+            headers: HeaderMap::new(),
+        });
+    }
 
     update(contests::dsl::contests.filter(contests::id.eq(id)))
         .set(&ContestUpdateForm {

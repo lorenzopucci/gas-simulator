@@ -111,7 +111,7 @@ pub async fn login(
     let Some(user) = user.into_iter().next() else {
         return Err(ApiResponse {
             status: Status::NotFound,
-            body: ApiError { error: "".to_string() },
+            body: ApiError { error: "Utente non trovato".to_string() },
             headers: HeaderMap::new(),
         });
     };
@@ -136,7 +136,7 @@ pub async fn login(
         .values(Token {
             user_id: user.id,
             token: token.clone(),
-            expires: chrono::offset::Utc::now().naive_utc() + duration,
+            expires: chrono::offset::Utc::now() + duration,
         })
         .execute(&mut **db)
         .await

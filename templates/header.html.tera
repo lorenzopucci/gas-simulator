@@ -1,8 +1,27 @@
 <header>
   <script src="/static/headerfooter.js"></script>
+  <script src="/static/jsonform.js"></script>
   <div>
-    Gare online
-    <div id="auth-button" onclick="show_auth_form();">
+    <div>
+      Gare online
+    </div>
+    {% if user %}
+      <div class="header-button" onclick="redirect_to_create();">
+        <div>
+          <b>
+            Crea una gara
+          </b>
+        </div>
+        <div>
+          <img
+            class="icon"
+            src="/icons/add.svg"
+            height="20"
+          >
+        </div>
+      </div>
+    {% endif %}
+    <div class="header-button" id="auth-button" onclick="show_auth_form();">
       {% if user %}
         <div>
           {{user.username}}
@@ -28,7 +47,82 @@
       {% endif %}
     </div>
   </div>
-  <div id="auth-form" onclick="hide_auth_form();">
+  <div id="auth-background" onclick="hide_auth_form();">
+    {% if user %}
+      <div id="logout-form" onclick="logout(); event.stopPropagation();">
+        <div id="logout-fake-form">
+          <h2>Esci</h2>
+          <input type="submit" value="Esci!">
+        </div>
+      </div>
+    {% else %}
+      <div id="auth-form" onclick="event.stopPropagation();">
+        <form id="authenticate" method="post" action="/api/login">
+          <h2>Autenticati</h2>
 
+          <div>
+            <label for="username">
+              Username
+            </label>
+            <input id="username" name="username" required>
+          </div>
+
+          <div>
+            <label for="password">
+              Password
+            </label>
+            <input id="password" name="password" type="password" required>
+          </div>
+
+          <div id="remember-div">
+            <label for="remember_me">
+              Ricordami per un mese
+            </label>
+            <input id="remember_me" name="remember_me" type="checkbox">
+          </div>
+
+          <div>
+            <label for="autenticati" hidden>
+              Autenticati
+            </label>
+            <input id="autenticati" name="autenticati" type="submit" value="Autenticati!" required>
+          </div>
+        </form>
+        <div>
+
+        </div>
+        <form id="register" method="post" action="/api/signup">
+          <h2>Crea un account</h2>
+
+          <div>
+            <label for="register_username">
+              Username
+            </label>
+            <input id="register_username" name="register_username" required>
+          </div>
+
+          <div>
+            <label for="register_password">
+              Password
+            </label>
+            <input id="register_password" name="register_password" type="password" required>
+          </div>
+
+          <div>
+            <label for="register_email">
+              Email
+            </label>
+            <input id="register_email" name="register_email" required>
+          </div>
+
+          <div>
+            <label for="registrati" hidden>
+              Registrati
+            </label>
+            <input id="registrati" name="registrati" type="submit" value="Registrati!" required>
+          </div>
+        </form>
+      </div>
+    {% endif %}
   </div>
 </header>

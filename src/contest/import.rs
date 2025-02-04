@@ -6,7 +6,7 @@ use std::thread;
 use std::time::Duration;
 
 use anyhow::{anyhow, bail, Context};
-use chrono::{NaiveDateTime, TimeDelta};
+use chrono::{DateTime, TimeDelta, Utc};
 use diesel::{update, ExpressionMethods, QueryDsl};
 use lazy_static::lazy_static;
 use regex::bytes::Regex;
@@ -51,7 +51,7 @@ pub async fn create_contest(
     id: u32,
     sess: u32,
     duration: u32,
-    start_time: NaiveDateTime,
+    start_time: DateTime<Utc>,
     drift: u32,
     drift_time: u32,
 ) -> Result<i32> {

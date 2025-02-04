@@ -8,7 +8,7 @@ header {
     font-family: Arial, Helvetica, sans-serif;
 }
 
-header > div {
+header > div:not(#auth-background) {
     width: 100%;
     max-width: 950px;
     display: flex;
@@ -17,32 +17,128 @@ header > div {
     justify-content: space-between;
 }
 
-#auth-button {
+.header-button {
     display: flex;
     border-radius: 3px;
     padding: 2px 5px 0px;
 }
 
-#auth-button:hover {
+.header-button:hover {
     background-color: #999999;
 }
 
-#auth-button > :first-child {
+.header-button > :first-child {
     padding-right: 4px;
 }
 
-#auth-button > :last-child {
-    transform: translateY(-1px);
+.header-button > :last-child {
+    transform: translateY(-3px);
+}
+
+#auth-background {
+    position: fixed;
+    visibility: hidden;
+    width: 100vw;
+    height: 100vh;
+    z-index: 100;
 }
 
 #auth-form {
-    position: absolute;
+    position: fixed;
     visibility: hidden;
     background-color: #bbbbbb;
-    height: 300px;
-    width: min(90%, 750px);
+    height: 250px;
+    width: min(90%, 600px);
     top: calc(50vh - 150px);
+    left: calc(50vw - min(45%, 300px));
     border-radius: 3px;
     border: 3px solid #888888;
     z-index: 100;
+    display: flex;
+    padding: 10px;
 }
+
+#logout-form {
+    position: fixed;
+    visibility: hidden;
+    background-color: #bbbbbb;
+    height: 70px;
+    width: min(90%, 300px);
+    top: calc(50vh - 35px);
+    left: calc(50vw - min(45%, 150px));
+    border-radius: 3px;
+    border: 3px solid #888888;
+    z-index: 100;
+    display: flex;
+    padding: 10px;
+}
+
+#auth-form > form {
+    flex: 50%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-around;
+}
+
+#logout-fake-form {
+    flex: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-around;
+}
+
+#auth-form > div {
+    width: 0px;
+    border: 1px solid #666666;
+    height: 100%;
+}
+
+#auth-form > form > div {
+    display: flex;
+    width: 90%;
+}
+
+#auth-form label {
+    flex: 25%;
+}
+
+#auth-form div:not(:last-child) label {
+    display: flex;
+    align-items: center;
+    justify-content: right;
+    padding-right: 10px;
+}
+
+#auth-form input {
+    border-radius: 3px;
+    flex: 65%;
+    height: 30px;
+    padding: 0px 2px;
+}
+
+#logout-form input {
+    border-radius: 3px;
+    padding: 0px 2px;
+    height: 30px;
+    width: 100%;
+}
+
+#auth-form input[type=checkbox] {
+    flex: 10%;
+}
+
+#remember-div {
+    display: flex;
+    width: 90%;
+    justify-content: space-around;
+}
+
+#remember-div label {
+    flex: 50%;
+}
+
+

@@ -20,8 +20,8 @@ mod login;
 
 #[derive(Serialize, Queryable)]
 pub struct ApiUser {
-    user_id: i32,
-    username: String,
+    pub user_id: i32,
+    pub username: String,
 }
 
 #[rocket::async_trait]

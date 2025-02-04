@@ -1,4 +1,4 @@
-use chrono::{Duration, NaiveDateTime};
+use chrono::{Duration, DateTime, Utc};
 use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Copy, Serialize, Deserialize)]
@@ -42,7 +42,7 @@ pub struct Contest {
     pub questions: Vec<Question>,
     pub teams: Vec<Team>,
     pub duration: Duration,
-    pub start_time: NaiveDateTime,
+    pub start_time: DateTime<Utc>,
     pub drift: i32,
     pub drift_time: Duration,
 }

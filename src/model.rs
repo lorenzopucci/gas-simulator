@@ -1,4 +1,4 @@
-use chrono::NaiveDateTime;
+use chrono::{DateTime, Utc};
 use diesel::{Insertable, Queryable, Selectable};
 use serde::Serialize;
 
@@ -10,7 +10,7 @@ pub struct Contest {
     pub phiquadro_sess: i32,
     pub contest_name: String,
     pub duration: i32,
-    pub start_time: NaiveDateTime,
+    pub start_time: DateTime<Utc>,
     pub drift: i32,
     pub drift_time: i32,
     pub teams_no: i32,
@@ -44,7 +44,7 @@ pub struct Team {
 #[diesel(check_for_backend(diesel::pg::Pg))]
 pub struct Submission {
     pub answer: i32,
-    pub sub_time: NaiveDateTime,
+    pub sub_time: DateTime<Utc>,
     pub team_id: i32,
     pub question_id: i32,
 }
@@ -53,7 +53,7 @@ pub struct Submission {
 #[diesel(table_name = crate::schema::jollies)]
 #[diesel(check_for_backend(diesel::pg::Pg))]
 pub struct Jolly {
-    pub sub_time: NaiveDateTime,
+    pub sub_time: DateTime<Utc>,
     pub team_id: i32,
     pub question_id: i32,
 }
@@ -74,13 +74,13 @@ pub struct User {
 pub struct Token {
     pub user_id: i32,
     pub token: String,
-    pub expires: NaiveDateTime,
+    pub expires: DateTime<Utc>,
 }
 
 #[derive(Queryable, Clone, Copy)]
 pub struct ContestSubmissions {
     pub given_answer: i32,
-    pub sub_time: NaiveDateTime,
+    pub sub_time: DateTime<Utc>,
     pub correct_answer: i32,
     pub question_pos: i32,
     pub team_pos: i32,
@@ -90,7 +90,7 @@ pub struct ContestSubmissions {
 
 #[derive(Queryable, Clone, Copy)]
 pub struct ContestJollies {
-    pub sub_time: NaiveDateTime,
+    pub sub_time: DateTime<Utc>,
     pub question_pos: i32,
     pub team_pos: i32,
     pub contest_id: i32,
@@ -103,7 +103,7 @@ pub struct ContestWithId {
     pub phiquadro_sess: i32,
     pub contest_name: String,
     pub duration: i32,
-    pub start_time: NaiveDateTime,
+    pub start_time: DateTime<Utc>,
     pub drift: i32,
     pub drift_time: i32,
     pub teams_no: i32,

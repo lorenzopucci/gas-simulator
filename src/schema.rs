@@ -8,7 +8,7 @@ diesel::table! {
         #[max_length = 255]
         contest_name -> Varchar,
         duration -> Int4,
-        start_time -> Timestamp,
+        start_time -> Timestamptz,
         drift -> Int4,
         drift_time -> Int4,
         teams_no -> Int4,
@@ -21,7 +21,7 @@ diesel::table! {
 diesel::table! {
     jollies (id) {
         id -> Int4,
-        sub_time -> Timestamp,
+        sub_time -> Timestamptz,
         team_id -> Int4,
         question_id -> Int4,
     }
@@ -40,7 +40,7 @@ diesel::table! {
     submissions (id) {
         id -> Int4,
         answer -> Int4,
-        sub_time -> Timestamp,
+        sub_time -> Timestamptz,
         team_id -> Int4,
         question_id -> Int4,
     }
@@ -64,7 +64,7 @@ diesel::table! {
         user_id -> Int4,
         #[max_length = 344]
         token -> Bpchar,
-        expires -> Timestamp,
+        expires -> Timestamptz,
     }
 }
 

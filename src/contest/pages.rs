@@ -1,7 +1,6 @@
 use anyhow::anyhow;
 use diesel::{ExpressionMethods, QueryDsl};
 use rocket::http::Status;
-use rocket::response::Redirect;
 use rocket::Route;
 use rocket_db_pools::diesel::prelude::RunQueryDsl;
 use rocket_db_pools::Connection;
@@ -14,8 +13,13 @@ use crate::error::IntoStatusResult;
 use crate::{model, DB};
 
 #[get("/create")]
-async fn create_redirect() -> Redirect {
-    Redirect::to(uri!("/create.html"))
+async fn create_contest(_api_user: ApiUser) -> Template {
+    Template::render("create", context! {})
+}
+
+#[get("/create", rank = 2)]
+async fn create_contest_unauthorized() -> Status {
+    Status::Unauthorized
 }
 
 #[get("/contest/<id>")]
@@ -44,6 +48,11 @@ async fn contest_settings(id: i32, mut db: Connection<DB>) -> Result<Template, S
 async fn show_contest_list(mut db: Connection<DB>, user: Option<ApiUser>) -> Result<Template, Status> {
     use crate::schema::contests;
 
+    let filter = match &user {
+        Some(user) => contests::owner_id.eq(user.user_id),
+        None => contests::owner_id.eq(-1),
+    };
+
     let contests = contests::dsl::contests
         .select((
             contests::id,
@@ -59,6 +68,7 @@ async fn show_contest_list(mut db: Connection<DB>, user: Option<ApiUser>) -> Res
             contests::active,
         ))
         .filter(contests::active.eq(true))
+        .filter(filter)
         .order(contests::id.desc())
         .limit(10)
         .load::<model::ContestWithId>(&mut **db)
@@ -70,5 +80,5 @@ async fn show_contest_list(mut db: Connection<DB>, user: Option<ApiUser>) -> Res
 }
 
 pub fn routes() -> Vec<Route> {
-    routes![create_redirect, show_contest, contest_settings, show_contest_list,]
+    routes![create_contest, create_contest_unauthorized, show_contest, contest_settings, show_contest_list,]
 }
