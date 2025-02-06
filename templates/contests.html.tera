@@ -2,9 +2,9 @@
 <html lang="it">
   <head>
     <meta charset="utf-8">
-    <link rel="stylesheet" href="/static/contests.css">
-    <link rel="stylesheet" href="/static/headerfooter.css">
-    <script src="/static/contests.js"></script>
+    <link rel="stylesheet" href="/styles/contests.css">
+    <link rel="stylesheet" href="/styles/headerfooter.css">
+    <script src="/scripts/contests.js"></script>
     <title>Gare</title>
   </head>
   <body>

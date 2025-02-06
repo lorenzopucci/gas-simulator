@@ -12,6 +12,11 @@ use crate::DB;
 use crate::error::IntoStatusResult;
 use super::{ApiError, ApiInputResult, ApiResponse};
 
+#[derive(Serialize)]
+pub struct TeamsGetResponse {
+    teams: Vec<i32>,
+}
+
 #[derive(Queryable, Serialize)]
 pub struct TeamGetResponse {
     id: i32,
@@ -32,12 +37,14 @@ pub struct TeamPostResponse {
 #[get("/contests/<id>/teams")]
 pub async fn get_teams<'r>(
     id: i32,
-    mut db: Connection<DB>
-) -> Result<ApiResponse<'r, Vec<TeamGetResponse>>, ApiResponse<'r, ApiError>> {
+    mut db: Connection<DB>,
+    api_user: ApiUser
+) -> Result<ApiResponse<'r, TeamsGetResponse>, ApiResponse<'r, ApiError>> {
     use crate::schema::{contests, teams};
 
     let exists: i64 = contests::dsl::contests
-        .filter(contests::dsl::id.eq(id))
+        .filter(contests::id.eq(id))
+        .filter(contests::owner_id.eq(api_user.user_id))
         .filter(contests::active.eq(true))
         .count()
         .get_result(&mut **db)
@@ -47,22 +54,22 @@ pub async fn get_teams<'r>(
     if exists == 0 {
         return Err(ApiResponse {
             status: Status::NotFound,
-            body: ApiError { error: "".to_string(), },
+            body: ApiError { error: "La gara non esiste o non ti appartiene".to_string(), },
             headers: HeaderMap::new(),
         });
     }
 
     let teams = teams::dsl::teams
-        .select((teams::id, teams::team_name, teams::is_fake))
+        .select(teams::id)
         .filter(teams::contest_id.eq(id))
         .order(teams::position.asc())
-        .load::<TeamGetResponse>(&mut **db)
+        .load::<i32>(&mut **db)
         .await
         .attach_info(Status::InternalServerError, "Errore riscontrato durante l'operazione")?;
 
     Ok(ApiResponse {
         status: Status::Ok,
-        body: teams,
+        body: TeamsGetResponse { teams },
         headers: HeaderMap::new(),
     })
 }
@@ -72,9 +79,9 @@ pub async fn post_team<'r>(
     id: i32,
     team: ApiInputResult<'r, TeamPostData<'r>>,
     mut db: Connection<DB>,
-    user: ApiUser,
+    api_user: ApiUser,
 ) -> Result<ApiResponse<'r, TeamPostResponse>, ApiResponse<'r, ApiError>> {
-    use crate::schema::teams;
+    use crate::schema::{contests, teams};
 
     let Ok(team) = team else {
         return Err(ApiResponse {
@@ -83,6 +90,30 @@ pub async fn post_team<'r>(
             headers: HeaderMap::new(),
         });
     };
+
+    let contest_owner = contests::dsl::contests
+        .select(contests::owner_id)
+        .filter(contests::id.eq(id))
+        .filter(contests::active.eq(true))
+        .load::<i32>(&mut **db)
+        .await
+        .attach_info(Status::InternalServerError, "Errore incontrato durante la creazione della squadra")?;
+
+    let Some(&contest_owner) = contest_owner.get(0) else {
+        return Err(ApiResponse {
+            status: Status::NotFound,
+            body: ApiError { error: "La gara non esiste o non ti appartiene".to_string() },
+            headers: HeaderMap::new(),
+        });
+    };
+
+    if contest_owner != api_user.user_id {
+        return Err(ApiResponse {
+            status: Status::NotFound,
+            body: ApiError { error: "La gara non esiste o non ti appartiene".to_string() },
+            headers: HeaderMap::new(),
+        });
+    }
 
     let team_no: i64 = teams::dsl::teams
         .filter(teams::contest_id.eq(id))
@@ -97,7 +128,6 @@ pub async fn post_team<'r>(
             contest_id: id,
             is_fake: false,
             position: team_no as i32,
-            owner_id: Some(user.user_id),
         })
         .returning(teams::id)
         .get_result(&mut **db)

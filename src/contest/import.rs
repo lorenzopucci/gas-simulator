@@ -118,7 +118,7 @@ pub async fn create_contest(
             teams_no: teams.len() as i32,
             questions_no: answers.len() as i32,
             active: false,
-            owner_id: Some(owner_id),
+            owner_id: owner_id,
         })
         .returning(contests::id)
         .get_result(db)
@@ -136,7 +136,6 @@ pub async fn create_contest(
                     is_fake: true,
                     position: i as i32,
                     contest_id,
-                    owner_id: None,
                 })
                 .collect::<Vec<_>>(),
         )

@@ -15,7 +15,7 @@ use crate::DB;
 const QUESTION_BONUS: [i64; 10] = [20, 15, 10, 8, 6, 5, 4, 3, 2, 1];
 const CONTEST_BONUS: [i64; 6] = [100, 60, 40, 30, 20, 10];
 
-pub async fn fetch_contest(db: &mut Connection<DB>, id: i32) -> anyhow::Result<Option<Contest>> {
+pub async fn fetch_contest(db: &mut Connection<DB>, user_id: i32, id: i32) -> anyhow::Result<Option<Contest>> {
     use crate::schema::{contests, questions, teams};
 
     info!("Loading contest {}", id);
@@ -42,6 +42,10 @@ pub async fn fetch_contest(db: &mut Connection<DB>, id: i32) -> anyhow::Result<O
     let Some(contest) = contest.get(0) else {
         return Ok(None);
     };
+
+    if contest.owner_id != user_id {
+        return Ok(None);
+    }
 
     let questions = questions::dsl::questions
         .select(questions::answer)
@@ -96,10 +100,10 @@ pub async fn fetch_contest(db: &mut Connection<DB>, id: i32) -> anyhow::Result<O
     }))
 }
 
-pub async fn fetch_contest_with_ranking(db: &mut Connection<DB>, id: i32) -> anyhow::Result<Option<Contest>> {
+pub async fn fetch_contest_with_ranking(db: &mut Connection<DB>, user_id: i32, id: i32) -> anyhow::Result<Option<Contest>> {
     use crate::schema::{jollies, questions, submissions, teams};
 
-    let Some(mut contest) = fetch_contest(db, id).await? else {
+    let Some(mut contest) = fetch_contest(db, user_id, id).await? else {
         return Ok(None);
     };
 
@@ -111,6 +115,8 @@ pub async fn fetch_contest_with_ranking(db: &mut Connection<DB>, id: i32) -> any
         start_time,
         ..
     } = &mut contest;
+
+    let now = chrono::offset::Utc::now();
 
     let submissions = submissions::dsl::submissions
         .inner_join(questions::table)
@@ -125,6 +131,7 @@ pub async fn fetch_contest_with_ranking(db: &mut Connection<DB>, id: i32) -> any
             teams::contest_id,
         ))
         .filter(teams::contest_id.eq(id))
+        .filter(submissions::sub_time.le(now))
         .order(submissions::sub_time.asc())
         .load::<ContestSubmissions>(db)
         .await?;
@@ -139,6 +146,7 @@ pub async fn fetch_contest_with_ranking(db: &mut Connection<DB>, id: i32) -> any
             teams::contest_id,
         ))
         .filter(teams::contest_id.eq(id))
+        .filter(jollies::sub_time.le(now))
         .load::<ContestJollies>(db)
         .await?;
 
@@ -156,7 +164,6 @@ pub async fn fetch_contest_with_ranking(db: &mut Connection<DB>, id: i32) -> any
             correct[q_pos] += 1;
             if correct[q_pos] >= drift_no {
                 drift[q_pos] = cmp::min(drift[q_pos], sub_time);
-                questions[q_pos].locked = true;
             }
         } else {
             if sub_time < *drift_time && submission.given_answer != submission.correct_answer {
@@ -169,7 +176,10 @@ pub async fn fetch_contest_with_ranking(db: &mut Connection<DB>, id: i32) -> any
     }
 
     for i in 0..questions.len() {
-        questions[i].score += drift[i].num_minutes();
+        questions[i].score += cmp::min(drift[i], now - *start_time).num_minutes().max(0);
+        if chrono::offset::Utc::now() >= *start_time + drift[i] {
+            questions[i].locked = true;
+        }
     }
 
     let mut question_solves = vec![0; questions.len()];
@@ -181,7 +191,10 @@ pub async fn fetch_contest_with_ranking(db: &mut Connection<DB>, id: i32) -> any
         let t_pos = submission.team_pos as usize;
 
         if submission.given_answer == submission.correct_answer {
-            if teams[t_pos].questions[q_pos].status != QuestionStatus::Solved {
+            if
+                teams[t_pos].questions[q_pos].status != QuestionStatus::Solved
+                && teams[t_pos].questions[q_pos].status != QuestionStatus::JustSolved
+            {
                 teams[t_pos].questions[q_pos].score +=
                     questions[q_pos].score + QUESTION_BONUS.get(question_solves[q_pos]).unwrap_or(&0);
 
@@ -192,8 +205,13 @@ pub async fn fetch_contest_with_ranking(db: &mut Connection<DB>, id: i32) -> any
                     teams[t_pos].score += CONTEST_BONUS.get(solves).unwrap_or(&0);
                     solves += 1;
                 }
+
+                teams[t_pos].questions[q_pos].status =if submission.sub_time >= now - TimeDelta::minutes(1) {
+                    QuestionStatus::JustSolved
+                } else {
+                    QuestionStatus::Solved
+                };
             }
-            teams[t_pos].questions[q_pos].status = QuestionStatus::Solved;
         } else {
             if teams[t_pos].questions[q_pos].status == QuestionStatus::NotAttempted {
                 teams[t_pos].questions[q_pos].status = QuestionStatus::Attempted;

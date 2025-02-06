@@ -6,7 +6,6 @@ CREATE TABLE users (
     salt            BYTEA NOT NULL,
 
     UNIQUE (username),
-    UNIQUE (email)
 );
 
 CREATE INDEX ON users(username);
@@ -32,7 +31,7 @@ CREATE TABLE contests (
     teams_no        INTEGER NOT NULL,
     questions_no    INTEGER NOT NULL,
     active          BOOLEAN NOT NULL,
-    owner_id        INTEGER REFERENCES users(id) ON DELETE SET NULL,
+    owner_id        INTEGER NOT NULL REFERENCES users(id),
 
     CONSTRAINT positive_duration CHECK (duration >= 0),
     CONSTRAINT positive_drift CHECK (drift >= 0),
@@ -61,7 +60,6 @@ CREATE TABLE teams(
     is_fake         BOOLEAN NOT NULL,
     position        INTEGER NOT NULL,
     contest_id      INTEGER NOT NULL REFERENCES contests(id),
-    owner_id        INTEGER REFERENCES users(id) ON DELETE SET NULL,
 
     UNIQUE (contest_id, position),
     CONSTRAINT positive_id CHECK (id >= 0),

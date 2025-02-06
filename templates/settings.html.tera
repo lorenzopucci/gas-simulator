@@ -2,9 +2,9 @@
 <html lang="it">
   <head>
     <meta charset="utf-8">
-    <link rel="stylesheet" href="/static/settings.css">
-    <script src="/static/jsonform.js"></script>
-    <script src="/static/settings.js"></script>
+    <link rel="stylesheet" href="/styles/settings.css">
+    <script src="/scripts/jsonform.js"></script>
+    <script src="/scripts/settings.js"></script>
     <title>Impostazioni: {{name}}</title>
   </head>
   <body>

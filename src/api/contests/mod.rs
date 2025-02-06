@@ -19,6 +19,11 @@ pub mod teams;
 pub mod questions;
 pub mod submissions;
 
+#[derive(Serialize)]
+pub struct ContestsGetResponse {
+    contests: Vec<i32>,
+}
+
 #[derive(Deserialize)]
 pub struct ContestPostData<'r> {
     phiquadro_id: u32,
@@ -63,12 +68,34 @@ pub struct ContestUpdateForm {
     pub drift_time: Option<i32>,
 }
 
+#[get("/contests")]
+pub async fn get_contests<'r>(
+    mut db: Connection<DB>,
+    api_user: ApiUser,
+) -> Result<ApiResponse<'r, ContestsGetResponse>, ApiResponse<'r, ApiError>> {
+    use crate::schema::contests;
+
+    let contest_list = contests::dsl::contests
+        .select(contests::id)
+        .filter(contests::owner_id.eq(api_user.user_id))
+        .filter(contests::active.eq(true))
+        .load(&mut **db)
+        .await
+        .attach_info(Status::InternalServerError, "Errore riscontrato durante l'operazione")?;
+
+    Ok(ApiResponse {
+        status: Status::Unauthorized,
+        body: ContestsGetResponse { contests: contest_list },
+        headers: HeaderMap::new(),
+    })
+}
+
 #[post("/contests", format = "application/json", data = "<contest>")]
 pub async fn post_contest<'r>(
     contest: ApiInputResult<'r, ContestPostData<'r>>,
     mut db: Connection<DB>,
     phi: &State<PhiQuadroLogin>,
-    user: ApiUser,
+    api_user: ApiUser,
 ) -> Result<ApiResponse<'r, ContestPostResponse>, ApiResponse<'r, ApiError>> {
     let Ok(contest) = contest else {
         return Err(ApiResponse {
@@ -97,7 +124,7 @@ pub async fn post_contest<'r>(
     let contest_id = create_contest(
         &mut db,
         phi.inner(),
-        user.user_id,
+        api_user.user_id,
         contest.name,
         contest.phiquadro_id,
         contest.phiquadro_sess,
@@ -121,7 +148,8 @@ pub async fn post_contest<'r>(
 #[get("/contests/<id>")]
 pub async fn get_contest<'r>(
     id: i32,
-    mut db: Connection<DB>
+    mut db: Connection<DB>,
+    api_user: ApiUser,
 ) -> Result<ApiResponse<'r, ContestGetResponse>, ApiResponse<'r, ApiError>> {
     use crate::schema::contests;
 
@@ -137,6 +165,7 @@ pub async fn get_contest<'r>(
         ))
         .filter(contests::dsl::id.eq(id))
         .filter(contests::active.eq(true))
+        .filter(contests::owner_id.eq(api_user.user_id))
         .load::<ContestGetResponse>(&mut **db)
         .await
         .attach_info(Status::InternalServerError, "Errore riscontrato durante l'operazione")?;
@@ -149,7 +178,7 @@ pub async fn get_contest<'r>(
         }),
         None => Err(ApiResponse {
             status: Status::NotFound,
-            body: ApiError { error: "".to_string() },
+            body: ApiError { error: "La gara non esiste o non ti appartiene".to_string() },
             headers: HeaderMap::new(),
         }),
     }
@@ -159,7 +188,8 @@ pub async fn get_contest<'r>(
 pub async fn patch_contest<'r>(
     id: i32,
     data: ApiInputResult<'r, ContestPatchData<'r>>,
-    mut db: Connection<DB>
+    mut db: Connection<DB>,
+    api_user: ApiUser,
 ) -> Result<ApiResponse<'r, ()>, ApiResponse<'r, ApiError>> {
     use crate::schema::contests;
 
@@ -203,6 +233,8 @@ pub async fn patch_contest<'r>(
     let contest_start_time = contests::dsl::contests
         .select(contests::start_time)
         .filter(contests::id.eq(id))
+        .filter(contests::active.eq(true))
+        .filter(contests::owner_id.eq(api_user.user_id))
         .load::<DateTime<Utc>>(&mut **db)
         .await
         .attach_info(Status::InternalServerError, "Errore incontrato durante l'aggiornamento delle impostazioni")?;
@@ -210,7 +242,7 @@ pub async fn patch_contest<'r>(
     let Some(&contest_start_time) = contest_start_time.get(0) else {
         return Err(ApiResponse {
             status: Status::NotFound,
-            body: ApiError { error: "".to_string() },
+            body: ApiError { error: "La gara non esiste o non ti appartiene".to_string() },
             headers: HeaderMap::new(),
         });
     };
@@ -223,7 +255,11 @@ pub async fn patch_contest<'r>(
         });
     }
 
-    update(contests::dsl::contests.filter(contests::id.eq(id)))
+    update(
+        contests::dsl::contests
+            .filter(contests::id.eq(id))
+            .filter(contests::owner_id.eq(api_user.user_id))
+    )
         .set(&ContestUpdateForm {
             start_time,
             duration,
@@ -242,14 +278,31 @@ pub async fn patch_contest<'r>(
 }
 
 #[delete("/contests/<id>")]
-pub async fn delete_contest<'r>(id: i32, mut db: Connection<DB>) -> Result<ApiResponse<'r, ()>, ApiResponse<'r, ApiError>> {
+pub async fn delete_contest<'r>(
+    id: i32,
+    mut db: Connection<DB>,
+    api_user: ApiUser,
+) -> Result<ApiResponse<'r, ()>, ApiResponse<'r, ApiError>> {
     use crate::schema::contests;
 
-    update(contests::dsl::contests.filter(contests::id.eq(id)))
+    let changes = update(
+        contests::dsl::contests
+            .filter(contests::id.eq(id))
+            .filter(contests::active.eq(true))
+            .filter(contests::owner_id.eq(api_user.user_id))
+    )
         .set(contests::active.eq(false))
         .execute(&mut **db)
         .await
         .attach_info(Status::InternalServerError, "Errore incontrato durante l'eliminazione della gara")?;
+
+    if changes == 0 {
+        return Err(ApiResponse {
+            status: Status::NotFound,
+            body: ApiError { error: "La gara non esiste o non ti appartiene".to_string() },
+            headers: HeaderMap::new(),
+        })
+    }
 
     Ok(ApiResponse {
         status: Status::NoContent,

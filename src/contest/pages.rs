@@ -13,18 +13,21 @@ use crate::error::IntoStatusResult;
 use crate::{model, DB};
 
 #[get("/create")]
-async fn create_contest(_api_user: ApiUser) -> Template {
-    Template::render("create", context! {})
-}
-
-#[get("/create", rank = 2)]
-async fn create_contest_unauthorized() -> Status {
-    Status::Unauthorized
+async fn create_contest(api_user: Option<ApiUser>) -> Result<Template, Status> {
+    if api_user.is_some() {
+        Ok(Template::render("create", context! {}))
+    } else {
+        Err(Status::Unauthorized)
+    }
 }
 
 #[get("/contest/<id>")]
-pub async fn show_contest(id: i32, mut db: Connection<DB>) -> Result<Template, Status> {
-    match fetch_contest_with_ranking(&mut db, id)
+pub async fn show_contest(id: i32, api_user: Option<ApiUser>, mut db: Connection<DB>) -> Result<Template, Status> {
+    let Some(api_user) = api_user else {
+        return Err(Status::Unauthorized)
+    };
+
+    match fetch_contest_with_ranking(&mut db, api_user.user_id, id)
         .await
         .attach_info(Status::InternalServerError, "")?
     {
@@ -34,8 +37,12 @@ pub async fn show_contest(id: i32, mut db: Connection<DB>) -> Result<Template, S
 }
 
 #[get("/settings/<id>")]
-async fn contest_settings(id: i32, mut db: Connection<DB>) -> Result<Template, Status> {
-    match fetch_contest(&mut db, id)
+async fn contest_settings(id: i32, api_user: Option<ApiUser>, mut db: Connection<DB>) -> Result<Template, Status> {
+    let Some(api_user) = api_user else {
+        return Err(Status::Unauthorized)
+    };
+
+    match fetch_contest(&mut db, api_user.user_id, id)
         .await
         .attach_info(Status::InternalServerError, "")?
     {
@@ -70,7 +77,6 @@ async fn show_contest_list(mut db: Connection<DB>, user: Option<ApiUser>) -> Res
         .filter(contests::active.eq(true))
         .filter(filter)
         .order(contests::id.desc())
-        .limit(10)
         .load::<model::ContestWithId>(&mut **db)
         .await
         .map_err(|error| anyhow!("Failed to fetch contests: {}", error))
@@ -80,5 +86,5 @@ async fn show_contest_list(mut db: Connection<DB>, user: Option<ApiUser>) -> Res
 }
 
 pub fn routes() -> Vec<Route> {
-    routes![create_contest, create_contest_unauthorized, show_contest, contest_settings, show_contest_list,]
+    routes![create_contest, show_contest, contest_settings, show_contest_list,]
 }

@@ -16,7 +16,7 @@ pub struct Contest {
     pub teams_no: i32,
     pub questions_no: i32,
     pub active: bool,
-    pub owner_id: Option<i32>,
+    pub owner_id: i32,
 }
 
 #[derive(Debug, Clone, Copy, Queryable, Selectable, Insertable)]
@@ -36,7 +36,6 @@ pub struct Team {
     pub is_fake: bool,
     pub position: i32,
     pub contest_id: i32,
-    pub owner_id: Option<i32>,
 }
 
 #[derive(Debug, Clone, Queryable, Selectable, Insertable)]

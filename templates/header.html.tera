@@ -1,6 +1,6 @@
 <header>
-  <script src="/static/headerfooter.js"></script>
-  <script src="/static/jsonform.js"></script>
+  <script src="/scripts/headerfooter.js"></script>
+  <script src="/scripts/jsonform.js"></script>
   <div>
     <div>
       Gare online

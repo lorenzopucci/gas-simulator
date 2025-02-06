@@ -2,6 +2,7 @@ use std::fmt::Display;
 
 use diesel::prelude::Queryable;
 use diesel::{ExpressionMethods, QueryDsl};
+use lazy_static::lazy_static;
 use rocket::data::FromData;
 use rocket::http::{ContentType, HeaderMap, Status};
 use rocket::request::{FromRequest, Outcome};
@@ -86,6 +87,19 @@ impl<'r, 'o: 'r, T: serde::Serialize> Responder<'r, 'o> for ApiResponse<'o, T> {
     }
 }
 
+impl<'r, 'o: 'r, T: serde::Serialize> Responder<'r, 'o> for &'static ApiResponse<'o, T> {
+    fn respond_to(self, req: &'r Request) -> response::Result<'o> {
+        let mut resp = Response::build_from(Json(&self.body).respond_to(req).unwrap());
+        let mut resp = resp.status(self.status).header(ContentType::JSON);
+
+        for header in self.headers.iter() {
+            resp = resp.header(header)
+        }
+
+        resp.ok()
+    }
+}
+
 fn prop_error(err: impl Display, status: Status, msg: &str) -> ApiResponse<ApiError> {
     warn!("{}", err);
     ApiResponse {
@@ -97,9 +111,42 @@ fn prop_error(err: impl Display, status: Status, msg: &str) -> ApiResponse<ApiEr
 
 type ApiInputResult<'r, T> = Result<Json<T>, <Json<T> as FromData<'r>>::Error>;
 
+lazy_static! {
+    static ref UNAUTHORIZED_RESPONSE: ApiResponse<'static, ApiError> = ApiResponse {
+        status: Status::Unauthorized,
+        body: ApiError { error: "Non hai effettuato l'accesso".to_string() },
+        headers: HeaderMap::new(),
+    };
+}
+
+#[get("/<_..>", rank = 2)]
+pub async fn get_api_unauthorized() -> &'static ApiResponse<'static, ApiError> {
+    &*UNAUTHORIZED_RESPONSE
+}
+
+#[post("/<_..>", rank = 2)]
+pub async fn post_api_unauthorized() -> &'static ApiResponse<'static, ApiError> {
+    &*UNAUTHORIZED_RESPONSE
+}
+
+#[patch("/<_..>", rank = 2)]
+pub async fn patch_api_unauthorized() -> &'static ApiResponse<'static, ApiError> {
+    &*UNAUTHORIZED_RESPONSE
+}
+
+#[delete("/<_..>", rank = 2)]
+pub async fn delete_api_unauthorized() -> &'static ApiResponse<'static, ApiError> {
+    &*UNAUTHORIZED_RESPONSE
+}
+
 pub fn routes() -> Vec<Route> {
     routes![
+        get_api_unauthorized,
+        post_api_unauthorized,
+        patch_api_unauthorized,
+        delete_api_unauthorized,
         contests::get_contest,
+        contests::get_contests,
         contests::post_contest,
         contests::patch_contest,
         contests::delete_contest,

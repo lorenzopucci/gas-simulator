@@ -2,9 +2,9 @@
 <html lang="it">
   <head>
     <meta charset="utf-8">
-    <link rel="stylesheet" href="/static/create.css">
-    <script src="/static/jsonform.js"></script>
-    <script src="/static/create.js"></script>
+    <link rel="stylesheet" href="/styles/create.css">
+    <script src="/scripts/jsonform.js"></script>
+    <script src="/scripts/create.js"></script>
     <title>Create a new contest</title>
   </head>
   <body>
