@@ -1,7 +1,8 @@
 use anyhow::anyhow;
 use chrono::{DateTime, NaiveDateTime, TimeZone, Utc};
 use chrono_tz::Europe::Rome;
-use diesel::{update, ExpressionMethods, QueryDsl};
+use diesel::sql_types::{Integer, Interval};
+use diesel::{sql_query, update, ExpressionMethods, QueryDsl};
 use diesel::prelude::{AsChangeset, Queryable};
 use reqwest::header;
 use rocket::http::{Header, HeaderMap, Status};
@@ -9,6 +10,7 @@ use rocket::State;
 use rocket_db_pools::{diesel::prelude::RunQueryDsl, Connection};
 use serde::{Deserialize, Serialize};
 
+use crate::model::timedelta_to_pg_interval;
 use crate::{PhiQuadroLogin, DB};
 use crate::contest::import::create_contest;
 use crate::error::IntoStatusResult;
@@ -16,7 +18,6 @@ use super::{ApiError, ApiInputResult, ApiResponse, ApiUser};
 
 pub mod jollies;
 pub mod teams;
-pub mod questions;
 pub mod submissions;
 
 #[derive(Serialize)]
@@ -269,6 +270,22 @@ pub async fn patch_contest<'r>(
         .execute(&mut **db)
         .await
         .attach_info(Status::InternalServerError, "Errore incontrato durante l'aggiornamento delle impostazioni")?;
+
+    if let Some(start_time) = start_time {
+        let delta = timedelta_to_pg_interval(start_time - contest_start_time);
+        sql_query(include_str!("update_times_submissions.sql"))
+            .bind::<Interval, _>(delta)
+            .bind::<Integer, _>(id)
+            .execute(&mut **db)
+            .await
+            .attach_info(Status::InternalServerError, "Errore incontrato durante l'aggiornamento delle impostazioni")?;
+        sql_query(include_str!("update_times_jollies.sql"))
+            .bind::<Interval, _>(delta)
+            .bind::<Integer, _>(id)
+            .execute(&mut **db)
+            .await
+            .attach_info(Status::InternalServerError, "Errore incontrato durante l'aggiornamento delle impostazioni")?;
+    }
 
     Ok(ApiResponse {
         status: Status::NoContent,

@@ -5,7 +5,7 @@ CREATE TABLE users (
     password_hash   BYTEA NOT NULL,
     salt            BYTEA NOT NULL,
 
-    UNIQUE (username),
+    UNIQUE (username)
 );
 
 CREATE INDEX ON users(username);

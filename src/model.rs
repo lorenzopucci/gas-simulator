@@ -1,5 +1,5 @@
-use chrono::{DateTime, Utc};
-use diesel::{Insertable, Queryable, Selectable};
+use chrono::{DateTime, TimeDelta, Utc};
+use diesel::{data_types::PgInterval, Insertable, Queryable, Selectable};
 use serde::Serialize;
 
 #[derive(Debug, Clone, Queryable, Selectable, Insertable)]
@@ -117,4 +117,15 @@ pub struct TeamWithId {
     pub is_fake: bool,
     pub position: i32,
     pub contest_id: i32,
+}
+
+pub fn timedelta_to_pg_interval(delta: TimeDelta) -> PgInterval {
+    const MILLISECONDS_IN_DAYS: i64 = 1_000 * 86_400;
+
+    let millisecond = delta.num_milliseconds();
+    PgInterval {
+        microseconds: (millisecond % MILLISECONDS_IN_DAYS) * 1_000,
+        days: ((millisecond / MILLISECONDS_IN_DAYS) % 30) as i32,
+        months: ((millisecond / MILLISECONDS_IN_DAYS) / 30) as i32,
+    }
 }

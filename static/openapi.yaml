@@ -261,4 +261,107 @@ paths:
           description: The user was not authenticated
         "404":
           description: The requested contest was not found or is not accessible to the user
-
+  /api/contests/{id}/teams:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        description: The ID of the contest
+    get:
+      tags:
+        - contests
+      summary: Retrieves the IDs of the teams in a contest
+      responses:
+        "200":
+          description: A list of teams is being provided
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  teams:
+                    type: array
+                    items:
+                      type: integer
+                      description: The ID of a team
+        "401":
+          description: The user was not authenticated
+        "404":
+          description: The requested contest was not found or is not accessible to the user
+    post:
+      tags:
+        - contests
+      summary: Create a new team
+      description: Creates a new team
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                team_name:
+                  type: string
+                  description: The name of the team
+      responses:
+        "201":
+          description: The team was created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  team_id:
+                    type: number
+                    minimum: 1
+                    description: The ID of the team
+        "400":
+          description: The request was malformed
+        "401":
+          description: The user was not authenticated
+        "404":
+          description: The requested contest was not found or is not accessible to the user
+        "422":
+          description: The request had semantic errors
+  /api/contests/{id}/teams/{team_id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        description: The ID of the contest
+      - name: team_id
+        in: path
+        required: true
+        description: The ID of the team
+    get:
+      tags:
+        - contests
+      summary: Retrieves a team
+      responses:
+        "200":
+          description: A team is being provided
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    description: The ID of the team
+                    team_name: The name of the team
+                    is_fake: Whether the team is the copy of an official one
+        "401":
+          description: The user was not authenticated
+        "404":
+          description: The requested contest was not found or is not accessible to the user
+    delete:
+      tags:
+        - contests
+      summary: Deletes the team
+      responses:
+        "204":
+          description: The deletion was successful
+        "401":
+          description: The user was not authenticated
+        "404":
+          description: The requested contest was not found or is not accessible to the user
