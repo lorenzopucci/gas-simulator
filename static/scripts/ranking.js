@@ -16,7 +16,7 @@ window.onload = () => {
                     } else {
                         alert("Risposta errata!");
                     }
-                    window.location.reload();
+                    reload_content();
                 });
             } else {
                 response.json().then(body => {
@@ -37,7 +37,7 @@ window.onload = () => {
         (response) => {
             if (response.status == 201) {
                 alert("Jolly scelto!");
-                window.location.reload();
+                reload_content();
             } else {
                 response.json().then(body => {
                     alert(body.error)
@@ -47,7 +47,9 @@ window.onload = () => {
     );
 };
 
-setInterval(() => {
+setInterval(reload_content, 60000)
+
+function reload_content() {
     const hidden_teams = document.getElementById("toggle-visibility").getAttribute("onclick") == "show_fake_teams()";
 
     fetch(window.location.href).then(body => body.text()).then(text => {
@@ -62,7 +64,7 @@ setInterval(() => {
             hide_fake_teams();
         }
     })
-}, 60000)
+}
 
 function hide_fake_teams() {
     Array.from(document.getElementsByClassName("fake-team")).forEach(elem => {
