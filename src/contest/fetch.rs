@@ -12,9 +12,6 @@ use crate::model::{self, ContestJollies, ContestSubmissions};
 
 use crate::DB;
 
-const QUESTION_BONUS: [i64; 10] = [20, 15, 10, 8, 6, 5, 4, 3, 2, 1];
-const CONTEST_BONUS: [i64; 6] = [100, 60, 40, 30, 20, 10];
-
 pub async fn fetch_contest(db: &mut Connection<DB>, user_id: i32, id: i32) -> anyhow::Result<Option<Contest>> {
     use crate::schema::{contests, questions, teams};
 
@@ -29,9 +26,12 @@ pub async fn fetch_contest(db: &mut Connection<DB>, user_id: i32, id: i32) -> an
             contests::start_time,
             contests::drift,
             contests::drift_time,
+            contests::jolly_time,
             contests::teams_no,
             contests::questions_no,
             contests::active,
+            contests::question_bonus,
+            contests::contest_bonus,
             contests::owner_id,
         ))
         .filter(contests::dsl::id.eq(id))
@@ -48,10 +48,10 @@ pub async fn fetch_contest(db: &mut Connection<DB>, user_id: i32, id: i32) -> an
     }
 
     let questions = questions::dsl::questions
-        .select(questions::answer)
+        .select((questions::id, questions::answer))
         .filter(questions::contest_id.eq(id))
         .order(questions::position.asc())
-        .load::<i32>(db)
+        .load::<(i32, i32)>(db)
         .await?;
 
     let teams = teams::dsl::teams
@@ -68,7 +68,8 @@ pub async fn fetch_contest(db: &mut Connection<DB>, user_id: i32, id: i32) -> an
 
     let questions: Vec<Question> = questions
         .iter()
-        .map(|&answer| Question {
+        .map(|&(id, answer)| Question {
+            id,
             answer,
             score: 20,
             locked: false,
@@ -97,6 +98,9 @@ pub async fn fetch_contest(db: &mut Connection<DB>, user_id: i32, id: i32) -> an
         questions,
         teams,
         drift_time: TimeDelta::seconds(contest.drift_time as i64),
+        jolly_time: TimeDelta::seconds(contest.jolly_time as i64),
+        question_bonus: contest.question_bonus.iter().map(|&x| x.expect("Question bonus can't be null")).collect(),
+        contest_bonus: contest.contest_bonus.iter().map(|&x| x.expect("Contest bonus can't be null")).collect(),
     }))
 }
 
@@ -113,6 +117,8 @@ pub async fn fetch_contest_with_ranking(db: &mut Connection<DB>, user_id: i32, i
         drift,
         drift_time,
         start_time,
+        question_bonus,
+        contest_bonus,
         ..
     } = &mut contest;
 
@@ -196,13 +202,13 @@ pub async fn fetch_contest_with_ranking(db: &mut Connection<DB>, user_id: i32, i
                 && teams[t_pos].questions[q_pos].status != QuestionStatus::JustSolved
             {
                 teams[t_pos].questions[q_pos].score +=
-                    questions[q_pos].score + QUESTION_BONUS.get(question_solves[q_pos]).unwrap_or(&0);
+                    questions[q_pos].score + *question_bonus.get(question_solves[q_pos]).unwrap_or(&0) as i64;
 
                 question_solves[q_pos] += 1;
                 team_solves[t_pos] += 1;
 
                 if team_solves[t_pos] == questions.len() {
-                    teams[t_pos].score += CONTEST_BONUS.get(solves).unwrap_or(&0);
+                    teams[t_pos].score += *contest_bonus.get(solves).unwrap_or(&0) as i64;
                     solves += 1;
                 }
 

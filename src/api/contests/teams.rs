@@ -148,14 +148,17 @@ pub async fn post_team<'r>(
 pub async fn get_team<'r>(
     id: i32,
     team_id: i32,
-    mut db: Connection<DB>
+    mut db: Connection<DB>,
+    api_user: ApiUser,
 ) -> Result<ApiResponse<'r, TeamGetResponse>, ApiResponse<'r, ApiError>> {
-    use crate::schema::teams;
+    use crate::schema::{contests, teams};
 
     let teams = teams::dsl::teams
+        .inner_join(contests::table)
         .select((teams::id, teams::team_name, teams::is_fake))
         .filter(teams::id.eq(team_id))
         .filter(teams::contest_id.eq(id))
+        .filter(contests::owner_id.eq(api_user.user_id))
         .order(teams::position.asc())
         .load::<TeamGetResponse>(&mut **db)
         .await
@@ -169,7 +172,7 @@ pub async fn get_team<'r>(
         }),
         None => Err(ApiResponse {
             status: Status::NotFound,
-            body: ApiError { error: "".to_string() },
+            body: ApiError { error: "La squadra non esiste o non ti appartiene".to_string() },
             headers: HeaderMap::new(),
         }),
     }
@@ -179,9 +182,27 @@ pub async fn get_team<'r>(
 pub async fn delete_team<'r>(
     id: i32,
     team_id: i32,
-    mut db: Connection<DB>
+    mut db: Connection<DB>,
+    api_user: ApiUser,
 ) -> Result<ApiResponse<'r, ()>, ApiResponse<'r, ApiError>> {
-    use crate::schema::teams;
+    use crate::schema::{contests, teams};
+
+    let exists: i64 = contests::dsl::contests
+        .filter(contests::id.eq(id))
+        .filter(contests::owner_id.eq(api_user.user_id))
+        .filter(contests::active.eq(true))
+        .count()
+        .get_result(&mut **db)
+        .await
+        .attach_info(Status::InternalServerError, "Errore riscontrato durante l'operazione")?;
+
+    if exists == 0 {
+        return Err(ApiResponse {
+            status: Status::NotFound,
+            body: ApiError { error: "La gara non esiste o non ti appartiene".to_string(), },
+            headers: HeaderMap::new(),
+        });
+    }
 
     let pos = diesel::delete(teams::dsl::teams)
         .filter(teams::id.eq(team_id))

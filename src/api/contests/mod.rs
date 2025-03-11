@@ -34,6 +34,9 @@ pub struct ContestPostData<'r> {
     duration: u16,
     drift: u32,
     drift_time: u16,
+    jolly_time: u16,
+    question_bonus: [i32; 10],
+    contest_bonus: [i32; 10],
 }
 
 #[derive(Serialize)]
@@ -58,6 +61,9 @@ pub struct ContestPatchData<'r> {
     duration: Option<u16>,
     drift: Option<u32>,
     drift_time: Option<u16>,
+    jolly_time: Option<u16>,
+    question_bonus: Option<[i32; 10]>,
+    contest_bonus: Option<[i32; 10]>,
 }
 
 #[derive(AsChangeset)]
@@ -67,6 +73,9 @@ pub struct ContestUpdateForm {
     pub duration: Option<i32>,
     pub drift: Option<i32>,
     pub drift_time: Option<i32>,
+    pub jolly_time: Option<i32>,
+    pub question_bonus: Option<Vec<Option<i32>>>,
+    pub contest_bonus: Option<Vec<Option<i32>>>,
 }
 
 #[get("/contests")]
@@ -133,6 +142,9 @@ pub async fn post_contest<'r>(
         start_time,
         contest.drift,
         contest.drift_time as u32 * 60,
+        contest.jolly_time as u32 * 60,
+        contest.question_bonus,
+        contest.contest_bonus,
     )
     .await?;
 
@@ -230,6 +242,9 @@ pub async fn patch_contest<'r>(
 
     let duration = data.duration.map(|duration| duration as i32 * 60);
     let drift_time = data.drift_time.map(|drift_time| drift_time as i32 * 60);
+    let jolly_time = data.jolly_time.map(|jolly_time| jolly_time as i32 * 60);
+    let question_bonus = data.question_bonus.map(|question_bonus| question_bonus.into_iter().map(Some).collect());
+    let contest_bonus = data.contest_bonus.map(|question_bonus| question_bonus.into_iter().map(Some).collect());
 
     let contest_start_time = contests::dsl::contests
         .select(contests::start_time)
@@ -266,6 +281,9 @@ pub async fn patch_contest<'r>(
             duration,
             drift,
             drift_time,
+            jolly_time,
+            question_bonus,
+            contest_bonus,
         })
         .execute(&mut **db)
         .await

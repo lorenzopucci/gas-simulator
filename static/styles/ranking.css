@@ -28,14 +28,14 @@ a:link, a:hover, a:active, a:visited {
     width: fit-content;
 }
 
-#toggle-visibility {
+#toggle-visibility, #toggle-submitter {
     margin: 5px;
     padding: 5px;
     background-color: #aaaaaa;
     border-radius: 5px;
 }
 
-#toggle-visibility:hover {
+#toggle-visibility:hover, #toggle-submitter:hover {
     background-color: #bbbbbb;
 }
 
@@ -114,6 +114,72 @@ a:link, a:hover, a:active, a:visited {
 
 #ranking tr:hover td.question-attempted {
     background-color: rgb(252, 131, 131);
+}
+
+#submitter-background {
+    visibility: hidden;
+    position: fixed;
+    width: 100vw;
+    height: 100vh;
+    z-index: 100;
+}
+
+#submitter {
+    position: fixed;
+    visibility: hidden;
+    background-color: #bbbbbb;
+    height: 250px;
+    width: min(90%, 600px);
+    top: calc(50vh - 150px);
+    left: calc(50vw - min(45%, 300px));
+    border-radius: 3px;
+    border: 3px solid #888888;
+    z-index: 100;
+    display: flex;
+    padding: 10px;
+}
+
+#submitter > form {
+    flex: 50%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-around;
+}
+
+#submitter > form > div {
+    display: flex;
+    height: 30px;
+    width: 90%;
+}
+
+#submitter > div {
+    width: 0px;
+    border: 1px solid #666666;
+    height: 100%;
+}
+
+#submitter label {
+    flex: 20%;
+}
+
+#submitter div:not(:last-child) label {
+    display: flex;
+    align-items: center;
+    justify-content: right;
+    padding-right: 10px;
+}
+
+select {
+    background-color: white;
+}
+
+#submitter input, #submitter select {
+    border-radius: 3px;
+    flex: 70%;
+    height: 30px;
+    padding: 0px 2px;
 }
 
 img {

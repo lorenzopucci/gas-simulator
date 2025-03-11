@@ -54,6 +54,9 @@ pub async fn create_contest(
     start_time: DateTime<Utc>,
     drift: u32,
     drift_time: u32,
+    jolly_time: u32,
+    question_bonus: [i32; 10],
+    contest_bonus: [i32; 10],
 ) -> Result<i32> {
     use crate::schema::{contests, jollies, questions, submissions, teams};
 
@@ -86,6 +89,21 @@ pub async fn create_contest(
         .map_err(|_| anyhow!("Drift time should be a reasonable value ({} given)", drift_time))
         .attach_info(Status::UnprocessableEntity, "Durata deriva non valida")?;
 
+    let jolly_time = jolly_time
+        .try_into()
+        .map_err(|_| anyhow!("Jolly time should be a reasonable value ({} given)", jolly_time))
+        .attach_info(Status::UnprocessableEntity, "Durata scelta jolly non valida")?;
+
+    let question_bonus = question_bonus
+        .into_iter()
+        .map(Some)
+        .collect::<Vec<_>>();
+
+    let contest_bonus = contest_bonus
+        .into_iter()
+        .map(Some)
+        .collect::<Vec<_>>();
+
     // Setting up a phiquadro client
     let mut client = get_phiquadro_client(phi)
         .await
@@ -115,9 +133,12 @@ pub async fn create_contest(
             start_time,
             drift,
             drift_time,
+            jolly_time,
             teams_no: teams.len() as i32,
             questions_no: answers.len() as i32,
             active: false,
+            question_bonus,
+            contest_bonus,
             owner_id: owner_id,
         })
         .returning(contests::id)

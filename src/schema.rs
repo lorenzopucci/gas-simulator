@@ -11,9 +11,12 @@ diesel::table! {
         start_time -> Timestamptz,
         drift -> Int4,
         drift_time -> Int4,
+        jolly_time -> Int4,
         teams_no -> Int4,
         questions_no -> Int4,
         active -> Bool,
+        question_bonus -> Array<Nullable<Int4>>,
+        contest_bonus -> Array<Nullable<Int4>>,
         owner_id -> Int4,
     }
 }
@@ -72,8 +75,6 @@ diesel::table! {
         id -> Int4,
         #[max_length = 255]
         username -> Varchar,
-        #[max_length = 255]
-        email -> Varchar,
         password_hash -> Bytea,
         salt -> Bytea,
     }

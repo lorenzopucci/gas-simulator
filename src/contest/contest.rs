@@ -3,6 +3,7 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Copy, Serialize, Deserialize)]
 pub struct Question {
+    pub id: i32,
     pub answer: i32,
     pub score: i64,
     pub locked: bool,
@@ -45,4 +46,7 @@ pub struct Contest {
     pub start_time: DateTime<Utc>,
     pub drift: i32,
     pub drift_time: Duration,
+    pub jolly_time: Duration,
+    pub question_bonus: Vec<i32>,
+    pub contest_bonus: Vec<i32>,
 }

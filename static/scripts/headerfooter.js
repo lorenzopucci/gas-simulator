@@ -33,7 +33,6 @@ window.onload = () => {
             return {
                 "username": data.get("register_username"),
                 "password": data.get("register_password"),
-                "email": data.get("register_email"),
             };
         },
         (response) => {

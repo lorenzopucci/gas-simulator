@@ -1,7 +1,6 @@
 CREATE TABLE users (
     id              INTEGER PRIMARY KEY NOT NULL GENERATED ALWAYS AS IDENTITY,
     username        VARCHAR(255) NOT NULL,
-    email           VARCHAR(255) NOT NULL,
     password_hash   BYTEA NOT NULL,
     salt            BYTEA NOT NULL,
 
@@ -28,17 +27,22 @@ CREATE TABLE contests (
     start_time      TIMESTAMP WITH TIME ZONE NOT NULL,
     drift           INTEGER NOT NULL,
     drift_time      INTEGER NOT NULL,
+    jolly_time      INTEGER NOT NULL,
     teams_no        INTEGER NOT NULL,
     questions_no    INTEGER NOT NULL,
     active          BOOLEAN NOT NULL,
+    question_bonus  INTEGER[10] NOT NULL CHECK (array_position(question_bonus, NULL) IS NULL),
+    contest_bonus   INTEGER[10] NOT NULL CHECK (array_position(contest_bonus, NULL) IS NULL),
     owner_id        INTEGER NOT NULL REFERENCES users(id),
 
     CONSTRAINT positive_duration CHECK (duration >= 0),
     CONSTRAINT positive_drift CHECK (drift >= 0),
     CONSTRAINT positive_drift_time CHECK (drift_time >= 0),
+    CONSTRAINT positive_jolly_time CHECK (jolly_time >= 0),
     CONSTRAINT positive_teams CHECK (teams_no >= 0),
     CONSTRAINT positive_questions CHECK (questions_no >= 0),
-    CONSTRAINT reasonable_drift_time CHECK (drift_time <= duration)
+    CONSTRAINT reasonable_drift_time CHECK (drift_time <= duration),
+    CONSTRAINT reasonable_jolly_time CHECK (jolly_time <= duration)
 );
 
 CREATE TABLE questions(

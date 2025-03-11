@@ -70,6 +70,7 @@ async fn show_contest_list(mut db: Connection<DB>, user: Option<ApiUser>) -> Res
             contests::start_time,
             contests::drift,
             contests::drift_time,
+            contests::jolly_time,
             contests::teams_no,
             contests::questions_no,
             contests::active,

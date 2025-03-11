@@ -100,6 +100,7 @@ header > div:not(#auth-background) {
 #auth-form > form > div {
     display: flex;
     width: 90%;
+    height: 30px;
 }
 
 #auth-form label {

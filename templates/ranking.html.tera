@@ -2,19 +2,105 @@
 <html lang="it">
   <head>
     <meta charset="utf-8">
-    <meta http-equiv="refresh" content="60">
     <link rel="stylesheet" href="/styles/ranking.css">
     <script src="/scripts/ranking.js"></script>
+    <script src="/scripts/jsonform.js"></script>
     <title>{{name}}</title>
   </head>
   <body>
-    <div id ="page-intro">
+    <div id="submitter-background" onclick="hide_submitter(); event.stopPropagation();">
+      <div id="submitter" onclick="event.stopPropagation();">
+        <form id="submit-answer" method="post" action="/api/contests/{{id}}/submissions">
+          <h2>Manda una risposta</h2>
+          <div>
+            <label for="question-team">
+              Squadra
+            </label>
+            <select name="team_id" id="question-team">
+              {% for team in teams %}
+                {% if not team.is_fake %}
+                  <option value="{{team.id}}">{{team.name}}</option>
+                {% endif %}
+              {% endfor %}
+            </select>
+          </div>
+
+          <div>
+            <label for="question-question">
+              Quesito
+            </label>
+            <select name="question_id" id="question-question">
+              {% for question in questions %}
+                <option value="{{question.id}}">{{loop.index}}</option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <div>
+            <label for="question-answer">
+              Risposta
+            </label>
+            <input name="answer" id="question-answer" type="number" required>
+          </div>
+
+          <div>
+            <label for="question-send" hidden>
+              Invia!
+            </label>
+            <input id="question-send" type="submit" value="Invia!" required>
+          </div>
+        </form>
+        <div>
+        </div>
+        <form id="submit-jolly" method="post" action="/api/contests/{{id}}/jollies">
+          <h2>Scegli il jolly</h2>
+          <div>
+            <label for="jolly-team">
+              Squadra
+            </label>
+            <select name="team_id" id="jolly-team">
+              {% for team in teams %}
+                {% if not team.is_fake %}
+                  <option value="{{team.id}}">{{team.name}}</option>
+                {% endif %}
+              {% endfor %}
+            </select>
+          </div>
+
+          <div>
+            <label for="jolly-question">
+              Quesito
+            </label>
+            <select name="question_id" id="jolly-question">
+              {% for question in questions %}
+                <option value="{{question.id}}">{{loop.index}}</option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <div></div>
+
+          <div>
+            <label for="jolly-send" hidden>
+              Scegli il jolly!
+            </label>
+            <input id="jolly-send" type="submit" value="Scegli il jolly!" required>
+          </div>
+        </form>
+      </div>
+    </div>
+    <div id="page-intro">
       <a id="contest-title" href="https://www.phiquadro.it/gara_a_squadre/classifica_new.php?id_gara={{phiquadro_id}}&id_sess={{phiquadro_sess}}">
         {{name}}
       </a>
-      <button id="toggle-visibility" type="button" onclick="hide_fake_teams()">
-        Nascondi squadre fantasma
-      </button>
+      <div id="buttons">
+        <button id="toggle-visibility" type="button" onclick="hide_fake_teams()">
+          Nascondi squadre fantasma
+        </button>
+        <button id="toggle-submitter" type="button" onclick="show_submitter()">
+          Manda risposte
+        </button>
+      </div>
     </div>
     <table id="ranking">
       <tr>

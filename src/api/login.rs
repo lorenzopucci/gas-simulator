@@ -24,8 +24,6 @@ pub struct SignupDataForm<'r> {
     username: &'r str,
     #[validate(length(min = 8))]
     password: &'r str,
-    #[validate(email)]
-    email: &'r str,
 }
 
 #[derive(Deserialize)]
@@ -78,7 +76,6 @@ pub async fn signup(
     insert_into(users::dsl::users)
         .values(User {
             username: signup_data.username.to_string(),
-            email: signup_data.email.to_string(),
             password_hash: hash.to_vec(),
             salt: salt.to_vec(),
         })

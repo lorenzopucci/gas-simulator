@@ -57,6 +57,19 @@ body {
     padding: 0px 4px;
 }
 
+.fake-input {
+    display: flex;
+    flex-direction: row;
+    flex-flow: row wrap;
+}
+
+.fake-input > input {
+    width: 15.8%;
+    border-radius: 3px;
+    margin: 2px 2px;
+    padding: 0px 4px;
+}
+
 #submit-label {
     height: 0;
     flex: 0%;

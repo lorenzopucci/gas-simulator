@@ -13,9 +13,12 @@ pub struct Contest {
     pub start_time: DateTime<Utc>,
     pub drift: i32,
     pub drift_time: i32,
+    pub jolly_time: i32,
     pub teams_no: i32,
     pub questions_no: i32,
     pub active: bool,
+    pub question_bonus: Vec<Option<i32>>,
+    pub contest_bonus: Vec<Option<i32>>,
     pub owner_id: i32,
 }
 
@@ -62,7 +65,6 @@ pub struct Jolly {
 #[diesel(check_for_backend(diesel::pg::Pg))]
 pub struct User {
     pub username: String,
-    pub email: String,
     pub password_hash: Vec<u8>,
     pub salt: Vec<u8>,
 }
@@ -105,6 +107,7 @@ pub struct ContestWithId {
     pub start_time: DateTime<Utc>,
     pub drift: i32,
     pub drift_time: i32,
+    pub jolly_time: i32,
     pub teams_no: i32,
     pub questions_no: i32,
     pub bool: bool,

@@ -38,14 +38,27 @@ body {
     flex: 45%;
 }
 
-#create > label {
+#create > label, .fake-label {
     text-align: right;
     padding: 2px 10px;
 }
 
-input {
+#create > input, .fake-input {
     border-radius: 3px;
     margin: 2px 0px;
+    padding: 0px 4px;
+}
+
+.fake-input {
+    display: flex;
+    flex-direction: row;
+    flex-flow: row wrap;
+}
+
+.fake-input > input {
+    width: 15.8%;
+    border-radius: 3px;
+    margin: 2px 2px;
     padding: 0px 4px;
 }
 

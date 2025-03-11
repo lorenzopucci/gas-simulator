@@ -108,12 +108,7 @@
             <input id="register_password" name="register_password" type="password" required>
           </div>
 
-          <div>
-            <label for="register_email">
-              Email
-            </label>
-            <input id="register_email" name="register_email" required>
-          </div>
+          <div></div>
 
           <div>
             <label for="registrati" hidden>
