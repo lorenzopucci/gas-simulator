@@ -148,6 +148,24 @@ paths:
                   type: integer
                   minimum: 0
                   description: The duration of the drift, in minutes
+                jolly_time:
+                  type: integer
+                  minimum: 0
+                  description: The time to choose a jolly, in minutes
+                question_bonus:
+                  type: array
+                  items:
+                    type: integer
+                  minItems: 10
+                  maxItems: 10
+                  description: The bonus awarded for the first solution to a question
+                contest_bonus:
+                  type: array
+                  items:
+                    type: integer
+                  minItems: 10
+                  maxItems: 10
+                  description: The bonus awarded for the first solution to all questions
       responses:
         "201":
           description: The contest was created
@@ -206,6 +224,24 @@ paths:
                   drift_duration:
                     type: number
                     description: The duration of the drift of the contest in seconds
+                  jolly_time:
+                    type: integer
+                    minimum: 0
+                    description: The time to choose a jolly, in minutes
+                  question_bonus:
+                    type: array
+                    items:
+                      type: integer
+                    minItems: 10
+                    maxItems: 10
+                    description: The bonus awarded for the first solution to a question
+                  contest_bonus:
+                    type: array
+                    items:
+                      type: integer
+                    minItems: 10
+                    maxItems: 10
+                    description: The bonus awarded for the first solution to all questions
         "401":
           description: The user was not authenticated
         "404":
@@ -237,6 +273,24 @@ paths:
                   type: integer
                   minimum: 0
                   description: The duration of the drift, in minutes
+                jolly_time:
+                  type: integer
+                  minimum: 0
+                  description: The time to choose a jolly, in minutes
+                question_bonus:
+                  type: array
+                  items:
+                    type: integer
+                  minItems: 10
+                  maxItems: 10
+                  description: The bonus awarded for the first solution to a question
+                contest_bonus:
+                  type: array
+                  items:
+                    type: integer
+                  minItems: 10
+                  maxItems: 10
+                  description: The bonus awarded for the first solution to all questions
       responses:
         "204":
           description: The update was successful
@@ -348,8 +402,12 @@ paths:
                   id:
                     type: integer
                     description: The ID of the team
-                    team_name: The name of the team
-                    is_fake: Whether the team is the copy of an official one
+                  team_name:
+                    type: string
+                    description: The name of the team
+                  is_fake:
+                    type: boolean
+                    description: Whether the team is the copy of an official one
         "401":
           description: The user was not authenticated
         "404":
@@ -361,6 +419,219 @@ paths:
       responses:
         "204":
           description: The deletion was successful
+        "401":
+          description: The user was not authenticated
+        "404":
+          description: The requested contest was not found or is not accessible to the user
+  /api/contests/{id}/submissions:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        description: The ID of the contest
+    get:
+      tags:
+        - contests
+      summary: Retrieves the IDs of the submissions in a contest
+      responses:
+        "200":
+          description: A list of submissions is being provided
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  teams:
+                    type: array
+                    items:
+                      type: integer
+                      description: The ID of a submission
+        "401":
+          description: The user was not authenticated
+        "404":
+          description: The requested contest was not found or is not accessible to the user
+    post:
+      tags:
+        - contests
+      summary: Create a new submission
+      description: Creates a new submission
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                answer:
+                  type: integer
+                  description: The answer to be submitted
+                team_id:
+                  type: integer
+                  description: The team submitting
+                question_id:
+                  type: integer
+                  description: The question submitted
+      responses:
+        "201":
+          description: The submission was created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  submission_id:
+                    type: number
+                    minimum: 1
+                    description: The ID of the submission
+                  correct:
+                    type: boolean
+                    description: Whether the answer was correct
+        "400":
+          description: The request was malformed
+        "401":
+          description: The user was not authenticated
+        "403":
+          description: Submissions are not allowed
+        "404":
+          description: The requested contest was not found or is not accessible to the user
+        "422":
+          description: The request had semantic errors
+  /api/contests/{id}/submissions/{submission_id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        description: The ID of the contest
+      - name: submission_id
+        in: path
+        required: true
+        description: The ID of the submission
+    get:
+      tags:
+        - contests
+      summary: Retrieves a submission
+      responses:
+        "200":
+          description: A submission is being provided
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    description: The ID of the team
+                  answer:
+                    type: integer
+                    description: The answer submitted
+                  team_id:
+                    type: integer
+                    description: The team submitting
+                  question_id:
+                    type: integer
+                    description: The question submitted
+        "401":
+          description: The user was not authenticated
+        "404":
+          description: The requested contest was not found or is not accessible to the user
+  /api/contests/{id}/jollies:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        description: The ID of the contest
+    get:
+      tags:
+        - contests
+      summary: Retrieves the IDs of the jollies in a contest
+      responses:
+        "200":
+          description: A list of jollies is being provided
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  teams:
+                    type: array
+                    items:
+                      type: integer
+                      description: The ID of a jolly
+        "401":
+          description: The user was not authenticated
+        "404":
+          description: The requested contest was not found or is not accessible to the user
+    post:
+      tags:
+        - contests
+      summary: Create a new jolly
+      description: Creates a new jolly
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                team_id:
+                  type: integer
+                  description: The team submitting the jolly
+                question_id:
+                  type: integer
+                  description: The question submitted as jolly
+      responses:
+        "201":
+          description: The jolly was created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  submission_id:
+                    type: number
+                    minimum: 1
+                    description: The ID of the jolly
+        "400":
+          description: The request was malformed
+        "401":
+          description: The user was not authenticated
+        "403":
+          description: Jolly submissions are not allowed
+        "404":
+          description: The requested contest was not found or is not accessible to the user
+        "422":
+          description: The request had semantic errors
+  /api/contests/{id}/jollies/{jolly_id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        description: The ID of the contest
+      - name: jolly_id
+        in: path
+        required: true
+        description: The ID of the jolly
+    get:
+      tags:
+        - contests
+      summary: Retrieves a jolly
+      responses:
+        "200":
+          description: A jolly is being provided
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    description: The ID of the team
+                  team_id:
+                    type: integer
+                    description: The team submitting the jolly
+                  question_id:
+                    type: integer
+                    description: The question submitted as jolly
         "401":
           description: The user was not authenticated
         "404":

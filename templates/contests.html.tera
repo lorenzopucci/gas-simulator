@@ -19,7 +19,7 @@
           <div class="contest-info">
             <div>
               <img
-                class="icon"
+                class="contest-icon"
                 src="icons/question.svg"
                 height="20"
               >
@@ -28,7 +28,7 @@
 
             <div>
               <img
-                class="icon"
+                class="contest-icon"
                 src="icons/team.svg"
                 height="20"
               >
@@ -37,7 +37,7 @@
 
             <div>
               <img
-                class="icon"
+                class="contest-icon"
                 src="icons/clock.svg"
                 height="20"
               >

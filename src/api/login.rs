@@ -5,12 +5,15 @@ use chrono::Duration;
 use diesel::{insert_into, prelude::Queryable, ExpressionMethods, QueryDsl};
 use ring::{digest, pbkdf2};
 use ring::rand::{self, SecureRandom};
-use rocket::{http::{HeaderMap, Status}, serde::json::Json};
+use rocket::serde::json::Json;
+use rocket::http::{HeaderMap, Status};
 use rocket_db_pools::{diesel::prelude::RunQueryDsl, Connection};
 use serde::{Deserialize, Serialize};
 use validator::Validate;
 
-use crate::{api::prop_error, model::{Token, User}, DB};
+use crate::api::prop_error;
+use crate::model::{Token, User};
+use crate::DB;
 
 use super::{ApiError, ApiResponse};
 
@@ -56,7 +59,7 @@ pub async fn signup(
         .map_err(|err| prop_error(
             err,
             Status::UnprocessableEntity,
-            "Assicurati di inserire un'indirizzo mail valido e una password di almeno 8 caratteri"
+            "Assicurati di inserire una password di almeno 8 caratteri"
         ))?;
 
     let rng = rand::SystemRandom::new();

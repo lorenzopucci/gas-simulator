@@ -53,6 +53,9 @@ pub struct ContestGetResponse {
     start_time: NaiveDateTime,
     drift: i32,
     drift_time: i32,
+    jolly_time: i32,
+    question_bonus: Vec<Option<i32>>,
+    contest_bonus: Vec<Option<i32>>,
 }
 
 #[derive(Deserialize)]
@@ -175,6 +178,9 @@ pub async fn get_contest<'r>(
             contests::start_time,
             contests::drift,
             contests::drift_time,
+            contests::jolly_time,
+            contests::question_bonus,
+            contests::contest_bonus,
         ))
         .filter(contests::dsl::id.eq(id))
         .filter(contests::active.eq(true))

@@ -3,7 +3,19 @@
   <script src="/scripts/jsonform.js"></script>
   <div>
     <div>
-      Gare online
+      <div class="header-button" onclick="redirect_to_source();">
+        <div>
+          Simulatore GaS
+        </div>
+        <div>
+          <img
+            class="icon"
+            src="/icons/code.svg"
+            height="20"
+          >
+        </div>
+      </div>
+
     </div>
     {% if user %}
       <div class="header-button" onclick="redirect_to_create();">

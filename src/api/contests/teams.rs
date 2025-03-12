@@ -5,8 +5,9 @@ use reqwest::header;
 use rocket::http::{Header, HeaderMap, Status};
 use rocket_db_pools::{diesel::prelude::RunQueryDsl, Connection};
 use serde::{Deserialize, Serialize};
+use validator::Validate;
 
-use crate::api::ApiUser;
+use crate::api::{prop_error, ApiUser};
 use crate::model::Team;
 use crate::DB;
 use crate::error::IntoStatusResult;
@@ -24,8 +25,9 @@ pub struct TeamGetResponse {
     is_fake: bool,
 }
 
-#[derive(Deserialize)]
+#[derive(Deserialize, Validate)]
 pub struct TeamPostData<'r> {
+    #[validate(length(max = 35))]
     team_name: &'r str,
 }
 
@@ -90,6 +92,14 @@ pub async fn post_team<'r>(
             headers: HeaderMap::new(),
         });
     };
+
+    team
+        .validate()
+        .map_err(|err| prop_error(
+            err,
+            Status::UnprocessableEntity,
+            "Assicurati che il nome della squadra sia di al più 35 caratteri."
+        ))?;
 
     let contest_owner = contests::dsl::contests
         .select(contests::owner_id)

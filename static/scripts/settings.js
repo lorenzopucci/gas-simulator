@@ -34,6 +34,10 @@ async function delete_team(contest_id, id) {
     }).then(response => {
         if (response.status == 204) {
             window.location.reload();
+        } else {
+            response.json().then(body => {
+                alert(body.error)
+            });
         }
     })
 }
@@ -42,6 +46,10 @@ function reload_callback(response) {
     console.log(response);
     if (response.status == 201) {
         window.location.reload();
+    } else {
+        response.json().then(body => {
+            alert(body.error)
+        });
     }
 }
 
