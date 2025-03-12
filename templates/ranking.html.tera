@@ -102,66 +102,64 @@
         </button>
       </div>
     </div>
-    <div id="ranking-div">
-      <table id="ranking">
-        <tr>
-          <th style="visibility: hidden"></th>
-          {% for question in questions %}
-            <th class="question-header">
-              <div>
-                Q. {{loop.index}}
+    <table id="ranking">
+      <tr>
+        <th style="visibility: hidden"></th>
+        {% for question in questions %}
+          <th class="question-header">
+            <div>
+              Q. {{loop.index}}
+            </div>
+            <div>
+              {{question.score}}
+              {% if question.locked %}
+                <img
+                  class="icon"
+                  src="/icons/lock.svg"
+                  height="15"
+                >
+              {% endif %}
+            </div>
+          </th>
+        {% endfor %}
+      </tr>
+      {% for team in teams %}
+        {% if team.is_fake %}
+          <tr class="fake-team">
+        {% else %}
+          <tr class="real-team">
+        {% endif %}
+          <td class="team-header">
+            <div style="display: flex">
+              <div class="team-rank">
+                {{loop.index}}
               </div>
-              <div>
-                {{question.score}}
-                {% if question.locked %}
-                  <img
-                    class="icon"
-                    src="/icons/lock.svg"
-                    height="15"
-                  >
-                {% endif %}
+              <div class="team-name">
+                {{team.name}}
               </div>
-            </th>
+            </div>
+            <div class="team-score">
+              {{team.score}}
+            </div>
+          </td>
+          {% for question in team.questions %}
+            {% if question.status == "Solved" %}
+              <td class="question question-solved">
+            {% elif question.status == "Attempted" %}
+              <td class="question question-attempted">
+            {% elif question.status == "JustSolved" %}
+              <td class="question question-just-solved">
+            {% else %}
+              <td class="question question-not-attempted">
+            {% endif %}
+              {{question.score}}
+            {% if question.jolly %}
+              <b>J</b>
+            {% endif %}
+            </td>
           {% endfor %}
         </tr>
-        {% for team in teams %}
-          {% if team.is_fake %}
-            <tr class="fake-team">
-          {% else %}
-            <tr class="real-team">
-          {% endif %}
-            <td class="team-header">
-              <div style="display: flex">
-                <div class="team-rank">
-                  {{loop.index}}
-                </div>
-                <div class="team-name">
-                  {{team.name}}
-                </div>
-              </div>
-              <div class="team-score">
-                {{team.score}}
-              </div>
-            </td>
-            {% for question in team.questions %}
-              {% if question.status == "Solved" %}
-                <td class="question question-solved">
-              {% elif question.status == "Attempted" %}
-                <td class="question question-attempted">
-              {% elif question.status == "JustSolved" %}
-                <td class="question question-just-solved">
-              {% else %}
-                <td class="question question-not-attempted">
-              {% endif %}
-                {{question.score}}
-              {% if question.jolly %}
-                <b>J</b>
-              {% endif %}
-              </td>
-            {% endfor %}
-          </tr>
-        {% endfor %}
-      </table>
-    </div>
+      {% endfor %}
+    </table>
  </body>
 </html>
