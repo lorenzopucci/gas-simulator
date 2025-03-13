@@ -27,7 +27,7 @@
       <label for="start_time">
         Orario di partenza
       </label>
-      <input name="start_time" id="start_time" type="datetime-local"  type="number" required>
+      <input name="start_time" id="start_time" type="datetime-local" type="number" required>
 
       <label for="duration">
         Durata (minuti)

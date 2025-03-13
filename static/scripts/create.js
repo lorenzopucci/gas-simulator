@@ -1,3 +1,7 @@
+function pad(number) {
+    return number <= 9 ? `0${number}` : `${number}`;
+}
+
 window.onload = () => {
     setup_form(
         "create",
@@ -28,4 +32,7 @@ window.onload = () => {
             }
         },
     );
+
+    const datetime = new Date();
+    document.getElementById("start_time").setAttribute("value", `${datetime.getFullYear()}-${pad(datetime.getMonth() + 1)}-${pad(datetime.getDate())} ${pad(datetime.getHours())}:${pad(datetime.getMinutes())}`);
 };

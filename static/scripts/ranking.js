@@ -17,6 +17,7 @@ window.onload = () => {
                         alert("Risposta errata!");
                     }
                     reload_content();
+                    hide_submitter();
                 });
             } else {
                 response.json().then(body => {
@@ -38,6 +39,7 @@ window.onload = () => {
             if (response.status == 201) {
                 alert("Jolly scelto!");
                 reload_content();
+                hide_submitter();
             } else {
                 response.json().then(body => {
                     alert(body.error)
