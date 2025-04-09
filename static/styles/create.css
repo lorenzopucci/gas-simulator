@@ -10,7 +10,7 @@ html {
     height: 100%;
 }
 
-body {
+#page-wrapper {
     min-height: 100%;
     display: flex;
     justify-content: center;

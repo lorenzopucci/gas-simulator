@@ -14,39 +14,38 @@ use crate::{model, DB};
 
 #[get("/create")]
 async fn create_contest(api_user: Option<ApiUser>) -> Result<Template, Status> {
-    if api_user.is_some() {
-        Ok(Template::render("create", context! {}))
-    } else {
-        Err(Status::Unauthorized)
+    match api_user {
+        Some(user) => Ok(Template::render("create", context! { user })),
+        None => Err(Status::Unauthorized),
     }
 }
 
 #[get("/contest/<id>")]
-pub async fn show_contest(id: i32, api_user: Option<ApiUser>, mut db: Connection<DB>) -> Result<Template, Status> {
-    let Some(api_user) = api_user else {
+pub async fn show_contest(id: i32, user: Option<ApiUser>, mut db: Connection<DB>) -> Result<Template, Status> {
+    let Some(user) = user else {
         return Err(Status::Unauthorized)
     };
 
-    match fetch_contest_with_ranking(&mut db, api_user.user_id, id)
+    match fetch_contest_with_ranking(&mut db, user.user_id, id)
         .await
         .attach_info(Status::InternalServerError, "")?
     {
-        Some(contest) => Ok(Template::render("ranking", contest)),
+        Some(contest) => Ok(Template::render("ranking", context! { contest, user })),
         None => Err(Status::NotFound),
     }
 }
 
 #[get("/settings/<id>")]
-async fn contest_settings(id: i32, api_user: Option<ApiUser>, mut db: Connection<DB>) -> Result<Template, Status> {
-    let Some(api_user) = api_user else {
+async fn contest_settings(id: i32, user: Option<ApiUser>, mut db: Connection<DB>) -> Result<Template, Status> {
+    let Some(user) = user else {
         return Err(Status::Unauthorized)
     };
 
-    match fetch_contest(&mut db, api_user.user_id, id)
+    match fetch_contest(&mut db, user.user_id, id)
         .await
         .attach_info(Status::InternalServerError, "")?
     {
-        Some(contest) => Ok(Template::render("settings", contest)),
+        Some(contest) => Ok(Template::render("settings", context! { contest, user })),
         None => Err(Status::NotFound),
     }
 }

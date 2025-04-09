@@ -5,19 +5,21 @@
     <link rel="stylesheet" href="/styles/ranking.css">
     <script src="/scripts/ranking.js"></script>
     <script src="/scripts/jsonform.js"></script>
-    <title>{{name}}</title>
+    <title>{{contest.name}}</title>
   </head>
   <body>
+    {% include "header" %}
+
     <div id="submitter-background" onclick="hide_submitter(); event.stopPropagation();">
       <div id="submitter" onclick="event.stopPropagation();">
-        <form id="submit-answer" method="post" action="/api/contests/{{id}}/submissions">
+        <form id="submit-answer" method="post" action="/api/contests/{{contest.id}}/submissions">
           <h2>Manda una risposta</h2>
           <div>
             <label for="question-team">
               Squadra
             </label>
             <select name="team_id" id="question-team">
-              {% for team in teams %}
+              {% for team in contest.teams %}
                 {% if not team.is_fake %}
                   <option value="{{team.id}}">{{team.name}}</option>
                 {% endif %}
@@ -30,7 +32,7 @@
               Quesito
             </label>
             <select name="question_id" id="question-question">
-              {% for question in questions %}
+              {% for question in contest.questions %}
                 <option value="{{question.id}}">{{loop.index}}</option>
               {% endfor %}
             </select>
@@ -52,14 +54,14 @@
         </form>
         <div>
         </div>
-        <form id="submit-jolly" method="post" action="/api/contests/{{id}}/jollies">
+        <form id="submit-jolly" method="post" action="/api/contests/{{contest.id}}/jollies">
           <h2>Scegli il jolly</h2>
           <div>
             <label for="jolly-team">
               Squadra
             </label>
             <select name="team_id" id="jolly-team">
-              {% for team in teams %}
+              {% for team in contest.teams %}
                 {% if not team.is_fake %}
                   <option value="{{team.id}}">{{team.name}}</option>
                 {% endif %}
@@ -72,7 +74,7 @@
               Quesito
             </label>
             <select name="question_id" id="jolly-question">
-              {% for question in questions %}
+              {% for question in contest.questions %}
                 <option value="{{question.id}}">{{loop.index}}</option>
               {% endfor %}
             </select>
@@ -90,8 +92,8 @@
       </div>
     </div>
     <div id="page-intro">
-      <a id="contest-title" href="https://www.phiquadro.it/gara_a_squadre/classifica_new.php?id_gara={{phiquadro_id}}&id_sess={{phiquadro_sess}}">
-        {{name}}
+      <a id="contest-title" href="https://www.phiquadro.it/gara_a_squadre/classifica_new.php?id_gara={{contest.phiquadro_id}}&id_sess={{contest.phiquadro_sess}}">
+        {{contest.name}}
       </a>
       <div id="buttons">
         <button id="toggle-visibility" type="button" onclick="hide_fake_teams()">
@@ -105,7 +107,7 @@
     <table id="ranking">
       <tr>
         <th style="visibility: hidden"></th>
-        {% for question in questions %}
+        {% for question in contest.questions %}
           <th class="question-header">
             <div>
               Q. {{loop.index}}
@@ -123,7 +125,7 @@
           </th>
         {% endfor %}
       </tr>
-      {% for team in teams %}
+      {% for team in contest.teams %}
         {% if team.is_fake %}
           <tr class="fake-team">
         {% else %}

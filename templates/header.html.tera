@@ -1,38 +1,24 @@
-<header>
+<header> 
+  <link rel="stylesheet" href="/styles/headerfooter.css">
   <script src="/scripts/headerfooter.js"></script>
   <script src="/scripts/jsonform.js"></script>
   <div>
     <div>
-      <div class="header-button" onclick="redirect_to_source();">
-        <div>
-          Simulatore GaS
-        </div>
+      <div class="header-button" onclick="redirect_to_home();">
         <div>
           <img
             class="icon"
-            src="/icons/code.svg"
+            id="home-icon"
+            src="/icons/home.svg"
             height="20"
           >
+        </div>
+        <div>
+          Simulatore GaS
         </div>
       </div>
 
     </div>
-    {% if user %}
-      <div class="header-button" onclick="redirect_to_create();">
-        <div>
-          <b>
-            Crea una gara
-          </b>
-        </div>
-        <div>
-          <img
-            class="icon"
-            src="/icons/add.svg"
-            height="20"
-          >
-        </div>
-      </div>
-    {% endif %}
     <div class="header-button" id="auth-button" onclick="show_auth_form();">
       {% if user %}
         <div>

@@ -60,6 +60,10 @@ function redirect_to_source() {
     window.location.href = "https://github.com/franv314/gas-simulator";
 }
 
+function redirect_to_home() {
+    window.location.href = "/";
+}
+
 function show_auth_form() {
     const form1 = document.getElementById("auth-form");
     const form2 = document.getElementById("logout-form");
