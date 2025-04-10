@@ -13,6 +13,9 @@ function send_form(form, conv, callback) {
 function setup_form(id, conv, callback) {
     var form = document.getElementById(id);
 
+    if (!form)
+        return;
+
     form.onsubmit = (event) => {
         send_form(form, conv, callback);
 
