@@ -10,6 +10,17 @@
   <body>
     {% include "header" %}
 
+    <button id="add-button" class="header-button" onclick="redirect_to_create()">
+      <div>
+        <img
+          class="icon"
+          id="add-icon"
+          src="icons/add.svg"
+          height="20"
+        >
+      </div>
+      <div>Crea un gara</div>
+    </button>
     <ul id="contest-list">
       {% for contest in contests %}
         <li onclick="redirect_to_contest({{contest.id}})">

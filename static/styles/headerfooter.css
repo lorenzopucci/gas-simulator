@@ -1,5 +1,6 @@
 :root {
-    --theme-color: rgb(135, 233, 124);
+    --theme-color: rgb(167, 219, 233);
+    --theme-color-dark: rgb(146, 188, 199);
 }
 
 header {

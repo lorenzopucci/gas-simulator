@@ -1,4 +1,6 @@
 window.onload = () => {
+    load_page();
+    
     setup_form(
         "submit-answer",
         (data) => {

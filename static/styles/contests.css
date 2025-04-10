@@ -12,6 +12,20 @@ body {
     flex-direction: column;
 }
 
+#add-button {
+    margin-top: 35px;
+    padding: 5px 15px 5px 15px;
+    background-color: var(--theme-color);
+}
+
+#add-button:hover {
+    background-color: var(--theme-color-dark);
+}
+
+#add-icon {
+    transform: translateY(+0px);
+}
+
 #contest-list {
     margin: 20px;
     width: min(1000px, calc(100% - 50px));

@@ -1,4 +1,4 @@
-window.onload = () => {
+function load_header() {
     setup_form(
         "authenticate",
         (data) => {
