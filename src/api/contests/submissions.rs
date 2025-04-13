@@ -130,6 +130,8 @@ pub async fn post_submission<'r>(
     let team = teams::dsl::teams
         .count()
         .filter(teams::id.eq(submission.team_id))
+        .filter(teams::is_fake.eq(false))
+        .filter(teams::contest_id.eq(id))
         .load::<i64>(&mut **db)
         .await
         .attach_info(Status::InternalServerError, "Errore incontrato durante l'invio della risposta")?;
@@ -137,6 +139,7 @@ pub async fn post_submission<'r>(
     let question = questions::dsl::questions
         .select(questions::answer)
         .filter(questions::id.eq(submission.question_id))
+        .filter(questions::contest_id.eq(id))
         .load::<i32>(&mut **db)
         .await
         .attach_info(Status::InternalServerError, "Errore incontrato durante l'invio della risposta")?;
