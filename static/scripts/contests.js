@@ -27,3 +27,5 @@ function redirect_to_contest(id) {
 function redirect_to_settings(id) {
     window.location.href = `settings/${id}`;
 }
+
+window.onload = load_header;

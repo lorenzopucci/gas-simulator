@@ -3,6 +3,7 @@
   <head>
     <meta charset="utf-8">
     <link rel="stylesheet" href="/styles/create.css">
+    <script src="/scripts/headerfooter.js"></script>
     <script src="/scripts/jsonform.js"></script>
     <script src="/scripts/create.js"></script>
     <title>Crea una gara</title>

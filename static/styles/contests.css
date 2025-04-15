@@ -22,8 +22,8 @@ body {
     background-color: var(--theme-color-dark);
 }
 
-#add-icon {
-    transform: translateY(+0px);
+#add-button .icon {
+    vertical-align: middle;
 }
 
 #contest-list {
@@ -35,8 +35,8 @@ body {
     height: 50px;
     list-style: none;
     border-radius: 10px;
-    background-color: #bbbbbb;
-    border: 3px solid #888888;
+    background-color: #dfdfdf;
+    border: 3px solid #bdbdbd;
     align-items: center;
     display: flex;
     padding: 0px 10px;
@@ -44,7 +44,8 @@ body {
 }
 
 #contest-list li:hover {
-    background-color: #cccccc;
+    background-color: #d4d4d4;
+    border: 3px solid #adadad;
 }
 
 #contest-list li > div {
@@ -56,16 +57,10 @@ a {
     color: black;
 }
 
-.icon {
-    transform: translateY(3px);
+.contest-info .icon {
     width: 20px;
+    transform: translateY(-2px);
 }
-
-.contest-icon {
-    transform: translateY(4px);
-    width: 20px;
-}
-
 
 .contest-info {
     justify-content: center;
@@ -81,6 +76,10 @@ a {
     width: 65px;
 }
 
+.contest-info > div > * {
+    vertical-align: middle;
+}
+
 .contest-actions {
     display: flex;
     justify-content: right;
@@ -89,7 +88,7 @@ a {
 
 .contest-actions > div {
     background: none;
-    padding: 0px 0px 0px 0px;
+    padding: 4px 2px;
     margin: 0px 2px;
     border-radius: 3px;
     width: fit-content;
