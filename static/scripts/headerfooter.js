@@ -93,3 +93,13 @@ function hide_auth_form() {
 
     document.getElementById("auth-background").style.visibility = "hidden";
 }
+
+function switch_to_register() {
+    document.getElementById("register").style.display = "flex";
+    document.getElementById("authenticate").style.display = "none";
+}
+
+function switch_to_authenticate() {
+    document.getElementById("register").style.display = "none";
+    document.getElementById("authenticate").style.display = "flex";
+}

@@ -1,6 +1,5 @@
 <header> 
   <link rel="stylesheet" href="/styles/headerfooter.css">
-  <script src="/scripts/headerfooter.js"></script>
   <script src="/scripts/jsonform.js"></script>
   <div>
     <div>
@@ -47,16 +46,32 @@
   </div>
   <div id="auth-background" onclick="hide_auth_form();">
     {% if user %}
-      <div id="logout-form" onclick="logout(); event.stopPropagation();">
+      <div id="logout-form">
         <div id="logout-fake-form">
           <h2>Esci</h2>
-          <input type="submit" value="Esci!">
+          <button
+            id="logout-button"
+            class="col-btn"
+            onclick="logout(); event.stopPropagation();"
+          >
+            Esci!
+          </button>
         </div>
       </div>
     {% else %}
       <div id="auth-form" onclick="event.stopPropagation();">
         <form id="authenticate" method="post" action="/api/login">
-          <h2>Autenticati</h2>
+          <h2>Accedi</h2>
+
+          <div class="auth-switch-tab">
+            Oppure
+            <button
+              class="col-btn"
+              onclick="switch_to_register(); event.stopPropagation();"
+            >
+              Crea un account
+            </button>
+          </div>
 
           <div>
             <label for="username">
@@ -72,7 +87,7 @@
             <input id="password" name="password" type="password" required>
           </div>
 
-          <div id="remember-div">
+          <div>
             <label for="remember_me">
               Ricordami per un mese
             </label>
@@ -81,16 +96,24 @@
 
           <div>
             <label for="autenticati" hidden>
-              Autenticati
+              Accedi
             </label>
-            <input id="autenticati" name="autenticati" type="submit" value="Autenticati!" required>
+            <input id="autenticati" class="col-btn" name="autenticati" type="submit" value="Accedi!" required>
           </div>
         </form>
-        <div>
 
-        </div>
-        <form id="register" method="post" action="/api/signup">
+        <form id="register" method="post" action="/api/signup" style="display: none;">
           <h2>Crea un account</h2>
+
+          <div class="auth-switch-tab">
+            Oppure
+            <button
+              class="col-btn"
+              onclick="switch_to_authenticate(); event.stopPropagation();"
+            >
+              Accedi
+            </button>
+          </div>
 
           <div>
             <label for="register_username">
@@ -106,13 +129,11 @@
             <input id="register_password" name="register_password" type="password" required>
           </div>
 
-          <div></div>
-
           <div>
             <label for="registrati" hidden>
               Registrati
             </label>
-            <input id="registrati" name="registrati" type="submit" value="Registrati!" required>
+            <input id="registrati" class="col-btn" name="registrati" type="submit" value="Registrati!" required>
           </div>
         </form>
       </div>

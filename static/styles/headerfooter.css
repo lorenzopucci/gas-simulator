@@ -1,6 +1,17 @@
 :root {
     --theme-color: rgb(167, 219, 233);
-    --theme-color-dark: rgb(146, 188, 199);
+    --theme-color-dark: rgb(152, 203, 218);
+}
+
+.col-btn {
+    background-color: var(--theme-color);
+    border: none;
+    padding: 5px 15px 5px 15px;
+    border-radius: 5px;
+}
+
+.col-btn:hover {
+    background-color: var(--theme-color-dark);
 }
 
 header {
@@ -14,7 +25,7 @@ header {
 }
 
 header > div:not(#auth-background) {
-    width: 85%;
+    width: min(1000px, 95%);
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -49,39 +60,26 @@ header > div:not(#auth-background) {
     z-index: 100;
 }
 
-#auth-form {
+#auth-background > div {
     position: fixed;
+    top: 55px;
     visibility: hidden;
-    background-color: #bbbbbb;
-    height: 250px;
-    width: min(90%, 600px);
-    top: calc(50vh - 150px);
-    left: calc(50vw - min(45%, 300px));
-    border-radius: 3px;
-    border: 3px solid #888888;
+    background-color: white;
     z-index: 100;
-    display: flex;
-    padding: 10px;
+    padding: 15px 20px;
+    box-shadow: 0 3px 10px rgba(128, 128, 128, 0.541);
+    border-radius: 10px;
+}
+
+#auth-form {
+    right: max(5px, calc((100vw - 1000px) / 2 - 68px));
 }
 
 #logout-form {
-    position: fixed;
-    visibility: hidden;
-    background-color: #bbbbbb;
-    height: 70px;
-    width: min(90%, 300px);
-    top: calc(50vh - 35px);
-    left: calc(50vw - min(45%, 150px));
-    border-radius: 3px;
-    border: 3px solid #888888;
-    z-index: 100;
-    display: flex;
-    padding: 10px;
+    right: max(5px, calc((100vw - 1000px) / 2 - 40px));
 }
 
-#auth-form > form {
-    flex: 50%;
-    height: 100%;
+#logout-fake-form, #auth-form > form {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -89,42 +87,50 @@ header > div:not(#auth-background) {
 }
 
 #logout-fake-form {
-    flex: 100%;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: space-around;
+    width: 120px;
 }
 
-#auth-form > div {
-    width: 0px;
-    border: 1px solid #666666;
-    height: 100%;
-}
-
-#auth-form > form > div {
+#auth-form > form > div:not(.auth-switch-tab) {
+    width: 100%;
     display: flex;
-    width: 90%;
-    height: 30px;
+    flex-direction: row;
+    justify-content: space-between;
+    margin: 5px 0;
 }
 
 #auth-form label {
-    flex: 25%;
+    margin-top: auto;
+    margin-bottom: auto;
+    font-size: 15px;
 }
 
-#auth-form div:not(:last-child) label {
-    display: flex;
-    align-items: center;
-    justify-content: right;
-    padding-right: 10px;
+#auth-background h2 {
+    font-size: 22px;
+    margin-bottom: 6px;
 }
 
-#auth-form input {
-    border-radius: 3px;
-    flex: 65%;
-    height: 30px;
+.auth-switch-tab {
+    font-size: 12px;
+    margin-bottom: 8px;
+}
+
+.auth-switch-tab > .col-btn {
+    margin-left: 5px;
+    padding: 3px 10px;
+    font-size: 12px;
+}
+
+#auth-form input:not([type=submit], [type=checkbox]) {
+    border: 1px solid black;
+    border-radius: 5px;
+    height: 25px;
     padding: 0px 2px;
+    width: 180px;
+    margin-left: 8px;
+}
+
+#logout-button, #auth-background input[type=submit] {
+    width: 100%;
 }
 
 #logout-form input {
@@ -132,25 +138,4 @@ header > div:not(#auth-background) {
     padding: 0px 2px;
     height: 30px;
     width: 100%;
-}
-
-#auth-form input[type=checkbox] {
-    flex: 10%;
-}
-
-#remember-div {
-    display: flex;
-    width: 90%;
-    justify-content: space-around;
-}
-
-#remember-div label {
-    flex: 50%;
-}
-
-
-@media screen and (max-width: 1200px) {
-    header > div:not(#auth-background) {
-        width: 95%;
-    }
 }
