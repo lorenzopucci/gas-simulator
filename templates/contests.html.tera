@@ -6,7 +6,13 @@
     <link rel="stylesheet" href="/styles/headerfooter.css">
     <script src="/scripts/headerfooter.js"></script>
     <script src="/scripts/contests.js"></script>
-    <title>Gare</title>
+    <title>
+      {% if user %}
+        Gare
+      {% else %}
+        Simulatore GaS
+      {% endif %}
+    </title>
   </head>
   <body>
     {% include "header" %}
@@ -20,9 +26,8 @@
           height="20"
         >
       </div>
-      <div>Crea un gara</div>
+      <div>Crea una gara</div>
     </button>
-    {% endif %}
 
     <ul id="contest-list">
       {% for contest in contests %}
@@ -101,5 +106,12 @@
         </li>
       {% endfor %}
     </ul>
+    {% else %}
+    <div id="welcome">
+      <h1>Simulatore GaS</h1>
+
+      <p>Benvenuto! Per iniziare accedi o crea un account.</p>
+    </div>
+    {% endif %}
   </body>
 </html>
