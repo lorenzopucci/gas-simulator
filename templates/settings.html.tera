@@ -11,58 +11,66 @@
   <body>
     {% include "header" %}
 
-    <div id="page-wrapper">
-      <form id="update" class="settings-group" method="PATCH" action="/api/contests/{{contest.id}}">
-        <h1>
-          Generale
-        </h1>
+    <form id="update" class="settings-group" method="PATCH" action="/api/contests/{{contest.id}}">
+      <h2>
+        Modifica la gara
+      </h2>
 
+      <div>
         <div class="fake-label">
           ID della gara su PhiQuadro
         </div>
-        <div class="fake-input">
-          {{contest.phiquadro_id}}
+        <div class="fake-input fake-textbox">
+          <span>{{contest.phiquadro_id}}</span>
         </div>
-
+      </div>
+      <div>
         <div class="fake-label">
           Sessione della gara su PhiQuadro
         </div>
-        <div class="fake-input">
-          {{contest.phiquadro_sess}}
+        <div class="fake-input fake-textbox">
+          <span>{{contest.phiquadro_sess}}</span>
         </div>
-
+      </div>
+      <div>
         <div class="fake-label">
           Nome della simulazione
         </div>
-        <div class="fake-input">
-          {{contest.name}}
+        <div class="fake-input fake-textbox">
+          <span>{{contest.name}}</span>
         </div>
-
+      </div>
+      <div>
         <label for="start_time">
           Orario di partenza
         </label>
-        <input name="start_time" id="start_time" type="datetime-local" value="{{contest.start_time | date(format="%Y-%m-%d %H:%M", timezone="Europe/Rome")}}" required>
-
+        <div><input name="start_time" id="start_time" type="datetime-local" value="{{contest.start_time | date(format="%Y-%m-%d %H:%M", timezone="Europe/Rome")}}" required></div>
+      </div>
+      <div>
         <label for="duration">
           Durata (minuti)
         </label>
-        <input name="duration" id="duration" value="{{(contest.duration[0] - contest.duration[0] % 60) / 60}}" required>
-
+        <div><input name="duration" id="duration" value="{{(contest.duration[0] - contest.duration[0] % 60) / 60}}" required></div>
+      </div>
+      <div>
         <label for="drift">
           Deriva
         </label>
-        <input name="drift" id="drift" type="number" value="{{contest.drift}}" required>
-
+        <div><input name="drift" id="drift" type="number" value="{{contest.drift}}" required></div>
+      </div>
+      <div>
         <label for="drift_time">
           Durata deriva (minuti)
         </label>
-        <input name="drift_time" id="drift_time" value="{{(contest.drift_time[0] - contest.drift_time[0] % 60) / 60}}" type="number" required>
-
+        <div><input name="drift_time" id="drift_time" value="{{(contest.drift_time[0] - contest.drift_time[0] % 60) / 60}}" type="number" required></div>
+      </div>
+      <div>
         <label for="jolly_time">
           Durata scelta jolly (minuti)
         </label>
-        <input name="jolly_time" id="jolly_time" value="{{(contest.jolly_time[0] - contest.jolly_time[0] % 60) / 60}}" type="number" required>
-
+        <div><input name="jolly_time" id="jolly_time" value="{{(contest.jolly_time[0] - contest.jolly_time[0] % 60) / 60}}" type="number" required></div>
+      </div>
+      <div>
         <div class="fake-label">
           Bonus prima risposta
         </div>
@@ -88,6 +96,8 @@
           <input name="question_bonus_9" id="question_bonus_9" type="number" value="{{contest.question_bonus[8]}}" required>
           <input name="question_bonus_10" id="question_bonus_10" type="number" value="{{contest.question_bonus[9]}}" required>
         </div>
+      </div>
+      <div>
         <div class="fake-label">
           Bonus primo full
         </div>
@@ -113,20 +123,24 @@
           <input name="contest_bonus_9" id="contest_bonus_9" type="number" value="{{contest.contest_bonus[8]}}" required>
           <input name="contest_bonus_10" id="contest_bonus_10" type="number" value="{{contest.contest_bonus[9]}}" required>
         </div>
-
-        <label id="submit-label" for="submit" style="visibility:hidden;">
+      </div>
+      <div id="submit-wrapper">
+        <label id="submit-label" for="submit" hidden>
           Aggiorna!
         </label>
-        <input id="submit" type="submit" value="Aggiorna!">
-      </form>
-      <div id="teams" class="settings-group">
-        <h1>
-          Squadre
-        </h1>
+        <input id="submit" class="col-btn" type="submit" value="Aggiorna!">
+      </div>
+    </form>
 
-        {% for team in contest.teams %}
-          {% if team.is_fake %}
-          {% else %}
+    <div id="teams" class="settings-group">
+      <h2>
+        Aggiungi squadre
+      </h2>
+
+      {% for team in contest.teams %}
+        {% if team.is_fake %}
+        {% else %}
+          <div>
             <div class="team-name">
               {{team.name}}
             </div>
@@ -137,10 +151,12 @@
                 height="20"
               >
             </div>
-          {% endif %}
-        {% endfor %}
+          </div>
+        {% endif %}
+      {% endfor %}
 
-        <form id="add-team" class="team-name" method="post" action="/api/contests/{{contest.id}}/teams">
+      <div>
+        <form id="add-team" class="team-name" method="post" action="/api/contests/{{contest.id}}/teams" onsubmit="send_form(document.getElementById('add-team'), conv_add_team, reload_callback); event.stopPropagation();">
           <label for="team_name" hidden>
             Nome della squadra
           </label>
@@ -154,9 +170,18 @@
           >
         </div>
       </div>
-      <div class="settings-group">
-        <h1><a href="/contest/{{contest.id}}">Link gara</a></h1>
-      </div>
     </div>
+
+    <button id="to-contest-button" class="header-button" onclick="redirect_to_contest({{contest.id}});">
+      <div>
+        <img
+          class="icon"
+          src="/icons/open.svg"
+          height="20"
+        >
+      </div>
+      <div>Vai alla gara</div>
+    </button>
+
   </body>
 </html>

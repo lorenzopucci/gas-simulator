@@ -49,7 +49,7 @@ function load_header() {
 
 function logout() {
     document.cookie = "api_key=; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
-    window.location.reload();
+    window.location.href = "/";
 }
 
 function redirect_to_create() {

@@ -6,12 +6,11 @@
 }
 
 body {
-    height: 100%;
     background-color: #eeeeee;
 }
 
 #create {
-    width: min(600px, calc(100vw - 45px));
+    width: min(600px, calc(100vw - 60px));
     background-color: white;
     margin: 40px auto;
     padding: 15px;

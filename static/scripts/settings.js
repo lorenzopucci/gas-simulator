@@ -1,5 +1,5 @@
 window.onload = () => {
-    load_page();
+    load_header();
     
     setup_form(
         "update",
@@ -59,4 +59,8 @@ function conv_add_team(data) {
     return {
         "team_name": data.get("team_name"),
     };
+}
+
+function redirect_to_contest(id) {
+    window.location.href = `/contest/${id}`;
 }

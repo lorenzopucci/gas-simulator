@@ -1,5 +1,5 @@
 window.onload = () => {
-    load_page();
+    load_header();
     
     setup_form(
         "submit-answer",
