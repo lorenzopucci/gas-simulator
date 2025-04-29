@@ -1,6 +1,9 @@
 :root {
     --theme-color: rgb(167, 219, 233);
     --theme-color-dark: rgb(152, 203, 218);
+    --body-background: #eeeeee;
+    --box-shadow: 0 3px 10px rgba(128, 128, 128, 0.5);
+    --font-family: Arial, Helvetica, sans-serif;
 }
 
 .col-btn {
@@ -20,11 +23,11 @@ header {
     width: 100%;
     display: flex;
     justify-content: center;
-    font-family: Arial, Helvetica, sans-serif;
-    box-shadow: 0 3px 10px rgba(128, 128, 128, 0.541);
+    font-family: var(--font-family);
+    box-shadow: var(--box-shadow);
 }
 
-header > div:not(#auth-background) {
+#navbar {
     width: min(1000px, 95%);
     display: flex;
     flex-direction: row;
@@ -40,11 +43,7 @@ header > div:not(#auth-background) {
 
 .header-button > * {
     vertical-align: middle;
-    margin: auto 2px auto 2px;
-}
-
-#home-icon {
-    transform: translateY(+0px);
+    margin: auto 2px;
 }
 
 .header-button:hover {
@@ -67,7 +66,7 @@ header > div:not(#auth-background) {
     background-color: white;
     z-index: 100;
     padding: 15px 20px;
-    box-shadow: 0 3px 10px rgba(128, 128, 128, 0.541);
+    box-shadow: var(--box-shadow);
     border-radius: 10px;
 }
 
@@ -130,12 +129,5 @@ header > div:not(#auth-background) {
 }
 
 #logout-button, #auth-background input[type=submit] {
-    width: 100%;
-}
-
-#logout-form input {
-    border-radius: 3px;
-    padding: 0px 2px;
-    height: 30px;
     width: 100%;
 }

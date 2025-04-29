@@ -1,7 +1,7 @@
 <header> 
   <link rel="stylesheet" href="/styles/headerfooter.css">
   <script src="/scripts/jsonform.js"></script>
-  <div>
+  <div id="navbar">
     <div>
       <div class="header-button" onclick="redirect_to_home();">
         <div>

@@ -2,11 +2,11 @@
     padding: 0;
     margin: 0;
     border: 0;
-    font-family: Arial, Helvetica, sans-serif;
+    font-family: var(--font-family);
 }
 
 body {
-    background-color: #eeeeee;
+    background-color: var(--body-background);
     display: flex;
     align-items: center;
     flex-direction: column;
@@ -53,16 +53,6 @@ body {
     flex: 33%;
 }
 
-a {
-    text-decoration: none;
-    color: black;
-}
-
-.contest-info .icon {
-    width: 20px;
-    transform: translateY(-2px);
-}
-
 .contest-info {
     justify-content: center;
     text-align: center;
@@ -88,16 +78,15 @@ a {
 }
 
 .contest-actions > div {
-    background: none;
-    padding: 4px 2px;
-    margin: 0px 2px;
+    padding: 4px 3px;
+    margin: 0px 1px;
     border-radius: 3px;
     width: fit-content;
     height: fit-content;
 }
 
 .contest-actions > div:hover {
-    background-color: #bcbcbc;
+    background-color: #d0d0d0;
 }
 
 #welcome {

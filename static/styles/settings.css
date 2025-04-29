@@ -2,17 +2,17 @@
     padding: 0;
     margin: 0;
     border: 0;
-    font-family: Arial, Helvetica, sans-serif;
+    font-family: var(--font-family);
 }
 
 body {
-    background-color: #eeeeee;
+    background-color: var(--body-background);
 }
 
 .settings-group {
     width: min(600px, calc(100vw - 60px));
     background-color: white;
-    box-shadow: 0 3px 10px rgba(128, 128, 128, 0.5);
+    box-shadow: var(--box-shadow);
     padding: 15px;
     margin: 20px auto;
     border-radius: 10px;
@@ -26,9 +26,10 @@ body {
     margin: 5px 0;
 }
 
-.settings-group > h2 {
+.settings-group > h1 {
     text-align: center;
     margin-bottom: 15px;
+    font-size: 26px;
 }
 
 #update {
@@ -72,9 +73,10 @@ input {
 
 .fake-input > input {
     height: 20px;
-    width: calc((100% - 81px) / 5);
+    width: calc((100% - 24px) / 5);
     margin-top: 1px;
     margin-bottom: 1px;
+    box-sizing: border-box;
 }
 
 .fake-input > input:not(:nth-child(5n + 1)) {
@@ -95,23 +97,20 @@ input {
     font-size: large;
 }
 
-#add-team {
-    width: calc(100% - 30px);
-}
-
-#add-team > input {
-    height: 25px;
-    width: calc(100% - 12px);
-    border-radius: 3px;
-    padding: 0px 5px;
-}
-
 #teams > div {
     justify-content: space-between;
 }
 
-#teams > div > div {
-    margin: auto 0;
+#teams > div > * {
+    margin: auto 5px;
+}
+
+#add-team {
+    width: calc(100% - 45px);
+}
+
+#add-team > input {
+    width: calc(100% - 10px);
 }
 
 .action-icon {
@@ -125,10 +124,8 @@ input {
 }
 
 .action-icon img {
-    width: 20px;
     vertical-align: middle;
 }
-
 
 #to-contest-button {
     font-size: 16px;

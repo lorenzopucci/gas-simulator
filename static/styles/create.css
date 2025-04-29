@@ -2,11 +2,11 @@
     padding: 0;
     margin: 0;
     border: 0;
-    font-family: Arial, Helvetica, sans-serif;
+    font-family: var(--font-family);
 }
 
 body {
-    background-color: #eeeeee;
+    background-color: var(--body-background);
 }
 
 #create {
@@ -15,12 +15,13 @@ body {
     margin: 40px auto;
     padding: 15px;
     border-radius: 10px;
-    box-shadow: 0 3px 10px rgba(128, 128, 128, 0.5);
+    box-shadow: var(--box-shadow);
 }
 
-#create > h2 {
+#create > h1 {
     text-align: center;
     margin-bottom: 15px;
+    font-size: 26px;
 }
 
 #create > div {
@@ -59,9 +60,10 @@ input {
 
 .fake-input > input {
     height: 20px;
-    width: calc((100% - 81px) / 5);
+    width: calc((100% - 24px) / 5);
     margin-top: 1px;
     margin-bottom: 1px;
+    box-sizing: border-box;
 }
 
 .fake-input > input:not(:nth-child(5n + 1)) {

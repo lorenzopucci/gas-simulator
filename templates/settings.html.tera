@@ -12,9 +12,9 @@
     {% include "header" %}
 
     <form id="update" class="settings-group" method="PATCH" action="/api/contests/{{contest.id}}">
-      <h2>
+      <h1>
         Modifica la gara
-      </h2>
+      </h1>
 
       <div>
         <div class="fake-label">
@@ -133,9 +133,9 @@
     </form>
 
     <div id="teams" class="settings-group">
-      <h2>
+      <h1>
         Aggiungi squadre
-      </h2>
+      </h1>
 
       {% for team in contest.teams %}
         {% if team.is_fake %}
