@@ -49,6 +49,8 @@ window.onload = () => {
             }
         },
     );
+
+    document.addEventListener('fullscreenchange', exit_fullscreen_adjust, false);
 };
 
 setInterval(reload_content, 60000)
@@ -75,9 +77,10 @@ function hide_fake_teams() {
         elem.setAttribute("hidden", "");
     });
 
-    let toggler = document.getElementById("toggle-visibility")
-    toggler.setAttribute('onclick', "show_fake_teams()");
-    toggler.innerText = "Mostra squadre fantasma";
+    document.getElementById("toggle-visibility").setAttribute("onclick", "show_fake_teams()");
+    document.getElementById("toggle-visibility-text").innerText = "Mostra squadre fantasma";
+    document.getElementById("show-teams-icon").style.display = "block";
+    document.getElementById("hide-teams-icon").style.display = "none";
 }
 
 function show_fake_teams() {
@@ -85,17 +88,46 @@ function show_fake_teams() {
         elem.removeAttribute("hidden");
     });
 
-    let toggler = document.getElementById("toggle-visibility")
-    toggler.setAttribute('onclick', "hide_fake_teams()");
-    toggler.innerText = "Nascondi squadre fantasma";
+    document.getElementById("toggle-visibility").setAttribute("onclick", "hide_fake_teams()");
+    document.getElementById("toggle-visibility-text").innerText = "Nascondi squadre fantasma";
+    document.getElementById("show-teams-icon").style.display = "none";
+    document.getElementById("hide-teams-icon").style.display = "block";
 }
 
 function show_submitter() {
     document.getElementById("submitter-background").style.visibility = "visible";
     document.getElementById("submitter").style.visibility = "visible";
+    document.body.classList.add("no-scroll");
 }
 
 function hide_submitter() {
     document.getElementById("submitter-background").style.visibility = "hidden";
     document.getElementById("submitter").style.visibility = "hidden";
+    document.body.classList.remove("no-scroll");
+}
+
+function enter_fullscreen() {
+    document.getElementById("enter-fullscreen-btn").style.display = "none";
+    document.getElementById("exit-fullscreen-btn").style.display = "flex";
+    document.querySelector("header").style.display = "none";
+    document.getElementById("buttons").style.display = "none";
+    document.getElementById("fullscreen").style.top = "10px";
+
+    if (document.body.requestFullscreen)
+        document.body.requestFullscreen();
+}
+
+function exit_fullscreen_adjust() {
+    if (!document.webkitIsFullScreen && !document.mozFullScreen && !document.msFullscreenElement) {
+        document.getElementById("enter-fullscreen-btn").style.display = "flex";
+        document.getElementById("exit-fullscreen-btn").style.display = "none";
+        document.querySelector("header").style.display = "flex";
+        document.getElementById("buttons").style.display = "flex";
+        document.getElementById("fullscreen").style.top = "60px";
+    }
+}
+
+function exit_fullscreen() {
+    if (document.exitFullscreen)
+        document.exitFullscreen();
 }

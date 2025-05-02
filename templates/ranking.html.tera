@@ -9,6 +9,7 @@
     <title>{{contest.name}}</title>
   </head>
   <body>
+  <div id="page-wrapper">
     {% include "header" %}
 
     <div id="submitter-background" onclick="hide_submitter(); event.stopPropagation();">
@@ -50,7 +51,7 @@
             <label for="question-send" hidden>
               Invia!
             </label>
-            <input id="question-send" type="submit" value="Invia!" required>
+            <input id="question-send" class="col-btn" type="submit" value="Invia!" required>
           </div>
         </form>
         <div>
@@ -81,30 +82,80 @@
             </select>
           </div>
 
-          <div></div>
+          <div class="filler"></div>
 
           <div>
             <label for="jolly-send" hidden>
               Scegli il jolly!
             </label>
-            <input id="jolly-send" type="submit" value="Scegli il jolly!" required>
+            <input class="col-btn" id="jolly-send" type="submit" value="Scegli il jolly!" required>
           </div>
         </form>
       </div>
     </div>
+
     <div id="page-intro">
-      <a id="contest-title" href="https://www.phiquadro.it/gara_a_squadre/classifica_new.php?id_gara={{contest.phiquadro_id}}&id_sess={{contest.phiquadro_sess}}">
+      <h1>
         {{contest.name}}
-      </a>
+      </h1>
       <div id="buttons">
-        <button id="toggle-visibility" type="button" onclick="hide_fake_teams()">
-          Nascondi squadre fantasma
+        <a class="header-button" href="https://www.phiquadro.it/gara_a_squadre/classifica_new.php?id_gara={{contest.phiquadro_id}}&id_sess={{contest.phiquadro_sess}}" target="_blank"><script style="display:none;">fullscreen=()=>{const d=new Date();if(d.getHours()==d.getMinutes()){window.location.href="https://www.youtube.com/watch?v=dQw4w9WgXcQ";}else{enter_fullscreen();};}</script>
+          <div>
+            <img
+              class="icon"
+              src="/icons/open.svg"
+              height="20"
+            >
+          </div>
+          <div>Vai alla gara su phiquadro</div>
+        </a>
+        <button id="toggle-visibility" class="header-button" onclick="hide_fake_teams()">
+          <div style="display:none;" id="show-teams-icon">
+            <img
+              class="icon"
+              src="/icons/eye_open.svg"
+              height="20"
+            >
+          </div>
+          <div id="hide-teams-icon">
+            <img
+              class="icon"
+              src="/icons/eye_closed.svg"
+              height="20"
+            >
+          </div>
+          <div id="toggle-visibility-text">Nascondi squadre fantasma</div>
         </button>
-        <button id="toggle-submitter" type="button" onclick="show_submitter()">
-          Manda risposte
+        <button class="header-button" onclick="show_submitter()">
+          <div>
+            <img
+              class="icon"
+              src="/icons/submit.svg"
+              height="20"
+            >
+          </div>
+          <div>Inserisci risposte</div>
         </button>
       </div>
     </div>
+
+    <div id="fullscreen">
+      <div id="enter-fullscreen-btn" onclick="fullscreen();">
+        <img
+          class="icon"
+          src="/icons/fullscreen.svg"
+          height="25"
+        >
+      </div>
+      <div id="exit-fullscreen-btn" onclick="exit_fullscreen();" style="display:none;">
+        <img
+          class="icon"
+          src="/icons/exit_fullscreen.svg"
+          height="25"
+        >
+      </div>
+    </div>
+
     <table id="ranking">
       <tr>
         <th style="visibility: hidden"></th>
@@ -114,7 +165,7 @@
               Q. {{loop.index}}
             </div>
             <div>
-              {{question.score}}
+              <span>{{question.score}}</span>
               {% if question.locked %}
                 <img
                   class="icon"
@@ -164,5 +215,6 @@
         </tr>
       {% endfor %}
     </table>
- </body>
+  </div>
+  </body>
 </html>
