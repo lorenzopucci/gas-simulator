@@ -37,6 +37,23 @@ body {
     font-size: 26px;
 }
 
+#flipdown-wrapper {
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+#clock-text {
+    text-align: center;
+    margin-top: 5px;
+    font-size: 24px;
+    font-weight: bold;
+}
+
+#flipdown {
+    margin: 0 auto;
+    scale: 0.8;
+}
+
 #buttons {
     display: flex;
 }

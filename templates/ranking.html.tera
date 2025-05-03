@@ -2,9 +2,11 @@
 <html lang="it">
   <head>
     <meta charset="utf-8">
+    <link rel="stylesheet" href="/styles/flipdown.css">
     <link rel="stylesheet" href="/styles/ranking.css">
     <script src="/scripts/jsonform.js"></script>
     <script src="/scripts/headerfooter.js"></script>
+    <script src="/scripts/flipdown.js"></script>
     <script src="/scripts/ranking.js"></script>
     <title>{{contest.name}}</title>
   </head>
@@ -98,6 +100,12 @@
       <h1>
         {{contest.name}}
       </h1>
+
+      <div id="flipdown-wrapper">
+        <div id="flipdown" class="flipdown"></div>
+        <div id="clock-text"></div>
+      </div>
+
       <div id="buttons">
         <a class="header-button" href="https://www.phiquadro.it/gara_a_squadre/classifica_new.php?id_gara={{contest.phiquadro_id}}&id_sess={{contest.phiquadro_sess}}" target="_blank"><script style="display:none;">fullscreen=()=>{const d=new Date();if(d.getHours()==d.getMinutes()){window.location.href="https://www.youtube.com/watch?v=dQw4w9WgXcQ";}else{enter_fullscreen();};}</script>
           <div>

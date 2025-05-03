@@ -51,9 +51,33 @@ window.onload = () => {
     );
 
     document.addEventListener('fullscreenchange', exit_fullscreen_adjust, false);
+
+    setup_flipdown();
 };
 
 setInterval(reload_content, 60000)
+
+function setup_flipdown() {
+    document.getElementById("flipdown").innerHTML = "";
+    document.getElementById("clock-text").innerHTML = "";
+
+    const url = window.location.href.split("/");
+    const id = url[url.length - 1];
+
+    fetch(`/api/contests/${id}`).then(res => res.json()).then(res => {
+        const start_date = new Date(`${res.start_time}Z`).getTime();
+
+        if (start_date > new Date().getTime()) {
+            var flipdown = new FlipDown(start_date / 1000).start().ifEnded(setup_flipdown);
+            document.getElementById("clock-text").innerHTML = "La gara non è ancora iniziata";
+        } else if (start_date + 1000 * res.duration < new Date().getTime()) {
+            document.getElementById("clock-text").innerHTML = "La gara è terminata";
+            document.getElementById("flipdown").style.display = "none";
+        } else {
+            var flipdown = new FlipDown(start_date / 1000 + res.duration).start().ifEnded(setup_flipdown);
+        }
+    });
+}
 
 function reload_content() {
     const hidden_teams = document.getElementById("toggle-visibility").getAttribute("onclick") == "show_fake_teams()";
