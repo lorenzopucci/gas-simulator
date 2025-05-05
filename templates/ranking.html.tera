@@ -147,7 +147,7 @@
         </div>
       </div>
 
-      <div id="fullscreen">
+      <div id="fullscreen-buttons">
         <div id="enter-fullscreen-btn" onclick="fullscreen();" title="Schermo intero">
           <img
             class="icon"

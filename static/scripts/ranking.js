@@ -55,7 +55,7 @@ window.onload = () => {
     setup_flipdown();
 };
 
-setInterval(reload_content, 15000);
+setInterval(reload_content, 15000); // reload ranking every 15 seconds
 
 function setup_flipdown() {
     document.getElementById("flipdown").innerHTML = "";
@@ -121,13 +121,13 @@ function show_fake_teams() {
 function show_submitter() {
     document.getElementById("submitter-background").style.visibility = "visible";
     document.getElementById("submitter").style.visibility = "visible";
-    document.body.classList.add("no-scroll");
+    document.body.style.overflow = "hidden";
 }
 
 function hide_submitter() {
     document.getElementById("submitter-background").style.visibility = "hidden";
     document.getElementById("submitter").style.visibility = "hidden";
-    document.body.classList.remove("no-scroll");
+    document.body.style.overflow = "auto";
 }
 
 function enter_fullscreen() {
@@ -136,7 +136,7 @@ function enter_fullscreen() {
     document.querySelector("header").style.display = "none";
     document.querySelector("footer").style.display = "none";
     document.getElementById("buttons").style.display = "none";
-    document.getElementById("fullscreen").style.top = "10px";
+    document.getElementById("fullscreen-buttons").style.top = "10px";
 
     if (document.body.requestFullscreen)
         document.body.requestFullscreen();
@@ -149,7 +149,7 @@ function exit_fullscreen_adjust() {
         document.querySelector("header").style.display = "flex";
         document.querySelector("footer").style.display = "flex";
         document.getElementById("buttons").style.display = "flex";
-        document.getElementById("fullscreen").style.top = "60px";
+        document.getElementById("fullscreen-buttons").style.top = "60px";
     }
 }
 

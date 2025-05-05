@@ -87,11 +87,11 @@ header img {
 }
 
 #auth-form {
-    right: max(5px, calc((100vw - 1000px) / 2 - 68px));
+    right: max(5px, calc(50vw - 568px));
 }
 
 #logout-form {
-    right: max(5px, calc((100vw - 1000px) / 2 - 40px));
+    right: max(5px, calc(50vw - 540px));
 }
 
 #logout-fake-form, #auth-form > form {
@@ -158,7 +158,7 @@ footer {
 #footer-inner {
     margin: 0 auto;
     padding: 20px 5px;
-    width: min(1000px, 100% - 20px);
+    width: min(1000px, calc(100% - 20px));
     display: flex;
     justify-content: space-between;
 }

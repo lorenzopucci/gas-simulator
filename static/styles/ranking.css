@@ -13,10 +13,6 @@
     flex: auto;
 }
 
-.no-scroll {
-    overflow: hidden;
-}
-
 #page-intro {
     width: 100%;
     display: flex;
@@ -248,7 +244,7 @@ select {
     100% { background: rgb(80, 222, 80); }
 }
 
-#fullscreen {
+#fullscreen-buttons {
     position: absolute;
     top: 60px;
     right: 10px;
@@ -256,11 +252,11 @@ select {
     padding: 3px;
 }
 
-#fullscreen > div {
+#fullscreen-buttons > div {
     height: fit-content;
     display: flex;
 }
 
-#fullscreen:hover {
+#fullscreen-buttons:hover {
     background-color: #d0d0d0;
 }
