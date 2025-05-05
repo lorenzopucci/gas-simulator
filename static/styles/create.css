@@ -5,10 +5,6 @@
     font-family: var(--font-family);
 }
 
-body {
-    background-color: var(--body-background);
-}
-
 #create {
     width: min(600px, calc(100vw - 60px));
     background-color: white;
@@ -16,6 +12,7 @@ body {
     padding: 15px;
     border-radius: 10px;
     box-shadow: var(--box-shadow);
+    flex: auto;
 }
 
 #create > h1 {

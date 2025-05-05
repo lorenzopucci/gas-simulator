@@ -1,6 +1,6 @@
 window.onload = () => {
     load_header();
-    
+
     setup_form(
         "submit-answer",
         (data) => {
@@ -134,6 +134,7 @@ function enter_fullscreen() {
     document.getElementById("enter-fullscreen-btn").style.display = "none";
     document.getElementById("exit-fullscreen-btn").style.display = "flex";
     document.querySelector("header").style.display = "none";
+    document.querySelector("footer").style.display = "none";
     document.getElementById("buttons").style.display = "none";
     document.getElementById("fullscreen").style.top = "10px";
 
@@ -146,6 +147,7 @@ function exit_fullscreen_adjust() {
         document.getElementById("enter-fullscreen-btn").style.display = "flex";
         document.getElementById("exit-fullscreen-btn").style.display = "none";
         document.querySelector("header").style.display = "flex";
+        document.querySelector("footer").style.display = "flex";
         document.getElementById("buttons").style.display = "flex";
         document.getElementById("fullscreen").style.top = "60px";
     }

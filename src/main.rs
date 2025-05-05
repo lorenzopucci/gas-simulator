@@ -17,6 +17,7 @@ mod contest;
 mod error;
 mod model;
 mod schema;
+mod policy;
 
 #[derive(Database)]
 #[database("gas_simulator")]
@@ -42,4 +43,5 @@ fn rocket() -> _ {
         .mount("/", FileServer::new(relative!("/static"), rocket::fs::Options::None))
         .mount("/", contest::pages::routes())
         .mount("/api", api::routes())
+        .mount("/privacy_policy", policy::routes())
 }

@@ -1,6 +1,6 @@
 window.onload = () => {
     load_header();
-    
+
     setup_form(
         "update",
         (data) => {

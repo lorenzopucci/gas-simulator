@@ -4,7 +4,7 @@ function pad(number) {
 
 window.onload = () => {
     load_header();
-    
+
     setup_form(
         "create",
         (data) => {

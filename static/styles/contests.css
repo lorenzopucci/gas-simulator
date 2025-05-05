@@ -5,11 +5,11 @@
     font-family: var(--font-family);
 }
 
-body {
-    background-color: var(--body-background);
+#page-content {
     display: flex;
     align-items: center;
     flex-direction: column;
+    flex: auto;
 }
 
 #add-button {
