@@ -50,7 +50,7 @@
         <label for="duration">
           Durata (minuti)
         </label>
-        <div><input name="duration" id="duration" value="{{(contest.duration[0] - contest.duration[0] % 60) / 60}}" required></div>
+        <div><input name="duration" id="duration" value="{{(contest.duration[0] - contest.duration[0] % 60) / 60}}" type="number" required></div>
       </div>
       <div>
         <label for="drift">
@@ -156,7 +156,7 @@
       {% endfor %}
 
       <div>
-        <form id="add-team" class="team-name" method="post" action="/api/contests/{{contest.id}}/teams" onsubmit="send_form(document.getElementById('add-team'), conv_add_team, reload_callback); event.stopPropagation();">
+        <form id="add-team" class="team-name" method="post" action="/api/contests/{{contest.id}}/teams" onsubmit="event.preventDefault(); send_form(document.getElementById('add-team'), conv_add_team, reload_callback);">
           <label for="team_name" hidden>
             Nome della squadra
           </label>

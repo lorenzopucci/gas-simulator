@@ -41,7 +41,7 @@
         <label for="duration">
           Durata (minuti)
         </label>
-        <div><input name="duration" id="duration" type="duration" required></div>
+        <div><input name="duration" id="duration" type="number" required></div>
       </div>
       <div>
         <label for="drift">

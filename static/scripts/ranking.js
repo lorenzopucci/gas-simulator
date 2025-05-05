@@ -55,7 +55,7 @@ window.onload = () => {
     setup_flipdown();
 };
 
-setInterval(reload_content, 60000)
+setInterval(reload_content, 15000);
 
 function setup_flipdown() {
     document.getElementById("flipdown").innerHTML = "";
@@ -103,7 +103,7 @@ function hide_fake_teams() {
 
     document.getElementById("toggle-visibility").setAttribute("onclick", "show_fake_teams()");
     document.getElementById("toggle-visibility-text").innerText = "Mostra squadre fantasma";
-    document.getElementById("show-teams-icon").style.display = "block";
+    document.getElementById("show-teams-icon").style.display = "flex";
     document.getElementById("hide-teams-icon").style.display = "none";
 }
 
@@ -115,7 +115,7 @@ function show_fake_teams() {
     document.getElementById("toggle-visibility").setAttribute("onclick", "hide_fake_teams()");
     document.getElementById("toggle-visibility-text").innerText = "Nascondi squadre fantasma";
     document.getElementById("show-teams-icon").style.display = "none";
-    document.getElementById("hide-teams-icon").style.display = "block";
+    document.getElementById("hide-teams-icon").style.display = "flex";
 }
 
 function show_submitter() {

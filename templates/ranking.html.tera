@@ -148,14 +148,14 @@
     </div>
 
     <div id="fullscreen">
-      <div id="enter-fullscreen-btn" onclick="fullscreen();">
+      <div id="enter-fullscreen-btn" onclick="fullscreen();" title="Schermo intero">
         <img
           class="icon"
           src="/icons/fullscreen.svg"
           height="25"
         >
       </div>
-      <div id="exit-fullscreen-btn" onclick="exit_fullscreen();" style="display:none;">
+      <div id="exit-fullscreen-btn" onclick="exit_fullscreen();" style="display:none;" title="Esci da schermo intero">
         <img
           class="icon"
           src="/icons/exit_fullscreen.svg"

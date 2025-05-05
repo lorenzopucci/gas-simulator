@@ -78,7 +78,7 @@
             >
               <img
                 class="icon"
-                src="icons/copy.svg"
+                src="/icons/copy.svg"
                 height="20"
               >
             </div>
@@ -88,7 +88,7 @@
             >
               <img
                 class="icon"
-                src="icons/settings.svg"
+                src="/icons/settings.svg"
                 height="20"
               >
             </div>
@@ -98,7 +98,7 @@
             >
               <img
                 class="icon"
-                src="icons/bin.svg"
+                src="/icons/bin.svg"
                 height="20"
               >
             </div>
