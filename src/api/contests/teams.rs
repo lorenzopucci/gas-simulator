@@ -223,15 +223,16 @@ pub async fn delete_team<'r>(
         .attach_info(Status::InternalServerError, "Errore incontrato durante l'eliminazione della squadra")?;
 
     let Some(&pos) = pos.get(0) else {
-        return Ok(ApiResponse {
+        return Err(ApiResponse {
             status: Status::NotFound,
-            body: (),
+            body: ApiError { error: "La squadra non esiste".to_string(), },
             headers: HeaderMap::new(),
         });
     };
 
     let max_pos = teams::dsl::teams
         .select(max(teams::position))
+        .filter(teams::contest_id.eq(id))
         .load::<Option<i32>>(&mut **db)
         .await
         .attach_info(Status::InternalServerError, "Errore incontrato durante l'eliminazione della squadra")?;
@@ -252,6 +253,7 @@ pub async fn delete_team<'r>(
 
     diesel::update(teams::dsl::teams)
         .filter(teams::position.eq(max_pos))
+        .filter(teams::contest_id.eq(id))
         .set(teams::position.eq(pos))
         .execute(&mut **db)
         .await
