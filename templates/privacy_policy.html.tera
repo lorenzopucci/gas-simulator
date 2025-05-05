@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="/styles/headerfooter.css">
+    <link rel="stylesheet" href="/styles/privacy_policy.css">
+    <script src="/scripts/headerfooter.js"></script>
+    <script src="/scripts/jsonform.js"></script>
+    <script src="/scripts/privacy_policy.js"></script>
+    <title>Privacy policy</title>
+  </head>
+  <body>
+    {% include "header" %}
+
+    <div id="page-content">
+
+      <h1>Privacy policy</h1>
+
+      <p>
+        This site is operated by Francesco Vercellesi, this privacy policy
+        explains how we use the data we collect from you when you use our website.
+      </p>
+
+      <h2>Topics:</h2>
+      <ul>
+        <li><a href="#_0">What data do we collect?</a></li>
+        <li><a href="#_1">How do we collect your data?</a></li>
+        <li><a href="#_2">How will we use your data?</a></li>
+        <li><a href="#_3">How do we store your data?</a></li>
+        <li><a href="#_4">What are your data protection rights?</a></li>
+        <li><a href="#_5">What are cookies?</a></li>
+        <li><a href="#_6">How do we use cookies?</a></li>
+        <li><a href="#_7">What types of cookies do we use?</a></li>
+        <li><a href="#_8">How to manage your cookies</a></li>
+        <li><a href="#_9">Privacy policies of other websites</a></li>
+        <li><a href="#_A">Changes to our privacy policy</a></li>
+        <li><a href="#_B">How to contact us</a></li>
+      </ul>
+
+      <h2 id="_0">What data do we collect?</h2>
+      <p>
+        We only collect your username and the name of the contests and teams you create on the website.
+      </p>
+
+      <h2 id="_1">How do we collect your data?</h2>
+      <p>
+        You directly provide all the data we collect. We collect data and process data when you:
+        <ul>
+          <li>Register an account.</li>
+          <li>Create a contest on the website.</li>
+          <li>Register a team on the website.</li>
+        </ul>
+      </p>
+
+      <h2 id="_2">How will we use your data?</h2>
+      <p>
+        We collect your data so that we can:
+        <ul>
+          <li>Manage your account.</li>
+        </ul>
+        We do not share any data with third parties.
+      </p>
+
+      <h2 id="_3">How do we store your data?</h2>
+      <p>
+        We securely store your data on a cloud server. Since no personal data is
+        kept, data is kept unless you ask for it to be removed.
+      </p>
+
+      <h2 id="_4">What are your data protection rights?</h2>
+      <p>
+        Even if we do not actively collect personal data, you may inadvertently
+        share them with us (for example by choosing your name or you email as your username).
+        <br>
+        For this reason, we would like to make sure you are fully aware of all of your data
+        protection rights. Every user is entitled to the following:
+        <ul>
+          <li>
+            The right to access: you have the right to request copies of your personal
+            data. We won't charge any fee for this service.
+          </li>
+          <li>
+            The right to rectification: you have the right to request us to correct any
+            information you believe is inaccurate. You also have the right to request us
+            to complete the information you believe is incomplete.
+          </li>
+          <li>
+            The right to erasure: you have the right to request us to erase your personal data.
+          </li>
+          <li>
+            The right to restrict processing: you have the right to request us to
+            restrict the processing of your personal data, under certain conditions.
+          </li>
+          <li>
+            The right to object to processing: you have the right to object to
+            processing of your personal data, under certain conditions.
+          </li>
+          <li>
+            The right to data portability: you have the right to request us to
+            transfer the data that we have collected to another organization, or
+            directly to you, under certain conditions.
+          </li>
+        </ul>
+
+        If you make a request, we have one month to respond to you. If you would like
+        to exercise any of these rights, please contact us at our email:
+
+        <ul>
+          <li><a href="mailto:francesco@vercellesi.com">francesco@vercellesi.com</a></li>
+        </ul>
+      </p>
+
+
+      <h2 id="_5">What are cookies?</h2>
+      <p>
+        Cookies are text files placed on your computer to collect standard Internet
+        log information and visitor behavior information. When you visit our websites,
+        we may collect information from you automatically through cookies or similar
+        technology.
+        <br>
+        For further information, visit <a href="https://allaboutcookies.org">allaboutcookies.org</a>.
+      </p>
+
+      <h2 id="_6">How do we use cookies?</h2>
+      <p>
+        We only use cookies for the following purposes:
+        <ul><li>Keeping you signed in.</li></ul>
+      </p>
+
+      <h2 id="_7">What types of cookies do we use?</h2>
+      <p>
+        There are a number of different types of cookies, however, our website uses only:
+
+        <ul>
+          <li>
+            functionality cookies: we use these cookies to keep you logged in on our
+            website. Only first-party cookies are used.
+          </li>
+        </ul>
+      </p>
+
+      <h2 id="_8">How to manage cookies</h2>
+      <p>
+        You can set your browser not to accept cookies, and the above website tells
+        you how to remove cookies from your browser. However, in a few cases, some
+        of our website features may not function as a result.
+      </p>
+
+      <h2 id="_9">Privacy policies of other websites</h2>
+      <p>
+        This website contains links to other websites. Our privacy policy applies
+        only to our website, so if you click on a link to another website, you
+        should read their privacy policy.
+      </p>
+
+      <h2 id="_A">Changes to our privacy policy</h2>
+      <p>
+        We keep our privacy policy under regular review and places any updates on
+        this web page. This privacy policy was last updated on 5 May 2025.
+      </p>
+
+      <h2 id="_B">How to contact us</h2>
+      <p>
+        If you have any questions about this privacy policy, the data we hold on
+        you, or you would like to exercise one of your data protection rights,
+        please do not hesitate to contact us at:
+        <ul><li><a href="mailto:francesco@vercellesi.com">francesco@vercellesi.com</a></li></ul>
+      </p>
+
+    </div>
+
+    {% include "footer" %}
+  </body>
+</html>

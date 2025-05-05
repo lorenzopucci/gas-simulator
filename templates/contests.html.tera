@@ -4,77 +4,118 @@
     <meta charset="utf-8">
     <link rel="stylesheet" href="/styles/contests.css">
     <link rel="stylesheet" href="/styles/headerfooter.css">
+    <script src="/scripts/headerfooter.js"></script>
     <script src="/scripts/contests.js"></script>
-    <title>Gare</title>
+    <title>
+      {% if user %}
+        Gare
+      {% else %}
+        Simulatore GaS
+      {% endif %}
+    </title>
   </head>
   <body>
     {% include "header" %}
 
-    <ul id="contest-list">
-      {% for contest in contests %}
-        <li onclick="redirect_to_contest({{contest.id}})">
-          <div>
-            {{contest.contest_name}}
-          </div>
-          <div class="contest-info">
-            <div>
-              <img
-                class="contest-icon"
-                src="icons/question.svg"
-                height="20"
-              >
-              {{contest.questions_no}}
-            </div>
+    <div id="page-content">
+      {% if user %}
+      <button id="add-button" class="header-button" onclick="redirect_to_create()">
+        <div>
+          <img
+            class="icon"
+            src="icons/add.svg"
+            height="20"
+          >
+        </div>
+        <div>Crea una gara</div>
+      </button>
 
+      <ul id="contest-list">
+        {% for contest in contests %}
+          <li onclick="redirect_to_contest({{contest.id}})">
             <div>
-              <img
-                class="contest-icon"
-                src="icons/team.svg"
-                height="20"
-              >
-              {{contest.teams_no}}
+              {{contest.contest_name}}
             </div>
+            <div class="contest-info">
+              <div>
+                <img
+                  class="icon"
+                  src="icons/question.svg"
+                  height="20"
+                >
+                <span>{{contest.questions_no}}</span>
+              </div>
 
-            <div>
-              <img
-                class="contest-icon"
-                src="icons/clock.svg"
-                height="20"
-              >
-              {% set hours = (contest.duration - contest.duration % 3600) / 3600 %}
-              {% set mins = ((contest.duration - contest.duration % 60) / 60) % 60 %}
-              {% if mins < 10 %}
-                {{hours}}:0{{mins}}
-              {% else %}
-                {{hours}}:{{mins}}
-              {% endif %}
+              <div>
+                <img
+                  class="icon"
+                  src="icons/team.svg"
+                  height="20"
+                >
+                <span>{{contest.teams_no}}</span>
+              </div>
+
+              <div>
+                <img
+                  class="icon"
+                  src="icons/clock.svg"
+                  height="20"
+                >
+                <span>
+                  {% set hours = (contest.duration - contest.duration % 3600) / 3600 %}
+                  {% set mins = ((contest.duration - contest.duration % 60) / 60) % 60 %}
+                  {% if mins < 10 %}
+                    {{hours}}:0{{mins}}
+                  {% else %}
+                    {{hours}}:{{mins}}
+                  {% endif %}
+                </span>
+              </div>
             </div>
-          </div>
-          <div class="contest-actions">
-            <div onclick="copy_contest_link({{contest.id}}); event.stopPropagation();">
-              <img
-                class="icon"
-                src="icons/copy.svg"
-                height="20"
+            <div class="contest-actions">
+              <div
+                onclick="copy_contest_link({{contest.id}}); event.stopPropagation();"
+                title="Copia link"
               >
-            </div>
-            <div onclick="redirect_to_settings({{contest.id}}); event.stopPropagation();">
-              <img
-                class="icon"
-                src="icons/settings.svg"
-                height="20"
+                <img
+                  class="icon"
+                  src="/icons/copy.svg"
+                  height="20"
+                >
+              </div>
+              <div
+                onclick="redirect_to_settings({{contest.id}}); event.stopPropagation();"
+                title="Impostazioni"
               >
-            </div>
-            <div onclick="delete_contest({{contest.id}}); event.stopPropagation();">
-              <img
-                class="icon"
-                src="icons/bin.svg"
-                height="20"
+                <img
+                  class="icon"
+                  src="/icons/settings.svg"
+                  height="20"
+                >
+              </div>
+              <div
+                onclick="delete_contest({{contest.id}}); event.stopPropagation();"
+                title="Elimina"
               >
+                <img
+                  class="icon"
+                  src="/icons/bin.svg"
+                  height="20"
+                >
+              </div>
             </div>
-          </div>
-        </li>
-      {% endfor %}
-    </ul>
+          </li>
+        {% endfor %}
+      </ul>
+      {% else %}
+      <div id="welcome">
+        <h1>Simulatore GaS</h1>
+
+        <p>Benvenuto! Per iniziare accedi o crea un account.</p>
+      </div>
+      {% endif %}
+    </div>
+
+    {% include "footer" %}
   </body>
 </html>

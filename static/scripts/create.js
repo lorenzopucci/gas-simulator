@@ -3,6 +3,8 @@ function pad(number) {
 }
 
 window.onload = () => {
+    load_header();
+
     setup_form(
         "create",
         (data) => {
@@ -33,6 +35,7 @@ window.onload = () => {
         },
     );
 
-    const datetime = new Date();
+    const now = new Date();
+    const datetime = new Date(now.getTime() + 300000); // five minutes from now
     document.getElementById("start_time").setAttribute("value", `${datetime.getFullYear()}-${pad(datetime.getMonth() + 1)}-${pad(datetime.getDate())} ${pad(datetime.getHours())}:${pad(datetime.getMinutes())}`);
 };

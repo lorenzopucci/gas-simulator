@@ -1,4 +1,4 @@
-window.onload = () => {
+function load_header() {
     setup_form(
         "authenticate",
         (data) => {
@@ -17,8 +17,8 @@ window.onload = () => {
                     } else {
                         document.cookie = `api_key=${body.token}`;
                     }
+                    window.location.reload();
                 });
-                window.location.reload();
             } else {
                 response.json().then(body => {
                     alert(body.error)
@@ -48,8 +48,8 @@ window.onload = () => {
 };
 
 function logout() {
-    document.cookie = "api_key=; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
-    window.location.reload();
+    document.cookie = "api_key=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+    window.location.href = "/";
 }
 
 function redirect_to_create() {
@@ -58,6 +58,10 @@ function redirect_to_create() {
 
 function redirect_to_source() {
     window.location.href = "https://github.com/franv314/gas-simulator";
+}
+
+function redirect_to_home() {
+    window.location.href = "/";
 }
 
 function show_auth_form() {
@@ -88,4 +92,14 @@ function hide_auth_form() {
     }
 
     document.getElementById("auth-background").style.visibility = "hidden";
+}
+
+function switch_to_register() {
+    document.getElementById("register").style.display = "flex";
+    document.getElementById("authenticate").style.display = "none";
+}
+
+function switch_to_authenticate() {
+    document.getElementById("register").style.display = "none";
+    document.getElementById("authenticate").style.display = "flex";
 }

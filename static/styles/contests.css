@@ -2,14 +2,29 @@
     padding: 0;
     margin: 0;
     border: 0;
-    font-family: Arial, Helvetica, sans-serif;
+    font-family: var(--font-family);
 }
 
-body {
-    background-color: #eeeeee;
+#page-content {
     display: flex;
     align-items: center;
     flex-direction: column;
+    flex: auto;
+}
+
+#add-button {
+    font-size: 16px;
+    margin-top: 35px;
+    padding: 8px 18px;
+    background-color: var(--theme-color);
+}
+
+#add-button:hover {
+    background-color: var(--theme-color-dark);
+}
+
+#add-button .icon {
+    vertical-align: middle;
 }
 
 #contest-list {
@@ -21,37 +36,22 @@ body {
     height: 50px;
     list-style: none;
     border-radius: 10px;
-    background-color: #bbbbbb;
-    border: 3px solid #888888;
+    background-color: white;
     align-items: center;
     display: flex;
     padding: 0px 10px;
-    margin: 10px 0px;
+    margin: 15px 0px;
+    box-shadow: 0 3px 10px rgba(128, 128, 128, 0.2);
 }
 
 #contest-list li:hover {
-    background-color: #cccccc;
+    background-color: #f4f4f4;
+    box-shadow: 0 3px 10px rgba(128, 128, 128, 0.4);
 }
 
 #contest-list li > div {
     flex: 33%;
 }
-
-a {
-    text-decoration: none;
-    color: black;
-}
-
-.icon {
-    transform: translateY(3px);
-    width: 20px;
-}
-
-.contest-icon {
-    transform: translateY(4px);
-    width: 20px;
-}
-
 
 .contest-info {
     justify-content: center;
@@ -67,6 +67,10 @@ a {
     width: 65px;
 }
 
+.contest-info > div > * {
+    vertical-align: middle;
+}
+
 .contest-actions {
     display: flex;
     justify-content: right;
@@ -74,14 +78,24 @@ a {
 }
 
 .contest-actions > div {
-    background: none;
-    padding: 0px 0px 0px 0px;
-    margin: 0px 2px;
+    padding: 4px 3px;
+    margin: 0px 1px;
     border-radius: 3px;
     width: fit-content;
     height: fit-content;
+    display: flex;
 }
 
 .contest-actions > div:hover {
-    background-color: #999999;
+    background-color: #d0d0d0;
+}
+
+#welcome {
+    width: min(1000px, 95%);
+    margin: 30px auto;
+}
+
+#welcome > h1 {
+    font-size: 24px;
+    margin-bottom: 10px;
 }
