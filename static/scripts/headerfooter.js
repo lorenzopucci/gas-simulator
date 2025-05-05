@@ -17,8 +17,8 @@ function load_header() {
                     } else {
                         document.cookie = `api_key=${body.token}`;
                     }
+                    window.location.reload();
                 });
-                window.location.reload();
             } else {
                 response.json().then(body => {
                     alert(body.error)
@@ -48,7 +48,7 @@ function load_header() {
 };
 
 function logout() {
-    document.cookie = "api_key=; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
+    document.cookie = "api_key=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
     window.location.href = "/";
 }
 
