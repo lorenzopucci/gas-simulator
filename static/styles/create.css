@@ -5,6 +5,11 @@
     font-family: var(--font-family);
 }
 
+#page-content {
+    flex: auto;
+    width: 100%;
+}
+
 #create {
     width: min(600px, calc(100vw - 60px));
     background-color: white;
@@ -12,7 +17,6 @@
     padding: 15px;
     border-radius: 10px;
     box-shadow: var(--box-shadow);
-    flex: auto;
 }
 
 #create > h1 {
