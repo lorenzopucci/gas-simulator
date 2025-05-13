@@ -138,7 +138,7 @@ pub async fn fetch_contest_with_ranking(db: &mut Connection<DB>, user_id: i32, i
         ))
         .filter(teams::contest_id.eq(id))
         .filter(submissions::sub_time.le(now))
-        .order(submissions::sub_time.asc())
+        .order((submissions::sub_time.asc(), submissions::id.asc()))
         .load::<ContestSubmissions>(db)
         .await?;
 
