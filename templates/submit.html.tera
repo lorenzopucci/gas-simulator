@@ -4,8 +4,10 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/styles/submit.css">
+    <link rel="stylesheet" href="/styles/submitter.css">
     <link rel="stylesheet" href="/styles/headerfooter.css">
     <script src="/scripts/headerfooter.js"></script>
+    <script src="/scripts/submitter.js"></script>
     <script src="/scripts/submit.js"></script>
     <title>
       {{contest.name}} - Manda risposte
@@ -15,53 +17,21 @@
     {% include "header" %}
 
     <div id="page-content">
-      <form id="submit" action="/api/contests/{{contest.id}}/submissions" method="post">
-        <h1>Manda risposte</h1>
-        <div>
-          <label for="team-input">
-            Squadra
-          </label>
-          <div>
-            <select name="team_id" id="team-input">
-              {% for team in contest.teams %}
-                {% if not team.is_fake %}
-                  <option value="{{team.id}}">{{team.name}}</option>
-                {% endif %}
-              {% endfor %}
-            </select>
-          </div>
-        </div>
-        <div>
-          <label for="question-input">
-            Quesito
-          </label>
-          <div>
-            <select name="question_id" id="question-input">
-              {% for question in contest.questions %}
-                <option value="{{question.id}}">{{loop.index}}</option>
-              {% endfor %}
-            </select>
-          </div>
-        </div>
-        <div>
-          <label for="answer-input">
-            Risposta
-          </label>
-          <div>
-            <input name="answer" id="answer-input" type="number" required>
-          </div>
-        </div>
-        <div id="submit-buttons">
-          <label for="submit-answer" hidden>
-            Manda risposta
-          </label>
-          <input id="submit-answer" class="col-btn" type="submit" value="Manda risposta">
+      <div id="submitter-wrapper">
+        {% include "submitter" %}
+      </div>
 
-          <button id="submit-jolly" class="col-btn" onclick="event.preventDefault(); submit_jolly({{contest.id}});">
-            Scegli come jolly
-          </button>
+      <button id="ranking-link" class="header-button" onclick="redirect_to_ranking({{contest.id}});">
+        <div>
+          <img
+            class="icon"
+            src="/icons/open.svg"
+            height="20"
+          >
         </div>
-      </form>
+        <div>Vai alla classifica</div>
+      </button>
+    </div>
     </div>
 
     {% include "footer" %}

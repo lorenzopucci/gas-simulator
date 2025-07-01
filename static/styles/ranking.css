@@ -46,17 +46,13 @@
     display: flex;
 }
 
-#buttons > * {
+#buttons > *, #submit-link {
     font-size: 14px;
     padding: 3px 4px;
     margin: 5px;
     background-color: var(--theme-color);
     text-decoration: none;
     color: inherit;
-}
-
-#buttons > *:hover {
-    background-color: var(--theme-color-dark);
 }
 
 #ranking {
@@ -78,18 +74,9 @@
     background-color: #d1d1d1;
 }
 
-#ranking tr:hover:nth-child(odd) td.question-not-attempted,
-#ranking tr:hover:nth-child(odd) td.team-header {
-    background-color: #e8e8e8;
-}
-
-#ranking tr:hover:nth-child(even) td.question-not-attempted,
-#ranking tr:hover:nth-child(even) td.team-header {
-    background-color: #dadada;
-}
-
 #ranking td, th {
     border-radius: 5px;
+    min-height: 40px;
 }
 
 .question-header {
@@ -137,10 +124,6 @@
     background-color: rgb(80, 222, 80);
 }
 
-#ranking tr:hover td.question-solved {
-    background-color: rgb(110, 229, 110);
-}
-
 .question-just-solved {
     background-color: rgb(80, 222, 80);
     animation: just-solved 2s infinite;
@@ -148,10 +131,6 @@
 
 .question-attempted {
     background-color: rgb(235, 109, 109);
-}
-
-#ranking tr:hover td.question-attempted {
-    background-color: rgb(252, 131, 131);
 }
 
 #submitter-background {
@@ -163,7 +142,7 @@
     background-color: rgba(0, 0, 0, 0.2);
 }
 
-#submitter {
+#submitter-wrapper {
     position: fixed;
     visibility: hidden;
     width: min(90%, 620px);
@@ -173,69 +152,11 @@
     border-radius: 10px;
     box-shadow: 0 3px 30px rgba(0, 0, 0, 0.2);
     z-index: 100;
-    display: flex;
-    padding: 10px;
+    padding: 15px 10px;
 }
 
-#submitter > form {
-    flex: 50%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: space-around;
-}
-
-#submitter > form > div {
-    width: 100%;
-    display: flex;
-    justify-content: space-between;
-    margin: 8px 0;
-}
-
-#submitter > form > div > * {
-    margin: auto 5px;
-}
-
-#submitter > div {
-    width: 0px;
-    border: 1px solid black;
-    height: 210px;
-    margin: 0 10px;
-}
-
-#submitter h2 {
-    font-size: 22px;
-    margin: 5px 0 12px 0;
-}
-
-select {
-    background-color: white;
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    appearance: none;
-    background-image: url("/icons/dropdown.svg");
-    background-size: 15px;
-    background-repeat: no-repeat;
-    background-position: calc(100% - 5px) center;
-}
-
-#submitter input:not([type="submit"]), #submitter select {
-    border-radius: 3px;
-    border: 1px solid black;
-    height: 25px;
-    padding: 0px 5px;
-    width: 200px;
-    box-sizing: border-box;
-}
-
-#submit-jolly > .filler {
-    height: 25px;
-}
-
-#submitter input[type="submit"] {
-    width: 100%;
-    height: 30px;
-    font-size: 16px;
+#submit-link {
+    margin: 15px auto 0 auto;
 }
 
 @keyframes just-solved {
@@ -257,6 +178,26 @@ select {
     display: flex;
 }
 
-#fullscreen-buttons:hover {
-    background-color: #d0d0d0;
+@media (hover: hover) {
+    #buttons > *:hover, #submit-link:hover {
+        background-color: var(--theme-color-dark);
+    }
+    #ranking tr:hover:nth-child(odd) td.question-not-attempted,
+    #ranking tr:hover:nth-child(odd) td.team-header {
+        background-color: #e8e8e8;
+    }
+
+    #ranking tr:hover:nth-child(even) td.question-not-attempted,
+    #ranking tr:hover:nth-child(even) td.team-header {
+        background-color: #dadada;
+    }
+    #ranking tr:hover td.question-solved {
+        background-color: rgb(110, 229, 110);
+    }
+    #ranking tr:hover td.question-attempted {
+        background-color: rgb(252, 131, 131);
+    }
+    #fullscreen-buttons:hover {
+        background-color: #d0d0d0;
+    }
 }

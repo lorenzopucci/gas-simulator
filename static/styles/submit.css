@@ -10,7 +10,7 @@
     width: 100%;
 }
 
-#submit {
+#submitter-wrapper {
     width: min(600px, calc(100vw - 60px));
     background-color: white;
     margin: 40px auto;
@@ -19,58 +19,20 @@
     box-shadow: var(--box-shadow);
 }
 
-#submit > h1 {
-    text-align: center;
-    margin-bottom: 15px;
-    font-size: 26px;
+#ranking-link {
+    height: fit-content;
+    font-size: 16px;
+    margin: 30px auto 50px auto;
+    padding: 8px 18px;
+    background-color: var(--theme-color);
 }
 
-#submit > div {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    width: 100%;
-    margin: 5px 0;
+#ranking-link .icon {
+    vertical-align: middle;
 }
 
-#submit > div > * {
-    flex: 45%;
-    margin: auto 5px;
-}
-
-#submit > div > *:first-child {
-    text-align: right;
-}
-
-#submit > div > div > input {
-    width: calc(100% - 10px);
-}
-
-input, select {
-    border-radius: 3px;
-    padding: 0px 5px;
-    border: 1px solid black;
-    height: 25px;
-    width: 100%;
-    background-color: white;
-}
-
-select {
-    background-color: white;
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    appearance: none;
-    background-image: url("/icons/dropdown.svg");
-    background-size: 15px;
-    background-repeat: no-repeat;
-    background-position: calc(100% - 5px) center;
-}
-
-#submit-buttons {
-    margin-top: 15px !important;
-}
-
-#submit-buttons > input, button {
-    height: 30px;
-    font-size: large;
+@media (hover: hover) {
+    #ranking-link:hover {
+        background-color: var(--theme-color-dark);
+    }
 }

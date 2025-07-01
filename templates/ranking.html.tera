@@ -2,12 +2,15 @@
 <html lang="it">
   <head>
     <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/styles/flipdown.css">
     <link rel="stylesheet" href="/styles/ranking.css">
+    <link rel="stylesheet" href="/styles/submitter.css">
     <script src="/scripts/jsonform.js"></script>
     <script src="/scripts/headerfooter.js"></script>
     <script src="/scripts/flipdown.js"></script>
     <script src="/scripts/ranking.js"></script>
+    <script src="/scripts/submitter.js"></script>
     <title>{{contest.name}}</title>
   </head>
   <body>
@@ -15,84 +18,18 @@
 
     <div id="page-wrapper">
       <div id="submitter-background" onclick="hide_submitter(); event.stopPropagation();">
-        <div id="submitter" onclick="event.stopPropagation();">
-          <form id="submit-answer" method="post" action="/api/contests/{{contest.id}}/submissions">
-            <h2>Manda una risposta</h2>
+        <div id="submitter-wrapper" onclick="event.stopPropagation();">
+          {% include "submitter" %}
+          <button class="header-button" id="submit-link" onclick="redirect_to_submit({{contest.id}});">
             <div>
-              <label for="question-team">
-                Squadra
-              </label>
-              <select name="team_id" id="question-team">
-                {% for team in contest.teams %}
-                  {% if not team.is_fake %}
-                    <option value="{{team.id}}">{{team.name}}</option>
-                  {% endif %}
-                {% endfor %}
-              </select>
+              <img
+                class="icon"
+                src="/icons/open.svg"
+                height="20"
+              >
             </div>
-
-            <div>
-              <label for="question-question">
-                Quesito
-              </label>
-              <select name="question_id" id="question-question">
-                {% for question in contest.questions %}
-                  <option value="{{question.id}}">{{loop.index}}</option>
-                {% endfor %}
-              </select>
-            </div>
-
-            <div>
-              <label for="question-answer">
-                Risposta
-              </label>
-              <input name="answer" id="question-answer" type="number" required>
-            </div>
-
-            <div>
-              <label for="question-send" hidden>
-                Invia!
-              </label>
-              <input id="question-send" class="col-btn" type="submit" value="Invia!" required>
-            </div>
-          </form>
-          <div>
-          </div>
-          <form id="submit-jolly" method="post" action="/api/contests/{{contest.id}}/jollies">
-            <h2>Scegli il jolly</h2>
-            <div>
-              <label for="jolly-team">
-                Squadra
-              </label>
-              <select name="team_id" id="jolly-team">
-                {% for team in contest.teams %}
-                  {% if not team.is_fake %}
-                    <option value="{{team.id}}">{{team.name}}</option>
-                  {% endif %}
-                {% endfor %}
-              </select>
-            </div>
-
-            <div>
-              <label for="jolly-question">
-                Quesito
-              </label>
-              <select name="question_id" id="jolly-question">
-                {% for question in contest.questions %}
-                  <option value="{{question.id}}">{{loop.index}}</option>
-                {% endfor %}
-              </select>
-            </div>
-
-            <div class="filler"></div>
-
-            <div>
-              <label for="jolly-send" hidden>
-                Scegli il jolly!
-              </label>
-              <input class="col-btn" id="jolly-send" type="submit" value="Scegli il jolly!" required>
-            </div>
-          </form>
+            <div>Apri la pagina dedicata</div>
+          </button>
         </div>
       </div>
 
