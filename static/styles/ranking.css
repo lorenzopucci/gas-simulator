@@ -19,6 +19,8 @@
     align-items: center;
     flex-direction: column;
     margin: 20px 0 10px;
+    position: sticky;
+    left: 0;
 }
 
 #page-intro > h1 {
@@ -38,21 +40,23 @@
 }
 
 #flipdown {
-    margin: 0 auto;
-    scale: 0.8;
+    margin: 8px auto;
 }
 
 #buttons {
     display: flex;
+    padding: 5px 0;
 }
 
 #buttons > *, #submit-link {
     font-size: 14px;
     padding: 3px 4px;
-    margin: 5px;
+    margin: auto 5px;
     background-color: var(--theme-color);
     text-decoration: none;
     color: inherit;
+    height: fit-content;
+    text-align: center;
 }
 
 #ranking {
@@ -199,5 +203,11 @@
     }
     #fullscreen-buttons:hover {
         background-color: #d0d0d0;
+    }
+}
+
+@media screen and (max-width: 600px) {
+    #submitter-wrapper {
+        top: calc(35% - 140px);
     }
 }

@@ -1,5 +1,6 @@
 window.onload = () => {
     load_header();
+    document.getElementById("team_name").value = "";
 
     setup_form(
         "update",

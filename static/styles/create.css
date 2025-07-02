@@ -51,6 +51,7 @@ input {
     padding: 0px 5px;
     border: 1px solid black;
     height: 25px;
+    background-color: white;
 }
 
 .fake-input {
@@ -83,4 +84,13 @@ input {
     flex: 100%;
     height: 30px;
     font-size: large;
+}
+
+@media screen and (max-width: 600px) {
+    #create > div > *:first-child {
+        flex: 30%;
+    }
+    #create > div > *:nth-child(2) {
+        flex: 60%;
+    }
 }

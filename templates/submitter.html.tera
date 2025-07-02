@@ -1,5 +1,5 @@
 <form id="submitter" action="/api/contests/{{contest.id}}/submissions" method="post">
-  <h1>Manda risposte</h1>
+  <h1>Inserisci risposte</h1>
   <div>
     <label for="team-input">
       Squadra
@@ -36,9 +36,9 @@
   </div>
   <div id="submit-buttons">
     <label for="submit-answer" hidden>
-      Manda risposta
+      Inserisci risposta
     </label>
-    <input id="submit-answer" class="col-btn" type="submit" value="Manda risposta">
+    <input id="submit-answer" class="col-btn" type="submit" value="Inserisci risposta">
 
     <button id="submit-jolly" class="col-btn" onclick="event.preventDefault(); submit_jolly({{contest.id}});">
       Scegli come jolly

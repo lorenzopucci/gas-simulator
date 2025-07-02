@@ -21,10 +21,6 @@ body {
     border-radius: 5px;
 }
 
-.col-btn:hover {
-    background-color: var(--theme-color-dark);
-}
-
 header {
     position: relative;
     z-index: 10;
@@ -60,11 +56,6 @@ header {
 
 header img {
     transform: translateY(-2px);
-}
-
-.header-button:hover {
-    cursor: default;
-    background-color: #e9e9e9;
 }
 
 #auth-background {
@@ -166,4 +157,14 @@ footer {
 footer a {
     color: inherit;
     text-decoration: underline;
+}
+
+@media (hover: hover) {
+    .col-btn:hover {
+        background-color: var(--theme-color-dark);
+    }
+    .header-button:hover {
+        cursor: default;
+        background-color: #e9e9e9;
+    }
 }

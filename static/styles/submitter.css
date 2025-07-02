@@ -57,3 +57,12 @@ select {
     height: 30px;
     font-size: large;
 }
+
+@media screen and (max-width: 600px) {
+    #submitter > div:not(#submit-buttons) > *:first-child {
+        flex: 35%;
+    }
+    #submitter > div:not(#submit-buttons) > *:nth-child(2) {
+        flex: 55%;
+    }
+}

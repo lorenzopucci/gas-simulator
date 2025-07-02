@@ -54,6 +54,7 @@ input {
     padding: 0px 5px;
     border: 1px solid black;
     height: 25px;
+    background-color: white;
 }
 
 .fake-textbox {
@@ -119,10 +120,6 @@ input {
     border-radius: 3px;
 }
 
-.action-icon:hover {
-    background-color: #e9e9e9;
-}
-
 .action-icon img {
     vertical-align: middle;
 }
@@ -134,10 +131,24 @@ input {
     background-color: var(--theme-color);
 }
 
-#to-contest-button:hover {
-    background-color: var(--theme-color-dark);
-}
-
 #to-contest-button .icon {
     vertical-align: middle;
+}
+
+@media screen and (max-width: 600px) {
+    #update > div > *:first-child {
+        flex: 30%;
+    }
+    #update > div > *:nth-child(2) {
+        flex: 60%;
+    }
+}
+
+@media (hover: hover) {
+    .action-icon:hover {
+        background-color: #e9e9e9;
+    }
+    #to-contest-button:hover {
+        background-color: var(--theme-color-dark);
+    }
 }
