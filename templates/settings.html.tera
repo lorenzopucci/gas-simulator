@@ -4,6 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/styles/settings.css">
+    <link rel="stylesheet" href="/styles/theme.css">
     <script src="/scripts/jsonform.js"></script>
     <script src="/scripts/headerfooter.js"></script>
     <script src="/scripts/settings.js"></script>
@@ -12,7 +13,7 @@
   <body>
     {% include "header" %}
 
-    <div id="page-content">
+    <div class="page-content">
       <form id="update" class="settings-group" method="PATCH" action="/api/contests/{{contest.id}}">
         <h1>
           Modifica la gara
@@ -130,7 +131,7 @@
           <label id="submit-label" for="submit" hidden>
             Aggiorna!
           </label>
-          <input id="submit" class="col-btn" type="submit" value="Aggiorna!">
+          <input id="submit" class="submit-button" type="submit" value="Aggiorna!">
         </div>
       </form>
 
@@ -146,7 +147,7 @@
               <div class="team-name">
                 {{team.name}}
               </div>
-              <div class="action-icon" onclick="delete_team({{contest.id}}, {{team.id}});">
+              <div class="action-icon action-button" onclick="delete_team({{contest.id}}, {{team.id}});">
                 <img
                   class="icon"
                   src="/icons/bin.svg"
@@ -164,7 +165,7 @@
             </label>
             <input name="team_name" id="team_name" placeholder="Nome della squadra" required>
           </form>
-          <div id="add-team-button" class="action-icon" onclick="send_form(document.getElementById('add-team'), conv_add_team, reload_callback)">
+          <div id="add-team-button" class="action-icon action-button" onclick="send_form(document.getElementById('add-team'), conv_add_team, reload_callback)">
             <img
               class="icon"
               src="/icons/add.svg"
@@ -174,7 +175,7 @@
         </div>
       </div>
 
-      <button id="to-contest-button" class="header-button" onclick="redirect_to_contest({{contest.id}});">
+      <button id="to-contest-button" class="link-button" onclick="redirect_to_contest({{contest.id}});">
         <div>
           <img
             class="icon"

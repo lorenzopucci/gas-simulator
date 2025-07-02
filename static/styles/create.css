@@ -1,15 +1,3 @@
-* {
-    padding: 0;
-    margin: 0;
-    border: 0;
-    font-family: var(--font-family);
-}
-
-#page-content {
-    flex: auto;
-    width: 100%;
-}
-
 #create {
     width: min(600px, calc(100vw - 60px));
     background-color: white;
@@ -76,14 +64,9 @@ input {
     margin-right: 3px;
 }
 
-#submit-wrapper {
-    margin-top: 15px !important;
-}
-
 #submit {
     flex: 100%;
-    height: 30px;
-    font-size: large;
+    margin-top: 15px !important;
 }
 
 @media screen and (max-width: 600px) {

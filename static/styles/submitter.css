@@ -53,11 +53,6 @@ select {
     margin-top: 15px !important;
 }
 
-#submit-buttons > input, button {
-    height: 30px;
-    font-size: large;
-}
-
 @media screen and (max-width: 600px) {
     #submitter > div:not(#submit-buttons) > *:first-child {
         flex: 35%;

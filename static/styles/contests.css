@@ -1,26 +1,5 @@
-* {
-    padding: 0;
-    margin: 0;
-    border: 0;
-    font-family: var(--font-family);
-}
-
-#page-content {
-    display: flex;
-    align-items: center;
-    flex-direction: column;
-    flex: auto;
-}
-
 #add-button {
-    font-size: 16px;
     margin-top: 35px;
-    padding: 8px 18px;
-    background-color: var(--theme-color);
-}
-
-#add-button .icon {
-    vertical-align: middle;
 }
 
 #contest-list {
@@ -69,12 +48,7 @@
 }
 
 .contest-actions > div {
-    padding: 4px 3px;
     margin: 0px 1px;
-    border-radius: 3px;
-    width: fit-content;
-    height: fit-content;
-    display: flex;
 }
 
 #welcome {
@@ -108,8 +82,6 @@
     #contest-list li:hover {
         background-color: #f4f4f4;
         box-shadow: 0 3px 10px rgba(128, 128, 128, 0.4);
-    }
-    .contest-actions > div:hover {
-        background-color: #d0d0d0;
+        cursor: default;
     }
 }

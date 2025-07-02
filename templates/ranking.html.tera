@@ -6,6 +6,7 @@
     <link rel="stylesheet" href="/styles/flipdown.css">
     <link rel="stylesheet" href="/styles/ranking.css">
     <link rel="stylesheet" href="/styles/submitter.css">
+    <link rel="stylesheet" href="/styles/theme.css">
     <script src="/scripts/jsonform.js"></script>
     <script src="/scripts/headerfooter.js"></script>
     <script src="/scripts/flipdown.js"></script>
@@ -20,7 +21,7 @@
       <div id="submitter-background" onclick="hide_submitter(); event.stopPropagation();">
         <div id="submitter-wrapper" onclick="event.stopPropagation();">
           {% include "submitter" %}
-          <button class="header-button" id="submit-link" onclick="redirect_to_submit({{contest.id}});">
+          <button class="icon-button" id="submit-link" onclick="redirect_to_submit({{contest.id}});">
             <div>
               <img
                 class="icon"
@@ -44,7 +45,7 @@
         </div>
 
         <div id="buttons">
-          <a class="header-button" href="https://www.phiquadro.it/gara_a_squadre/classifica_new.php?id_gara={{contest.phiquadro_id}}&id_sess={{contest.phiquadro_sess}}" target="_blank"><script style="display:none;">fullscreen=()=>{const d=new Date();if(d.getHours()==d.getMinutes()){window.location.href="https://www.youtube.com/watch?v=dQw4w9WgXcQ";}else{enter_fullscreen();};}</script>
+          <a class="icon-button" href="https://www.phiquadro.it/gara_a_squadre/classifica_new.php?id_gara={{contest.phiquadro_id}}&id_sess={{contest.phiquadro_sess}}" target="_blank"><script style="display:none;">fullscreen=()=>{const d=new Date();if(d.getHours()==d.getMinutes()){window.location.href="https://www.youtube.com/watch?v=dQw4w9WgXcQ";}else{enter_fullscreen();};}</script>
             <div>
               <img
                 class="icon"
@@ -54,7 +55,7 @@
             </div>
             <div>Vai alla gara su phiquadro</div>
           </a>
-          <button id="toggle-visibility" class="header-button" onclick="hide_fake_teams()">
+          <button id="toggle-visibility" class="icon-button" onclick="hide_fake_teams()">
             <div style="display:none;" id="show-teams-icon">
               <img
                 class="icon"
@@ -71,7 +72,7 @@
             </div>
             <div id="toggle-visibility-text">Nascondi squadre fantasma</div>
           </button>
-          <button class="header-button" onclick="show_submitter()">
+          <button class="icon-button" onclick="show_submitter()">
             <div>
               <img
                 class="icon"
@@ -85,14 +86,14 @@
       </div>
 
       <div id="fullscreen-buttons">
-        <div id="enter-fullscreen-btn" onclick="fullscreen();" title="Schermo intero">
+        <div id="enter-fullscreen-btn" class="action-button" onclick="fullscreen();" title="Schermo intero">
           <img
             class="icon"
             src="/icons/fullscreen.svg"
             height="25"
           >
         </div>
-        <div id="exit-fullscreen-btn" onclick="exit_fullscreen();" style="display:none;" title="Esci da schermo intero">
+        <div id="exit-fullscreen-btn" class="action-button" onclick="exit_fullscreen();" style="display:none;" title="Esci da schermo intero">
           <img
             class="icon"
             src="/icons/exit_fullscreen.svg"

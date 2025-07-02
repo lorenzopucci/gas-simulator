@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/styles/contests.css">
     <link rel="stylesheet" href="/styles/headerfooter.css">
+    <link rel="stylesheet" href="/styles/theme.css">
     <script src="/scripts/headerfooter.js"></script>
     <script src="/scripts/contests.js"></script>
     <title>
@@ -18,9 +19,9 @@
   <body>
     {% include "header" %}
 
-    <div id="page-content">
+    <div class="page-content">
       {% if user %}
-      <button id="add-button" class="header-button" onclick="redirect_to_create()">
+      <button id="add-button" class="link-button" onclick="redirect_to_create()">
         <div>
           <img
             class="icon"
@@ -75,6 +76,7 @@
             </div>
             <div class="contest-actions">
               <div
+                class="action-button"
                 onclick="copy_contest_link({{contest.id}}); event.stopPropagation();"
                 title="Copia link"
               >
@@ -85,6 +87,7 @@
                 >
               </div>
               <div
+                class="action-button"
                 onclick="redirect_to_settings({{contest.id}}); event.stopPropagation();"
                 title="Impostazioni"
               >
@@ -95,6 +98,7 @@
                 >
               </div>
               <div
+                class="action-button"
                 onclick="delete_contest({{contest.id}}); event.stopPropagation();"
                 title="Elimina"
               >

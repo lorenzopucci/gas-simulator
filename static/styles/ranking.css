@@ -1,10 +1,3 @@
-* {
-    padding: 0;
-    margin: 0;
-    border: 0;
-    font-family: var(--font-family);
-}
-
 #page-wrapper {
     background-color: var(--body-background);
     width: 100%;
@@ -49,14 +42,7 @@
 }
 
 #buttons > *, #submit-link {
-    font-size: 14px;
-    padding: 3px 4px;
     margin: auto 5px;
-    background-color: var(--theme-color);
-    text-decoration: none;
-    color: inherit;
-    height: fit-content;
-    text-align: center;
 }
 
 #ranking {
@@ -173,13 +159,6 @@
     position: absolute;
     top: 60px;
     right: 10px;
-    border-radius: 3px;
-    padding: 3px;
-}
-
-#fullscreen-buttons > div {
-    height: fit-content;
-    display: flex;
 }
 
 @media (hover: hover) {
@@ -200,9 +179,6 @@
     }
     #ranking tr:hover td.question-attempted {
         background-color: rgb(252, 131, 131);
-    }
-    #fullscreen-buttons:hover {
-        background-color: #d0d0d0;
     }
 }
 

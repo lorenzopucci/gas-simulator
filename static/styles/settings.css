@@ -1,14 +1,3 @@
-* {
-    padding: 0;
-    margin: 0;
-    border: 0;
-    font-family: var(--font-family);
-}
-
-#page-content {
-    flex: auto;
-}
-
 .settings-group {
     width: min(600px, calc(100vw - 60px));
     background-color: white;
@@ -88,14 +77,9 @@ input {
     margin-right: 3px;
 }
 
-#submit-wrapper {
-    margin-top: 15px;
-}
-
 #submit {
     width: 100%;
-    height: 30px;
-    font-size: large;
+    margin-top: 15px !important;
 }
 
 #teams > div {
@@ -107,32 +91,15 @@ input {
 }
 
 #add-team {
-    width: calc(100% - 45px);
+    width: calc(100% - 48px);
 }
 
 #add-team > input {
     width: calc(100% - 10px);
 }
 
-.action-icon {
-    width: fit-content;
-    padding: 2px 2px;
-    border-radius: 3px;
-}
-
-.action-icon img {
-    vertical-align: middle;
-}
-
 #to-contest-button {
-    font-size: 16px;
     margin: 30px auto 50px auto;
-    padding: 8px 18px;
-    background-color: var(--theme-color);
-}
-
-#to-contest-button .icon {
-    vertical-align: middle;
 }
 
 @media screen and (max-width: 600px) {
@@ -141,14 +108,5 @@ input {
     }
     #update > div > *:nth-child(2) {
         flex: 60%;
-    }
-}
-
-@media (hover: hover) {
-    .action-icon:hover {
-        background-color: #e9e9e9;
-    }
-    #to-contest-button:hover {
-        background-color: var(--theme-color-dark);
     }
 }

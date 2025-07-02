@@ -4,6 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/styles/create.css">
+    <link rel="stylesheet" href="/styles/theme.css">
     <script src="/scripts/headerfooter.js"></script>
     <script src="/scripts/jsonform.js"></script>
     <script src="/scripts/create.js"></script>
@@ -12,7 +13,7 @@
   <body>
     {% include "header" %}
 
-    <div id="page-content">
+    <div class="page-content">
       <form id="create" action="/api/contests" method="post">
         <h1>Crea una gara</h1>
         <div>
@@ -121,7 +122,7 @@
           <label id="submit-label" for="submit" hidden>
             Crea!
           </label>
-          <input id="submit" class="col-btn" type="submit" value="Crea!">
+          <input id="submit" class="submit-button" type="submit" value="Crea!">
         </div>
       </form>
     </div>

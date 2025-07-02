@@ -51,7 +51,7 @@
           <h2>Esci</h2>
           <button
             id="logout-button"
-            class="col-btn"
+            class="submit-button"
             onclick="logout(); event.stopPropagation();"
           >
             Esci!
@@ -66,7 +66,7 @@
           <div class="auth-switch-tab">
             Oppure
             <button
-              class="col-btn"
+              class="blue-button"
               onclick="switch_to_register(); event.stopPropagation();"
             >
               Crea un account
@@ -98,7 +98,7 @@
             <label for="autenticati" hidden>
               Accedi
             </label>
-            <input id="autenticati" class="col-btn" name="autenticati" type="submit" value="Accedi!" required>
+            <input id="autenticati" class="submit-button" name="autenticati" type="submit" value="Accedi!" required>
           </div>
         </form>
 
@@ -108,7 +108,7 @@
           <div class="auth-switch-tab">
             Oppure
             <button
-              class="col-btn"
+              class="blue-button"
               onclick="switch_to_authenticate(); event.stopPropagation();"
             >
               Accedi
@@ -133,7 +133,7 @@
             <label for="registrati" hidden>
               Registrati
             </label>
-            <input id="registrati" class="col-btn" name="registrati" type="submit" value="Registrati!" required>
+            <input id="registrati" class="submit-button" name="registrati" type="submit" value="Registrati!" required>
           </div>
         </form>
       </div>

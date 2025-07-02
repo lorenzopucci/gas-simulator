@@ -6,22 +6,23 @@
     <link rel="stylesheet" href="/styles/submit.css">
     <link rel="stylesheet" href="/styles/submitter.css">
     <link rel="stylesheet" href="/styles/headerfooter.css">
+    <link rel="stylesheet" href="/styles/theme.css">
     <script src="/scripts/headerfooter.js"></script>
     <script src="/scripts/submitter.js"></script>
     <script src="/scripts/submit.js"></script>
     <title>
-      {{contest.name}} - Manda risposte
+      Inserisci risposte: {{contest.name}}
     </title>
   </head>
   <body>
     {% include "header" %}
 
-    <div id="page-content">
+    <div class="page-content">
       <div id="submitter-wrapper">
         {% include "submitter" %}
       </div>
 
-      <button id="ranking-link" class="header-button" onclick="redirect_to_ranking({{contest.id}});">
+      <button id="ranking-link" class="link-button" onclick="redirect_to_ranking({{contest.id}});">
         <div>
           <img
             class="icon"
