@@ -19,7 +19,7 @@
 
     <div id="page-wrapper">
       <div id="submitter-background" onclick="hide_submitter(); event.stopPropagation();">
-        <div id="submitter-wrapper" onclick="event.stopPropagation();">
+        <div id="submitter-wrapper" class="card" onclick="event.stopPropagation();">
           {% include "submitter" %}
           <button class="icon-button" id="submit-link" onclick="redirect_to_submit({{contest.id}});">
             <div>

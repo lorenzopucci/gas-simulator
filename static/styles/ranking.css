@@ -16,10 +16,6 @@
     left: 0;
 }
 
-#page-intro > h1 {
-    font-size: 26px;
-}
-
 #flipdown-wrapper {
     width: 100%;
     margin-bottom: 10px;
@@ -41,7 +37,7 @@
     padding: 5px 0;
 }
 
-#buttons > *, #submit-link {
+#buttons > * {
     margin: auto 5px;
 }
 
@@ -135,11 +131,9 @@
 #submitter-wrapper {
     position: fixed;
     visibility: hidden;
-    width: min(90%, 620px);
+    width: min(90%, 600px);
     top: calc(50% - 140px);
-    left: calc(50% - min(45%, 310px) - 13px);
-    background-color: white;
-    border-radius: 10px;
+    left: calc(50% - min(45%, 300px) - 13px);
     box-shadow: 0 3px 30px rgba(0, 0, 0, 0.2);
     z-index: 100;
     padding: 15px 10px;
@@ -149,16 +143,16 @@
     margin: 15px auto 0 auto;
 }
 
-@keyframes just-solved {
-    0%   { background: rgb(80, 222, 80); }
-    50%  { background-color: rgb(216, 220, 22);}
-    100% { background: rgb(80, 222, 80); }
-}
-
 #fullscreen-buttons {
     position: absolute;
     top: 60px;
     right: 10px;
+}
+
+@keyframes just-solved {
+    0%   { background: rgb(80, 222, 80); }
+    50%  { background-color: rgb(216, 220, 22);}
+    100% { background: rgb(80, 222, 80); }
 }
 
 @media (hover: hover) {

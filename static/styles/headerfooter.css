@@ -33,11 +33,8 @@ header img {
     position: absolute;
     top: 55px;
     visibility: hidden;
-    background-color: white;
     z-index: 100;
     padding: 15px 20px;
-    box-shadow: var(--box-shadow);
-    border-radius: 10px;
 }
 
 #auth-form {
@@ -83,17 +80,7 @@ header img {
     margin-bottom: 8px;
 }
 
-.auth-switch-tab > .col-btn {
-    margin-left: 5px;
-    padding: 3px 10px;
-    font-size: 12px;
-}
-
-#auth-form input:not([type=submit], [type=checkbox]) {
-    border: 1px solid black;
-    border-radius: 5px;
-    height: 25px;
-    padding: 0px 5px;
+#auth-form .textbox {
     width: 175px;
     margin-left: 8px;
 }

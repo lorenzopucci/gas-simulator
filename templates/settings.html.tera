@@ -14,32 +14,32 @@
     {% include "header" %}
 
     <div class="page-content">
-      <form id="update" class="settings-group" method="PATCH" action="/api/contests/{{contest.id}}">
+      <form id="update" class="full-width-card form" class="settings-group" method="PATCH" action="/api/contests/{{contest.id}}">
         <h1>
           Modifica la gara
         </h1>
 
         <div>
-          <div class="fake-label">
+          <div>
             ID della gara su PhiQuadro
           </div>
-          <div class="fake-input fake-textbox">
+          <div class="fake-textbox">
             <span>{{contest.phiquadro_id}}</span>
           </div>
         </div>
         <div>
-          <div class="fake-label">
+          <div>
             Sessione della gara su PhiQuadro
           </div>
-          <div class="fake-input fake-textbox">
+          <div class="fake-textbox">
             <span>{{contest.phiquadro_sess}}</span>
           </div>
         </div>
         <div>
-          <div class="fake-label">
+          <div>
             Nome della simulazione
           </div>
-          <div class="fake-input fake-textbox">
+          <div class="fake-textbox">
             <span>{{contest.name}}</span>
           </div>
         </div>
@@ -74,10 +74,10 @@
           <div><input name="jolly_time" id="jolly_time" value="{{(contest.jolly_time[0] - contest.jolly_time[0] % 60) / 60}}" type="number" required></div>
         </div>
         <div>
-          <div class="fake-label">
+          <div>
             Bonus prima risposta
           </div>
-          <div class="fake-input">
+          <div class="quintuple-input">
             <label for="question_bonus_1" hidden>Bonus prima soluzione</label>
             <label for="question_bonus_2" hidden>Bonus seconda soluzione</label>
             <label for="question_bonus_3" hidden>Bonus terza soluzione</label>
@@ -101,10 +101,10 @@
           </div>
         </div>
         <div>
-          <div class="fake-label">
+          <div>
             Bonus primo full
           </div>
-          <div class="fake-input">
+          <div class="quintuple-input">
             <label for="contest_bonus_1" hidden>Bonus primo full</label>
             <label for="contest_bonus_2" hidden>Bonus secondo full</label>
             <label for="contest_bonus_3" hidden>Bonus terzo full</label>
@@ -127,7 +127,7 @@
             <input name="contest_bonus_10" id="contest_bonus_10" type="number" value="{{contest.contest_bonus[9]}}" required>
           </div>
         </div>
-        <div id="submit-wrapper">
+        <div class="submit-buttons">
           <label id="submit-label" for="submit" hidden>
             Aggiorna!
           </label>
@@ -135,7 +135,7 @@
         </div>
       </form>
 
-      <div id="teams" class="settings-group">
+      <div id="teams" class="full-width-card settings-group" class="settings-group">
         <h1>
           Aggiungi squadre
         </h1>
@@ -163,7 +163,7 @@
             <label for="team_name" hidden>
               Nome della squadra
             </label>
-            <input name="team_name" id="team_name" placeholder="Nome della squadra" required>
+            <input name="team_name" id="team_name" class="textbox" placeholder="Nome della squadra" required>
           </form>
           <div id="add-team-button" class="action-icon action-button" onclick="send_form(document.getElementById('add-team'), conv_add_team, reload_callback)">
             <img

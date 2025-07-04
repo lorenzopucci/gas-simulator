@@ -14,7 +14,7 @@
   <body>
     {% include "header" %}
 
-    <div id="content">
+    <div id="content" class="paragraph">
 
       <h1>Privacy policy</h1>
 

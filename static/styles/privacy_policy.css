@@ -1,26 +1,5 @@
 #content {
-    width: min(1000px, 100% - 30px);
-    margin: 25px auto 40px auto;
     flex: auto;
-    line-height: 1.5em;
-}
-
-#content h2 {
-    margin-top: 18px;
-    margin-bottom: 5px;
-    font-size: 20px;
-    font-weight: bold;
-}
-
-#content h1 {
-    margin-bottom: 10px;
-    font-size: 24px;
-    font-weight: bold;
-}
-
-#content a {
-    color: inherit;
-    text-decoration: underline;
 }
 
 #content ul {

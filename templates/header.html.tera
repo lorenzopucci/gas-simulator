@@ -16,8 +16,8 @@
           Simulatore GaS
         </div>
       </div>
-
     </div>
+
     <div class="header-button" id="auth-button" onclick="show_auth_form();">
       {% if user %}
         <div>
@@ -46,7 +46,7 @@
   </div>
   <div id="auth-background" onclick="hide_auth_form();">
     {% if user %}
-      <div id="logout-form">
+      <div id="logout-form" class="card">
         <div id="logout-fake-form">
           <h2>Esci</h2>
           <button
@@ -59,7 +59,7 @@
         </div>
       </div>
     {% else %}
-      <div id="auth-form" onclick="event.stopPropagation();">
+      <div id="auth-form" class="card" onclick="event.stopPropagation();">
         <form id="authenticate" method="post" action="/api/login">
           <h2>Accedi</h2>
 
@@ -77,14 +77,14 @@
             <label for="username">
               Username
             </label>
-            <input id="username" name="username" required>
+            <input id="username" class="textbox" name="username" required>
           </div>
 
           <div>
             <label for="password">
               Password
             </label>
-            <input id="password" name="password" type="password" required>
+            <input id="password" class="textbox" name="password" type="password" required>
           </div>
 
           <div>
@@ -119,14 +119,14 @@
             <label for="register_username">
               Username
             </label>
-            <input id="register_username" name="register_username" required>
+            <input id="register_username" class="textbox" name="register_username" required>
           </div>
 
           <div>
             <label for="register_password">
               Password
             </label>
-            <input id="register_password" name="register_password" type="password" required>
+            <input id="register_password" class="textbox" name="register_password" type="password" required>
           </div>
 
           <div>

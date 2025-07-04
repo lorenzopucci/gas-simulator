@@ -113,7 +113,7 @@
         {% endfor %}
       </ul>
       {% else %}
-      <div id="welcome">
+      <div id="welcome" class="paragraph">
         <h1>Simulatore GaS</h1>
 
         <p>Benvenuto! Per iniziare accedi o crea un account.</p>

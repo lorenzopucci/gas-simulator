@@ -1,89 +1,15 @@
-.settings-group {
-    width: min(600px, calc(100vw - 60px));
-    background-color: white;
-    box-shadow: var(--box-shadow);
-    padding: 15px;
-    margin: 20px auto;
-    border-radius: 10px;
-}
-
-.settings-group > div {
+#teams > div {
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
     width: 100%;
     margin: 5px 0;
+    justify-content: space-between;
 }
 
-.settings-group > h1 {
+#teams > h1 {
     text-align: center;
     margin-bottom: 15px;
-    font-size: 26px;
-}
-
-#update {
-    margin-top: 40px;
-}
-
-#update > div > * {
-    flex: 45%;
-    margin: auto 5px;
-}
-
-#update > div > *:first-child {
-    text-align: right;
-}
-
-#update > div > div:not(.fake-input) > input {
-    width: calc(100% - 10px);
-}
-
-input {
-    border-radius: 3px;
-    padding: 0px 5px;
-    border: 1px solid black;
-    height: 25px;
-    background-color: white;
-}
-
-.fake-textbox {
-    height: 25px;
-    border: 1px solid transparent;
-}
-
-.fake-textbox > span {
-    margin: auto 0;
-}
-
-.fake-input {
-    display: flex;
-    flex-direction: row;
-    flex-flow: row wrap;
-}
-
-.fake-input > input {
-    height: 20px;
-    width: calc((100% - 24px) / 5);
-    margin-top: 1px;
-    margin-bottom: 1px;
-    box-sizing: border-box;
-}
-
-.fake-input > input:not(:nth-child(5n + 1)) {
-    margin-left: 3px;
-}
-
-.fake-input > input:not(:nth-child(5n)) {
-    margin-right: 3px;
-}
-
-#submit {
-    width: 100%;
-    margin-top: 15px !important;
-}
-
-#teams > div {
-    justify-content: space-between;
 }
 
 #teams > div > * {
@@ -95,18 +21,5 @@ input {
 }
 
 #add-team > input {
-    width: calc(100% - 10px);
-}
-
-#to-contest-button {
-    margin: 30px auto 50px auto;
-}
-
-@media screen and (max-width: 600px) {
-    #update > div > *:first-child {
-        flex: 30%;
-    }
-    #update > div > *:nth-child(2) {
-        flex: 60%;
-    }
+    width: 100%;
 }

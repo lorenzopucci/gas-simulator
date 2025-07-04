@@ -1,4 +1,4 @@
-<form id="submitter" action="/api/contests/{{contest.id}}/submissions" method="post">
+<form id="submitter" class="form" action="/api/contests/{{contest.id}}/submissions" method="post">
   <h1>Inserisci risposte</h1>
   <div>
     <label for="team-input">
@@ -34,7 +34,7 @@
       <input name="answer" id="answer-input" type="number" required>
     </div>
   </div>
-  <div id="submit-buttons">
+  <div class="submit-buttons">
     <label for="submit-answer" hidden>
       Inserisci risposta
     </label>

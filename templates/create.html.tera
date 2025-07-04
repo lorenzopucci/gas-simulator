@@ -3,7 +3,6 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/styles/create.css">
     <link rel="stylesheet" href="/styles/theme.css">
     <script src="/scripts/headerfooter.js"></script>
     <script src="/scripts/jsonform.js"></script>
@@ -14,7 +13,7 @@
     {% include "header" %}
 
     <div class="page-content">
-      <form id="create" action="/api/contests" method="post">
+      <form id="create" class="full-width-card form" action="/api/contests" method="post">
         <h1>Crea una gara</h1>
         <div>
           <label for="phiquadro_id">
@@ -65,10 +64,10 @@
           <div><input name="jolly_time" id="jolly_time"  type="number" value="10" required></div>
         </div>
         <div>
-          <div class="fake-label">
+          <div>
             Bonus prima risposta
           </div>
-          <div class="fake-input">
+          <div class="quintuple-input">
             <label for="question_bonus_1" hidden>Bonus prima soluzione</label>
             <label for="question_bonus_2" hidden>Bonus seconda soluzione</label>
             <label for="question_bonus_3" hidden>Bonus terza soluzione</label>
@@ -92,10 +91,10 @@
           </div>
         </div>
         <div>
-          <div class="fake-label">
+          <div>
             Bonus primo full
           </div>
-          <div class="fake-input">
+          <div class="quintuple-input">
             <label for="contest_bonus_1" hidden>Bonus primo full</label>
             <label for="contest_bonus_2" hidden>Bonus secondo full</label>
             <label for="contest_bonus_3" hidden>Bonus terzo full</label>
@@ -118,7 +117,7 @@
             <input name="contest_bonus_10" id="contest_bonus_10" type="number" value="0" required>
           </div>
         </div>
-        <div id="submit-wrapper">
+        <div class="submit-buttons">
           <label id="submit-label" for="submit" hidden>
             Crea!
           </label>

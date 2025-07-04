@@ -1,5 +1,5 @@
 #add-button {
-    margin-top: 35px;
+    margin: 35px auto 0 auto;
 }
 
 #contest-list {
@@ -51,16 +51,6 @@
     margin: 0px 1px;
 }
 
-#welcome {
-    width: min(1000px, 95%);
-    margin: 30px auto;
-}
-
-#welcome > h1 {
-    font-size: 24px;
-    margin-bottom: 10px;
-}
-
 @media screen and (max-width: 600px) {
     #contest-list li {
         display: block;
@@ -76,9 +66,6 @@
 }
 
 @media (hover: hover) {
-    #add-button:hover {
-        background-color: var(--theme-color-dark);
-    }
     #contest-list li:hover {
         background-color: #f4f4f4;
         box-shadow: 0 3px 10px rgba(128, 128, 128, 0.4);
