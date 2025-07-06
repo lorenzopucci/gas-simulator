@@ -1,21 +1,10 @@
-<!DOCTYPE html>
-<html lang="it">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/styles/theme.css">
-    <script src="/scripts/headerfooter.js"></script>
-    <script src="/scripts/jsonform.js"></script>
+{% extends "base" %}
+{% block head %}
     <script src="/scripts/create.js"></script>
     <title>Crea una gara</title>
-  </head>
-  <body>
-    {% include "header" %}
-
+{% endblock %}
+{% block content %}
     <div class="page-content">
       {% include "contest_editor" %}
     </div>
-
-    {% include "footer" %}
-  </body>
-</html>
+{% endblock %}

@@ -1,73 +1,61 @@
-<!DOCTYPE html>
-<html lang="it">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/styles/settings.css">
-    <link rel="stylesheet" href="/styles/theme.css">
-    <script src="/scripts/jsonform.js"></script>
-    <script src="/scripts/headerfooter.js"></script>
-    <script src="/scripts/settings.js"></script>
-    <title>Impostazioni: {{contest.name}}</title>
-  </head>
-  <body>
-    {% include "header" %}
+{% extends "base" %}
+{% block head %}
+  <link rel="stylesheet" href="/styles/settings.css">
+  <script src="/scripts/settings.js"></script>
+  <title>Impostazioni: {{contest.name}}</title>
+{% endblock %}
+{% block content %}
+  <div class="page-content">
+    {% include "contest_editor" %}
 
-    <div class="page-content">
-      {% include "contest_editor" %}
+    <div id="teams" class="full-width-card settings-group" class="settings-group">
+      <h1>
+        Aggiungi squadre
+      </h1>
 
-      <div id="teams" class="full-width-card settings-group" class="settings-group">
-        <h1>
-          Aggiungi squadre
-        </h1>
-
-        {% for team in contest.teams %}
-          {% if team.is_fake %}
-          {% else %}
-            <div>
-              <div class="team-name">
-                {{team.name}}
-              </div>
-              <div class="action-icon action-button" onclick="delete_team({{contest.id}}, {{team.id}});">
-                <img
-                  class="icon"
-                  src="/icons/bin.svg"
-                  height="20"
-                >
-              </div>
+      {% for team in contest.teams %}
+        {% if not team.is_fake %}
+          <div>
+            <div class="team-name">
+              {{team.name}}
             </div>
-          {% endif %}
-        {% endfor %}
-
-        <div>
-          <form id="add-team" class="team-name" method="post" action="/api/contests/{{contest.id}}/teams" onsubmit="event.preventDefault(); send_form(document.getElementById('add-team'), conv_add_team, reload_callback);">
-            <label for="team_name" hidden>
-              Nome della squadra
-            </label>
-            <input name="team_name" id="team_name" class="textbox" placeholder="Nome della squadra" required>
-          </form>
-          <div id="add-team-button" class="action-icon action-button" onclick="send_form(document.getElementById('add-team'), conv_add_team, reload_callback)">
-            <img
-              class="icon"
-              src="/icons/add.svg"
-              height="20"
-            >
+            <div class="action-icon action-button" onclick="delete_team({{contest.id}}, {{team.id}});">
+              <img
+                class="icon"
+                src="/icons/bin.svg"
+                height="20"
+              >
+            </div>
           </div>
-        </div>
-      </div>
+        {% endif %}
+      {% endfor %}
 
-      <button id="to-contest-button" class="link-button" onclick="redirect_to_contest({{contest.id}});">
-        <div>
+      <div>
+        <form id="add-team" class="team-name" method="post" action="/api/contests/{{contest.id}}/teams" onsubmit="event.preventDefault(); send_form(document.getElementById('add-team'), conv_add_team, reload_callback);">
+          <label for="team_name" hidden>
+            Nome della squadra
+          </label>
+          <input name="team_name" id="team_name" class="textbox" placeholder="Nome della squadra" required>
+        </form>
+        <div id="add-team-button" class="action-icon action-button" onclick="send_form(document.getElementById('add-team'), conv_add_team, reload_callback)">
           <img
             class="icon"
-            src="/icons/open.svg"
+            src="/icons/add.svg"
             height="20"
           >
         </div>
-        <div>Vai alla gara</div>
-      </button>
+      </div>
     </div>
 
-    {% include "footer" %}
-  </body>
-</html>
+    <button id="to-contest-button" class="link-button" onclick="redirect_to_contest({{contest.id}});">
+      <div>
+        <img
+          class="icon"
+          src="/icons/open.svg"
+          height="20"
+        >
+      </div>
+      <div>Vai alla gara</div>
+    </button>
+  </div>
+{% endblock %}
