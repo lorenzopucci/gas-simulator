@@ -14,7 +14,7 @@
       {% include "submitter" %}
     </div>
 
-    <button id="ranking-link" class="link-button" onclick="redirect_to_ranking({{contest.id}});">
+    <a id="ranking-link" class="link-button" href="/contest/{{contest.id}}">
       <div>
         <img
           class="icon"
@@ -23,6 +23,6 @@
         >
       </div>
       <div>Vai alla classifica</div>
-    </button>
+    </a>
   </div>
 {% endblock %}

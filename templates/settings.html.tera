@@ -47,7 +47,7 @@
       </div>
     </div>
 
-    <button id="to-contest-button" class="link-button" onclick="redirect_to_contest({{contest.id}});">
+    <a id="to-contest-button" class="link-button" href="/contest/{{contest.id}}">
       <div>
         <img
           class="icon"
@@ -56,6 +56,6 @@
         >
       </div>
       <div>Vai alla gara</div>
-    </button>
+    </a>
   </div>
 {% endblock %}

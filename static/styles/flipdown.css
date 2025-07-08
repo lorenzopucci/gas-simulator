@@ -43,6 +43,7 @@
     overflow: visible;
     width: fit-content;
     height: calc(110px * var(--flipdown-scaling));
+    user-select: none;
 }
 
 .flipdown .rotor-group {

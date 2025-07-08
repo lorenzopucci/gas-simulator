@@ -1,7 +1,6 @@
 #teams > div {
     display: flex;
     flex-direction: row;
-    flex-wrap: wrap;
     width: 100%;
     margin: 5px 0;
     justify-content: space-between;

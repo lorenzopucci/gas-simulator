@@ -12,7 +12,7 @@
     <div id="submitter-background" onclick="hide_submitter(); event.stopPropagation();">
       <div id="submitter-wrapper" class="card" onclick="event.stopPropagation();">
         {% include "submitter" %}
-        <button class="icon-button" id="submit-link" onclick="redirect_to_submit({{contest.id}});">
+        <a class="icon-button" id="submit-link" href="/submit/{{contest.id}}">
           <div>
             <img
               class="icon"
@@ -21,7 +21,7 @@
             >
           </div>
           <div>Apri la pagina dedicata</div>
-        </button>
+        </a>
       </div>
     </div>
 
@@ -36,7 +36,7 @@
       </div>
 
       <div id="buttons">
-        <a class="icon-button" href="https://www.phiquadro.it/gara_a_squadre/classifica_new.php?id_gara={{contest.phiquadro_id}}&id_sess={{contest.phiquadro_sess}}" target="_blank"><script style="display:none;">fullscreen=()=>{const d=new Date();if(d.getHours()==d.getMinutes()){window.location.href="https://www.youtube.com/watch?v=dQw4w9WgXcQ";}else{enter_fullscreen();};}</script>
+        <a class="icon-button" href="https://www.phiquadro.it/gara_a_squadre/classifica_new.php?id_gara={{contest.phiquadro_id}}&id_sess={{contest.phiquadro_sess}}" target="_blank">
           <div>
             <img
               class="icon"
@@ -77,7 +77,7 @@
     </div>
 
     <div id="fullscreen-buttons">
-      <div id="enter-fullscreen-btn" class="action-button" onclick="fullscreen();" title="Schermo intero">
+      <div id="enter-fullscreen-btn" class="action-button" onclick="enter_fullscreen();" title="Schermo intero">
         <img
           class="icon"
           src="/icons/fullscreen.svg"

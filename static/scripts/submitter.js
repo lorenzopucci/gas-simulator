@@ -16,8 +16,9 @@ function setup_submitter() {
                     } else {
                         alert("Risposta errata!");
                     }
-                    if (reload_content) reload_content();
-                    if (hide_submitter) hide_submitter();
+                    document.getElementById("submitter").reset();
+                    if (typeof reload_content !== "undefined") reload_content();
+                    if (typeof hide_submitter !== "undefined") hide_submitter();
                 });
             } else {
                 response.json().then(body => {
@@ -44,8 +45,9 @@ function submit_jolly(contest_id) {
     }).then((response) => {
         if (response.status == 201) {
             alert("Jolly scelto!");
-            if (reload_content) reload_content();
-            if (hide_submitter) hide_submitter();
+            document.getElementById("submitter").reset();
+            if (typeof reload_content !== "undefined") reload_content();
+            if (typeof hide_submitter !== "undefined") hide_submitter();
         } else {
             response.json().then(body => {
                 alert(body.error)

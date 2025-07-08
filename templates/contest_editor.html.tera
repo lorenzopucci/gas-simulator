@@ -1,20 +1,20 @@
 {% if contest %}
   {% set editor_title = "Modifica la gara" %}
   {% set form_action = "/api/contests/" ~ contest.id %}
-  {% set form_method = "patch" %}
+  {% set form_method = "PATCH" %}
   {% set submit_text = "Aggiorna!" %}
   {% set question_bonus = contest.question_bonus %}
   {% set contest_bonus = contest.contest_bonus %}
 {% else %}
   {% set editor_title = "Crea una gara" %}
   {% set form_action = "/api/contests" %}
-  {% set form_method = "post" %}
+  {% set form_method = "POST" %}
   {% set submit_text = "Crea!" %}
   {% set question_bonus = [20, 15, 10, 8, 6, 5, 4, 3, 2, 1] %}
   {% set contest_bonus = [100, 60, 40, 30, 20, 10, 0, 0, 0, 0] %}
 {% endif %}
 
-<form class="full-width-card form" action="{{form_action}}" method="{{form_method}}">
+<form id="contest-editor" class="full-width-card form" action="{{form_action}}" method="{{form_method}}">
   <h1>{{editor_title}}</h1>
   <div>
     <label for="phiquadro_id">

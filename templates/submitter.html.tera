@@ -7,9 +7,9 @@
     <div>
     <select name="team_id" id="team-input">
       {% for team in contest.teams %}
-      {% if not team.is_fake %}
-        <option value="{{team.id}}">{{team.name}}</option>
-      {% endif %}
+        {% if not team.is_fake %}
+          <option value="{{team.id}}">{{team.name}}</option>
+        {% endif %}
       {% endfor %}
     </select>
     </div>

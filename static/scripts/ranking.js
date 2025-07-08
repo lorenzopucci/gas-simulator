@@ -109,7 +109,3 @@ function exit_fullscreen() {
     if (document.exitFullscreen)
         document.exitFullscreen();
 }
-
-function redirect_to_submit(id) {
-    window.location.href = `/submit/${id}`;
-}

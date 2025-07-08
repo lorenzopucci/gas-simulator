@@ -13,7 +13,7 @@
 {% block content %}
   <div class="page-content">
     {% if user %}
-      <button id="add-button" class="link-button" onclick="redirect_to_create()">
+      <a id="add-button" class="link-button" href="/create">
         <div>
           <img
             class="icon"
@@ -22,7 +22,7 @@
           >
         </div>
         <div>Crea una gara</div>
-      </button>
+      </a>
 
       <ul id="contest-list">
         {% for contest in contests %}
