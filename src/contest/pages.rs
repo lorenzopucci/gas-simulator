@@ -50,6 +50,21 @@ async fn contest_settings(id: i32, user: Option<ApiUser>, mut db: Connection<DB>
     }
 }
 
+#[get("/submit/<id>")]
+pub async fn submit_page(id: i32, user: Option<ApiUser>, mut db: Connection<DB>) -> Result<Template, Status> {
+    let Some(user) = user else {
+        return Err(Status::Unauthorized)
+    };
+
+    match fetch_contest(&mut db, user.user_id, id)
+        .await
+        .attach_info(Status::InternalServerError, "")?
+    {
+        Some(contest) => Ok(Template::render("submit", context! { contest, user })),
+        None => Err(Status::NotFound),
+    }
+}
+
 #[get("/")]
 async fn show_contest_list(mut db: Connection<DB>, user: Option<ApiUser>) -> Result<Template, Status> {
     use crate::schema::contests;
@@ -86,5 +101,5 @@ async fn show_contest_list(mut db: Connection<DB>, user: Option<ApiUser>) -> Res
 }
 
 pub fn routes() -> Vec<Route> {
-    routes![create_contest, show_contest, contest_settings, show_contest_list,]
+    routes![create_contest, show_contest, contest_settings, submit_page, show_contest_list,]
 }
